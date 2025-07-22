@@ -122,10 +122,11 @@ export default function AddDashboard({
         className="h-10 flex-1 rounded-xl md:min-h-min flex items-center justify-center"
       >
         <div className="flex flex-1 flex-col ">
-          <AddProjectButton className="w-full h-7 flex items-center justify-between px-3">
+          <div className="w-full h-7 flex items-center ">
+          <Plus size={20} />
             <span className="text-sm ml-1">Add New Dashboard</span>
-            <Plus size={20} />
-          </AddProjectButton>
+            
+          </div>
         </div>
       </DialogTrigger>
 

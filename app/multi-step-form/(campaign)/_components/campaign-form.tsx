@@ -31,7 +31,7 @@ const CampaignForm = ({
           <div className="flex-1">
             <h1 className="text-base font-semibold ml-6 mt-2">
               {" "}
-              Settings for : {projectName}
+              Settings 
             </h1>
           </div>
           <div className="flex-1">

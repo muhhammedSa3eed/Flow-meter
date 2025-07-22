@@ -65,26 +65,28 @@ declare module "@tanstack/table-core" {
     itemRank: RankingInfo;
   }
 }
+const fuzzyFilter: FilterFn<Chart> = (row, _columnId, value, addMeta) => {
+  const searchTerm = String(value).toLowerCase();
 
-const fuzzyFilter: FilterFn<unknown> = (row, columnId, value, addMeta) => {
-  // Rank the item
-  const itemRank = rankItem(row.getValue(columnId), value);
+  const searchable = [
+    row.original.id?.toString() ?? "",
+    row.original.name ?? "",
+    row.original.visualizationTypeId?.toString() ?? "",
+  ]
+    .join(" ")
+    .toLowerCase();
 
-  // Store the itemRank info
-  addMeta({
-    itemRank,
-  });
-
-  // Return if the item should be filtered in/out
+  const itemRank = rankItem(searchable, searchTerm);
+  addMeta?.({ itemRank });
   return itemRank.passed;
 };
 export default function ChartTable({
   ProjectId,
-  
+
   chart,
 }: {
   ProjectId: number;
- 
+
   chart: Chart[];
 }) {
   const id = useId();
@@ -98,14 +100,15 @@ export default function ChartTable({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [sorting, setSorting] = useState([{ id: "id", desc: false }]);
+  const [globalFilter, setGlobalFilter] = useState("");
 
- 
   const data = chart;
   const columns = getColumns(ProjectId);
 
-  const table = useReactTable({
+  const table = useReactTable<Chart>({
     data,
     columns,
+    globalFilterFn: fuzzyFilter,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     onSortingChange: setSorting,
@@ -145,17 +148,10 @@ export default function ChartTable({
             <Input
               id={`${id}-input`}
               ref={inputRef}
-              className={cn(
-                "peer min-w-60 ps-9",
-                Boolean(table.getColumn("name")?.getFilterValue()) && "pe-9"
-              )}
-              value={
-                (table.getColumn("name")?.getFilterValue() ?? "") as string
-              }
-              onChange={(e) =>
-                table.getColumn("name")?.setFilterValue(e.target.value)
-              }
-              placeholder="Search Charts "
+              className="peer min-w-60 ps-9"
+              value={(table.getState().globalFilter as string) ?? ""}
+              onChange={(e) => table.setGlobalFilter(e.target.value)}
+              placeholder="Search Charts"
               type="text"
               aria-label="Search Charts"
             />
@@ -177,8 +173,6 @@ export default function ChartTable({
           </div>
         </div>
         <div className="flex items-center gap-3">
-        
-
           <Link href={`/Projects/${ProjectId}/addChart`}>
             <Button variant={"custom"}>
               {" "}
@@ -199,7 +193,7 @@ export default function ChartTable({
                     key={header.id}
                     style={{ width: `${header.getSize()}px` }}
                     className={`whitespace-nowrap font-semibold text-black dark:text-white ${
-                      header.id === 'actions' ? 'sticky -right-[1px]' : ''
+                      header.id === "actions" ? "sticky -right-[1px]" : ""
                     }`}
                   >
                     {header.isPlaceholder ? null : header.column.getCanSort() ? (

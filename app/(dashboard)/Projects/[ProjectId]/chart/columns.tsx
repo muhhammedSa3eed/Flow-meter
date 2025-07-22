@@ -34,6 +34,7 @@ export const getColumns = (
     accessorKey: "id",
     cell: ({ row }) => <div>{row.getValue("id")}</div>,
     size: 220,
+    enableColumnFilter: true,
   },
   {
     header: "Name",
@@ -61,6 +62,7 @@ export const getColumns = (
       return <div>{vis?.name ?? ""}</div>;
     },
     size: 200,
+    enableColumnFilter: true,
   },
   // {
   //   header: "Count",

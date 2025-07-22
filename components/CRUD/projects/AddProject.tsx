@@ -82,10 +82,11 @@ export default function AddProject() {
         onClick={() => setIsDialogOpen(true)}
       >
         <div className="flex flex-1 flex-col ">
-          <AddProjectButton className="w-full h-7 flex items-center justify-between px-3">
+          <div className="w-full h-7 flex items-center ">
+          <Plus />
             <span className="text-sm ml-1">Add New Project</span>
-            <Plus size={20} />
-          </AddProjectButton>
+            
+          </div>
         </div>
       </DialogTrigger>
 

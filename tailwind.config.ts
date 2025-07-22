@@ -10,7 +10,6 @@ export default {
   theme: {
   	extend: {
   		colors: {
-			
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
@@ -61,10 +60,8 @@ export default {
   				border: 'hsl(var(--sidebar-border))',
   				ring: 'hsl(var(--sidebar-ring))'
   			},
-			  'custom-green': 'rgba(92, 231, 161, 1)', 
-			  'custom-green2': 'rgba(72, 195, 137, 1)', 
-
-			  
+  			'custom-green': 'rgba(92, 231, 161, 1)',
+  			'custom-green2': 'rgba(72, 195, 137, 1)'
   		},
   		borderRadius: {
   			lg: 'var(--radius)',

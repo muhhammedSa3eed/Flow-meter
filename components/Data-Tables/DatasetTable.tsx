@@ -66,7 +66,7 @@ declare module '@tanstack/table-core' {
   }
 }
 
-const fuzzyFilter: FilterFn<unknown> = (row, columnId, value, addMeta) => {
+const fuzzyFilter: FilterFn<Dataset> = (row, columnId, value, addMeta) => {
   // Rank the item
   const itemRank = rankItem(row.getValue(columnId), value);
 
@@ -104,9 +104,10 @@ export default function DatasetTable({
   const data = datasets;
   const columns = getColumns(ProjectId);
 
-  const table = useReactTable({
+  const table = useReactTable<Dataset>({
     data,
     columns,
+    globalFilterFn: fuzzyFilter,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     onSortingChange: setSorting,

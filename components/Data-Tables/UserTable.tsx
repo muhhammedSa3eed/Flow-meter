@@ -73,7 +73,7 @@ declare module "@tanstack/table-core" {
   }
 }
 
-const fuzzyFilter: FilterFn<unknown> = (row, columnId, value, addMeta) => {
+const fuzzyFilter: FilterFn<User> = (row, columnId, value, addMeta) => {
   // Rank the item
   const itemRank = rankItem(row.getValue(columnId), value);
 
@@ -110,6 +110,7 @@ export default function UsersTable({
   const table = useReactTable({
     data,
     columns,
+    globalFilterFn: fuzzyFilter,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     onSortingChange: setSorting,
