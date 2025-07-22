@@ -44,6 +44,7 @@ export type Dashboard = {
   gridType: string;
   createdAt: string;
   updatedAt: string;
+  textColor: string;
 };
 export type SelectGridType = {
   id: number;
@@ -154,6 +155,7 @@ export type ChartItem = {
   chartId: number;
   width: string;
   backgroundColor: string;
+  textColor:string;
   description: string;
   visualizationType?: VisualizationTypes;
   pieChart: any;

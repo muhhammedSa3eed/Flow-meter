@@ -36,11 +36,11 @@ export default async function EditDataset({
   const project = await getProjectById(ProjectId);
   console.log("projectData:", project);
   return (
-    <Suspense fallback={<Loading />}>
+    <>
       <ProjectIdTabs  projectName={projectName} projectId={ProjectId} />
       <Label className="font-bold ml-4 my-2">Update Dataset </Label>
 
       <EditDatasetPage datasetId={datasetId} ProjectId={ProjectId} projectName={projectName} />
-    </Suspense>
+    </>
   );
 }

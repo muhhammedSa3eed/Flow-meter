@@ -21,7 +21,7 @@ export default async function Page({
   // const { projectName} = params;
   console.log({ devices });
   return (
-    <Suspense fallback={<Loading />}>
+    <>
       <ProjectIdTabs projectId={ProjectId} />
 
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
@@ -41,6 +41,6 @@ export default async function Page({
           />
         </div>
       </div>
-    </Suspense>
+    </>
   );
 }

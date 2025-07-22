@@ -126,14 +126,14 @@ export default function ChartWithDSId({
       const tableName = createdChart.dataset.tableName;
 
       if (connectionId && schemaName && tableName) {
-        console.log(
-          'connectionId :',
-          connectionId,
-          'schemaName :',
-          schemaName,
-          'tableName :',
-          tableName
-        );
+        // console.log(
+        //   'connectionId :',
+        //   connectionId,
+        //   'schemaName :',
+        //   schemaName,
+        //   'tableName :',
+        //   tableName
+        // );
         fetch(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/DS/table-data?connectionId=${connectionId}&schemaName=${schemaName}&tableName=${tableName}&limit=100&offset=0`
         )

@@ -21,11 +21,11 @@ export default async function Dataset({
   // const project = await getProjectById(ProjectId);
   // console.log("projectData:", project);
   return (
-    <Suspense fallback={<Loading />}>
+    <>
       <ProjectIdTabs  projectName={projectName} projectId={ProjectId} />
       <Label className="font-bold ml-4 my-2">New Dataset </Label>
 
       <DatabaseSelect ProjectId={ProjectId} projectName={projectName} />
-    </Suspense>
+    </>
   );
 }

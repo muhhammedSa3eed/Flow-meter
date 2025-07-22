@@ -44,7 +44,7 @@ export default async function ProjectDetailsPage({
   const project = await getProjectById(ProjectId);
   // console.log({ project });
   return (
-    <Suspense fallback={<Loading />}>
+    <>
       <div className="flex flex-nowrap">
         <div className="m-4">
           {' '}
@@ -80,34 +80,6 @@ export default async function ProjectDetailsPage({
       <div className="flex flex-col gap-6 m-6">
         {project ? (
           <>
-            {/* <Card className="border shadow-md">
-              <CardHeader className="relative">
-                <CardTitle>{project.name}</CardTitle>
-                <div className="absolute top-0 right-0  ">
-                  <ProjectIdTabs
-                    projectName={project.name}
-                    projectId={ProjectId}
-                  />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  <p>
-                    <strong>Description:</strong>{" "}
-                    {project.description || "No description available"}
-                  </p>
-                  <p>
-                    <strong>Created At:</strong>{" "}
-                    {new Date(project.createdAt).toLocaleString()}
-                  </p>
-                  <p>
-                    <strong>Updated At:</strong>{" "}
-                    {new Date(project.updatedAt).toLocaleString()}
-                  </p>
-                </CardDescription>
-              </CardContent>
-            </Card> */}
-
             {/* Views Section */}
             <div>
               <div className="flex justify-between items-center mb-4">
@@ -183,6 +155,36 @@ export default async function ProjectDetailsPage({
           <p className="text-gray-500">Failed to load project details.</p>
         )}
       </div>
-    </Suspense>
+    </>
   );
+}
+
+{
+  /* <Card className="border shadow-md">
+              <CardHeader className="relative">
+                <CardTitle>{project.name}</CardTitle>
+                <div className="absolute top-0 right-0  ">
+                  <ProjectIdTabs
+                    projectName={project.name}
+                    projectId={ProjectId}
+                  />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>
+                  <p>
+                    <strong>Description:</strong>{" "}
+                    {project.description || "No description available"}
+                  </p>
+                  <p>
+                    <strong>Created At:</strong>{" "}
+                    {new Date(project.createdAt).toLocaleString()}
+                  </p>
+                  <p>
+                    <strong>Updated At:</strong>{" "}
+                    {new Date(project.updatedAt).toLocaleString()}
+                  </p>
+                </CardDescription>
+              </CardContent>
+            </Card> */
 }

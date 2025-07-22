@@ -51,9 +51,9 @@ export default async function EditChart({
     getChartData(chartId),
   ]);
 
-  console.log('from server', { chartDataDetails });
+  // console.log('from server', { chartDataDetails });
   return (
-    <Suspense fallback={<Loading />}>
+    <>
       <ProjectIdTabs projectName={projectName} projectId={ProjectId} />
       <Label className="font-bold  my-2">Update Chart </Label>
 
@@ -64,6 +64,6 @@ export default async function EditChart({
         projectName={projectName}
         chartDetails={chartDataDetails}
       />
-    </Suspense>
+    </>
   );
 }

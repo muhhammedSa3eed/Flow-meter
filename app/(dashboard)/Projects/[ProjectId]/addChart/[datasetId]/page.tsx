@@ -35,7 +35,7 @@ export default async function AddChartWithDSId({
   const VisualizationTypeData = await getAllVisualizationTypes();
 
   return (
-    <Suspense fallback={<Loading />}>
+    <>
       <ProjectIdTabs projectId={ProjectId} />
       <Label className="font-bold  my-2">Chart</Label>
       <ChartWithDSId
@@ -43,6 +43,6 @@ export default async function AddChartWithDSId({
         datasetId={datasetId}
         isAddChart={true}
       />
-    </Suspense>
+    </>
   );
 }

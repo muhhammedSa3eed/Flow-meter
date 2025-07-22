@@ -188,6 +188,7 @@ export const DashboardSchema = z.object({
 
   background: z.string().optional(),
   gridType: z.string().optional(),
+  textColor: z.string().optional(),
 });
 
 export const UserSchema = z.object({
@@ -287,21 +288,32 @@ export const ChartSchema = z.object({
   // Dimensions
   dimensions: z.array(z.string()).optional(),
   // Metrics
+  // metrics: z
+  //   .array(
+  //     z.object({
+  //       metricId: z.number().nullable().optional(),
+  //       // columnName: z.string().min(1, 'Column name is required'),
+  //       // aggregationFunction: z
+  //       //   .string()
+  //       //   .min(1, 'Aggregation function is required'),
+  //       columnName: z.any().optional(),
+  //       aggregationFunction: z.any().optional(),
+  //       customSqlExpression: z.string().nullable().optional(),
+  //     })
+  //   )
+  //   ,
   metrics: z
     .array(
       z.object({
         metricId: z.number().nullable().optional(),
-        // columnName: z.string().min(1, 'Column name is required'),
-        // aggregationFunction: z
-        //   .string()
-        //   .min(1, 'Aggregation function is required'),
-        columnName: z.any().optional(),
-        aggregationFunction: z.any().optional(),
+        columnName: z.string().min(1, 'Column name is required'),
+        aggregationFunction: z
+          .string()
+          .min(1, 'Aggregation function is required'),
         customSqlExpression: z.string().nullable().optional(),
       })
     )
-    .optional(),
-
+    .min(1, 'At least one metric is required'),
   // Filters
 
   filters: z.any().optional(),

@@ -25,6 +25,7 @@ interface DashboardItem {
   description: string;
   width: string;
   backgroundColor: string;
+  textColor: string;
   data?: any;
   customizeOptions: any;
   metrics: any;
@@ -74,6 +75,7 @@ export const DashboardWrapper = ({
       description: selectedChart.description ?? 'description',
       width: selectedChart.width ?? 'col-span-2',
       backgroundColor: selectedChart.backgroundColor ?? '#ffffff',
+      textColor: selectedChart.textColor ?? '#ffffff',
       type: selectedChart.visualizationType?.type ?? 'test',
       pieChartData: selectedChart.data,
       ChartName: selectedChart.name,
@@ -129,6 +131,7 @@ export const DashboardWrapper = ({
             description: item.description,
             width: item.width,
             backgroundColor: item.backgroundColor,
+            textColor: item.textColor,
             visualizationType: item.chart.visualizationType,
             type: item.chart.visualizationType?.type,
             pieChartData: item.chart.data,

@@ -135,11 +135,10 @@ export default function ChooseChart({
         });
     }
   }, [createdChartId, updateTrigger]);
-  console.log('outer===>', { createdChartId });
+
   async function onSubmit(values: z.infer<typeof ChartSchema>) {
     console.log('Form submitted!');
-    console.log('Form values:', values);
-    console.log({ createdChartId });
+    console.log('Form values:', JSON.stringify(values));
     try {
       const url = createdChartId
         ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/Charts/${createdChartId}`
@@ -256,7 +255,6 @@ export default function ChooseChart({
         console.error('Error fetching dataset:', error);
       });
   }, []);
-  
 
   useEffect(() => {
     if (selectedDataset) {

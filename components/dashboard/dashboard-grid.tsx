@@ -24,6 +24,7 @@ interface DashboardItem {
   customizeOptions: any;
   chartId: number;
   backgroundColor: string;
+  textColor:string;
   name: string;
   description: string;
   width: string;
@@ -176,6 +177,7 @@ const SortableCard = ({
   const [description, setDescription] = useState(card.description);
   const [width, setWidth] = useState(card.width);
   const [backgroundColor, setBackgroundColor] = useState(card.backgroundColor);
+  const [textColor, setTextColor] = useState(card.textColor);
   const [chartType, setChartType] = useState(card.type);
 
   const handleSave = () => {
@@ -184,6 +186,7 @@ const SortableCard = ({
       description,
       width,
       backgroundColor,
+      textColor,
     });
     setIsEditing(false);
   };
@@ -194,6 +197,7 @@ const SortableCard = ({
     zIndex: isDragging ? 100 : 'auto',
     opacity: isDragging ? 0.5 : 1,
     backgroundColor: backgroundColor || '#ffffff',
+    textColor: textColor || '#000',
   };
   const isBigNumber = card.type?.toLowerCase().includes('bignumber');
   const isPieChart = card.type?.toLowerCase().includes('pie');
@@ -241,48 +245,41 @@ const SortableCard = ({
               onChange={(e) => setName(e.target.value)}
               className="w-full p-1 border rounded text-sm"
             />
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full p-1 border rounded text-sm"
-            />
+
+            <select
+              value={width}
+              onChange={(e) => setWidth(e.target.value)}
+              className="w-full p-1 border rounded text-sm h-[40px]"
+            >
+              <option value={'col-span-2'} className="text-sm">
+                {' '}
+                1 Column
+              </option>
+              <option value={'col-span-4'} className="text-sm">
+                {' '}
+                2 Columns
+              </option>
+              <option value={'col-span-6'} className="text-sm">
+                {' '}
+                3 Columns
+              </option>
+              <option value={'col-span-8'} className="text-sm">
+                {' '}
+                4 Columns
+              </option>
+              <option value={'col-span-10'} className="text-sm">
+                5 Columns
+              </option>
+              <option value={'col-span-12'} className="text-sm">
+                6 Columns
+              </option>
+            </select>
 
             <div className="flex gap-2 items-end">
-              <div className="basis-1/2 w-1/2">
-                <select
-                  value={width}
-                  onChange={(e) => setWidth(e.target.value)}
-                  className="w-full p-1 border rounded text-sm h-[40px]"
-                >
-                  <option value={'col-span-2'} className="text-sm">
-                    {' '}
-                    1 Column
-                  </option>
-                  <option value={'col-span-4'} className="text-sm">
-                    {' '}
-                    2 Columns
-                  </option>
-                  <option value={'col-span-6'} className="text-sm">
-                    {' '}
-                    3 Columns
-                  </option>
-                  <option value={'col-span-8'} className="text-sm">
-                    {' '}
-                    4 Columns
-                  </option>
-                  <option value={'col-span-10'} className="text-sm">
-                    5 Columns
-                  </option>
-                  <option value={'col-span-12'} className="text-sm">
-                    6 Columns
-                  </option>
-                </select>
-              </div>
-
               {/* Color Picker */}
               <div className="basis-1/2 w-1/2">
                 <label className="block text-sm font-medium text-gray-700">
-                  background Color
+                  Background Color
                 </label>
                 <input
                   type="color"
@@ -291,8 +288,23 @@ const SortableCard = ({
                   className="w-full h-10 p-1 border rounded cursor-pointer"
                 />
               </div>
+              <div className="basis-1/2 w-1/2">
+                <label className="block text-sm font-medium text-gray-700">
+                  Text Color
+                </label>
+                <input
+                  type="textcolor"
+                  value={textColor}
+                  onChange={(e) => setTextColor(e.target.value)}
+                  className="w-full h-10 p-1 border rounded cursor-pointer"
+                />
+              </div>
             </div>
-
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full p-1 border rounded text-sm"
+            />
             <button
               onClick={handleSave}
               className="bg-blue-500 text-white px-3 py-1.5 rounded"

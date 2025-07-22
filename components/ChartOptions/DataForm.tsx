@@ -284,19 +284,24 @@ export default function DataForm({
       return;
 
     const filterValues = selectedFilterValues.map((opt) => opt.value);
-
     const newFilter = {
-      // id: 0,
       columnName: selectedFilterColumn.value,
       operator: selectedOperator.value,
       values: filterValues,
-      // isHavingFilter: true,
-      // timeRangeType: 'NoFilter',
-      // timeRangeValue: 'string',
-      // fromDate: '2025-07-19T12:21:25.157Z',
-      // toDate: '2025-07-19T12:21:25.157Z',
-      // customSql: '',
+      customSql: '',
     };
+    // const newFilter = {
+    //   // id: 0,
+    //   columnName: selectedFilterColumn.value,
+    //   operator: selectedOperator.value,
+    //   values: filterValues,
+    //   // isHavingFilter: true,
+    //   // timeRangeType: 'NoFilter',
+    //   // timeRangeValue: 'string',
+    //   // fromDate: '2025-07-19T12:21:25.157Z',
+    //   // toDate: '2025-07-19T12:21:25.157Z',
+    //   // customSql: '',
+    // };
 
     const updatedFilters = (form.watch('filters') || []).filter(
       (f: { columnName: string }) => f.columnName !== selectedFilterColumn.value

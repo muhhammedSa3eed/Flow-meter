@@ -11,7 +11,7 @@ import ProjectIdTabs from "@/components/ProjectIdTabs";
     const ProjectId = (await params).ProjectId
     const projectName = (await params).projectName
   return (
-    <Suspense fallback={<Loading />}>
+    <>
       <div className="flex flex-col">
         <div className="flex justify-center items-center">
         <ProjectIdTabs projectName={projectName} projectId={ProjectId} />
@@ -21,6 +21,6 @@ import ProjectIdTabs from "@/components/ProjectIdTabs";
           <MultiStepCampaign projectName={projectName} ProjectId={ProjectId} />
         </div>
       </div>
-    </Suspense>
+    </>
   );
 }

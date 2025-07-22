@@ -26,19 +26,20 @@ export default async function Page({
   console.log({ chart });
 
   return (
-    <Suspense fallback={<Loading />}>
+    <>
       <ProjectIdTabs projectId={ProjectId} />
-
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
         <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min mt-5 p-10">
           <div className="flex flex-row gap-4 text-custom-green2 mb-3">
             <ChartNoAxesCombined />
-            <div className="text-xl font-bold">Charts for: {chart[0].dataset.projectName}</div>
+            <div className="text-xl font-bold">
+              Charts for: {chart[0].dataset.projectName}
+            </div>
           </div>
 
           <ChartTable ProjectId={ProjectId} chart={chart} />
         </div>
       </div>
-    </Suspense>
+    </>
   );
 }

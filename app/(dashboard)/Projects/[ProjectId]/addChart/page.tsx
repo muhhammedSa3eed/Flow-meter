@@ -17,7 +17,7 @@ async function getAllVisualizationTypes(): Promise<VisualizationTypes[]> {
   }
 
   const response = await res.json();
-  console.log('data', response);
+  // console.log('data', response);
   return response.data;
 }
 
@@ -32,15 +32,15 @@ export default async function AddChart({
 }) {
   const ProjectId = (await params).ProjectId;
 
-  const datasetId = (await params).datasetId;
+ 
   // console.log('dataset :', datasetId);
   const VisualizationTypeData = await getAllVisualizationTypes();
 
   return (
-    <Suspense fallback={<Loading />}>
+    <>
       <ProjectIdTabs projectId={ProjectId} />
       <Label className="font-bold my-2">Chart</Label>
       <ChooseChart VisualizationTypeData={VisualizationTypeData} isAddChart={true} />
-    </Suspense>
+    </>
   );
 }

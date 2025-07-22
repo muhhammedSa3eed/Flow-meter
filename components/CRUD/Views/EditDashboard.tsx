@@ -1,9 +1,9 @@
-"use client";
-import React, { useId } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Button } from "@/components/ui/button";
+'use client';
+import React, { useId } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -11,22 +11,22 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { toast } from "react-hot-toast";
-import { useRouter } from "next/navigation";
-import { DialogClose, DialogFooter } from "../../ui/dialog";
-import { Label } from "../../ui/label";
-import { DashboardSchema } from "@/schemas";
-import { Textarea } from "../../ui/textarea";
-import { Dashboard } from "@/types";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+import { DialogClose, DialogFooter } from '../../ui/dialog';
+import { Label } from '../../ui/label';
+import { DashboardSchema } from '@/schemas';
+import { Textarea } from '../../ui/textarea';
+import { Dashboard } from '@/types';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 
 export default function EditDashboard({
   projectId,
@@ -38,15 +38,15 @@ export default function EditDashboard({
   onClose: () => void;
 }) {
   const id = useId();
-
   const router = useRouter();
-
+  console.log('xxxxxx=>', { dashboard });
   const form = useForm<z.infer<typeof DashboardSchema>>({
     resolver: zodResolver(DashboardSchema),
     defaultValues: {
       name: dashboard.name,
-      description: dashboard.description || "",
-      background: dashboard.background || "#ffffff",
+      description: dashboard.description || '',
+      background: dashboard.background || '#ffffff',
+      textColor: dashboard.textColor || '#ffff',
       gridType: dashboard.gridType,
     },
   });
@@ -62,28 +62,26 @@ export default function EditDashboard({
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/projects/${projectId}/dashboards/${dashboard.id}/simple`,
         {
-          method: "PUT",
+          method: 'PUT',
           headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
           },
           body: JSON.stringify(parsedValues),
         }
       );
       if (!response.ok) {
         const errorData = await response.json();
-        if (errorData.error === "conflict_error") {
+        if (errorData.error === 'conflict_error') {
           toast.error(
             errorData.message ||
-              "A dashboard with this name already exists for the user."
+              'A dashboard with this name already exists for the user.'
           );
         } else {
-          toast.error(errorData.message || "An error occurred.");
+          toast.error(errorData.message || 'An error occurred.');
         }
       }
-
-      toast.success("Your dashboard has been edited successfully.");
-
+      toast.success('Your dashboard has been edited successfully.');
       onClose();
       router.refresh();
       // window.location.reload();
@@ -91,7 +89,7 @@ export default function EditDashboard({
       if (err instanceof Error) {
         toast.error(`Failed to edited dashboard: ${err.message}`);
       } else {
-        toast.error("Failed to edited dashboard due to an unknown error.");
+        toast.error('Failed to edited dashboard due to an unknown error.');
       }
     }
   }
@@ -100,18 +98,15 @@ export default function EditDashboard({
   //Responsive:Adjusts based on screen size using breakpoints (like Bootstrap/Gridstack responsive modes)
   //Fluid:Columns and rows expand or contract to fill available space (percent-based widths)
   const GridOptions = [
-    { id: 1, value: "Fixed", label: "Fixed" },
-    { id: 2, value: "Responsive", label: "Responsive" },
-    { id: 3, value: "Fluid", label: "Fluid" },
+    { id: 1, value: 'Fixed', label: 'Fixed' },
+    { id: 2, value: 'Responsive', label: 'Responsive' },
+    { id: 3, value: 'Fluid', label: 'Fluid' },
   ];
 
   return (
-    <>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="grid grid-cols-1 sm:grid-cols-2 gap-4"
-        >
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ">
           <FormField
             control={form.control}
             name="name"
@@ -136,7 +131,7 @@ export default function EditDashboard({
             )}
           />
 
-          <div className="group relative w-full mt-2">
+          <div className="group relative w-full">
             <FormLabel
               htmlFor={id}
               className="absolute start-1 top-0 z-10 block -translate-y-1/2 bg-background px-2 text-xs font-medium text-foreground group-has-[select:disabled]:opacity-50"
@@ -167,12 +162,37 @@ export default function EditDashboard({
               )}
             />
           </div>
+
+          <FormField
+            control={form.control}
+            name="textColor"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <div className="flex items-center gap-2 ">
+                    <Label
+                      htmlFor="textColor"
+                      className="text-sm text-gray-400"
+                    >
+                      Choose text color
+                    </Label>
+                    <Input
+                      id="textColor"
+                      type="color"
+                      {...field}
+                      className="w-12 h-8 p-0 border-none"
+                    />
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="background"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Background Color</FormLabel>
                 <FormControl>
                   <div className="flex items-center gap-2 ">
                     <Label
@@ -193,54 +213,51 @@ export default function EditDashboard({
               </FormItem>
             )}
           />
+        </div>
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <div className="group relative my-3">
+                  <FormLabel
+                    htmlFor={id}
+                    className="origin-start absolute top-0 block translate-y-2 cursor-text px-1 text-sm text-muted-foreground/70 transition-all group-focus-within:pointer-events-none group-focus-within:-translate-y-1/2 group-focus-within:cursor-default group-focus-within:text-xs group-focus-within:font-medium group-focus-within:text-foreground has-[+textarea:not(:placeholder-shown)]:pointer-events-none has-[+textarea:not(:placeholder-shown)]:-translate-y-1/2 has-[+textarea:not(:placeholder-shown)]:cursor-default has-[+textarea:not(:placeholder-shown)]:text-xs has-[+textarea:not(:placeholder-shown)]:font-medium has-[+textarea:not(:placeholder-shown)]:text-foreground"
+                  >
+                    <span className="inline-flex bg-background px-2">
+                      Description
+                    </span>
+                  </FormLabel>
+                  <Textarea id={id} {...field} placeholder="" />
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <div className="group relative">
-                    <FormLabel
-                      htmlFor={id}
-                      className="origin-start absolute top-0 block translate-y-2 cursor-text px-1 text-sm text-muted-foreground/70 transition-all group-focus-within:pointer-events-none group-focus-within:-translate-y-1/2 group-focus-within:cursor-default group-focus-within:text-xs group-focus-within:font-medium group-focus-within:text-foreground has-[+textarea:not(:placeholder-shown)]:pointer-events-none has-[+textarea:not(:placeholder-shown)]:-translate-y-1/2 has-[+textarea:not(:placeholder-shown)]:cursor-default has-[+textarea:not(:placeholder-shown)]:text-xs has-[+textarea:not(:placeholder-shown)]:font-medium has-[+textarea:not(:placeholder-shown)]:text-foreground"
-                    >
-                      <span className="inline-flex bg-background px-2">
-                        Description
-                      </span>
-                    </FormLabel>
-                    <Textarea id={id} {...field} placeholder="" />
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <DialogFooter className="col-span-2 flex justify-between">
-            <DialogClose asChild>
-              <Button
-                type="button"
-                variant={"destructive"}
-                size={"custom"}
-                className="mr-auto"
-              >
-                Cancel
-              </Button>
-            </DialogClose>
+        <DialogFooter className="col-span-2 flex justify-between">
+          <DialogClose asChild>
             <Button
-              type="submit"
-              variant={"Accepted"}
-              size={"custom"}
-              className="ml-auto"
+              type="button"
+              variant={'destructive'}
+              size={'custom'}
+              className="mr-auto"
             >
-              Add
+              Cancel
             </Button>
-          </DialogFooter>
-        </form>
-      </Form>
-    </>
+          </DialogClose>
+          <Button
+            type="submit"
+            variant={'Accepted'}
+            size={'custom'}
+            className="ml-auto"
+          >
+            Add
+          </Button>
+        </DialogFooter>
+      </form>
+    </Form>
   );
-
- 
 }
