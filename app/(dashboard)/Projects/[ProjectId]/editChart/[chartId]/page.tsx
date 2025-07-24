@@ -4,23 +4,25 @@ import ProjectIdTabs from '@/components/ProjectIdTabs';
 import { Label } from '@radix-ui/react-dropdown-menu';
 import { Chart, VisualizationTypes } from '@/types';
 import EditChartWrapper from '@/components/CRUD/ChartOP/EditChartWrapper';
+import { getAllVisualizationTypes } from '@/lib/projectData';
+import Header from '@/components/header';
 
-async function getAllVisualizationTypes(): Promise<VisualizationTypes[]> {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/VisualizationTypes`,
-    {
-      cache: 'no-store',
-    }
-  );
+// async function getAllVisualizationTypes(): Promise<VisualizationTypes[]> {
+//   const res = await fetch(
+//     `${process.env.NEXT_PUBLIC_API_BASE_URL}/VisualizationTypes`,
+//     {
+//       cache: 'no-store',
+//     }
+//   );
 
-  if (!res.ok) {
-    throw new Error('Failed to fetch visualization types');
-  }
+//   if (!res.ok) {
+//     throw new Error('Failed to fetch visualization types');
+//   }
 
-  const response = await res.json();
-  console.log('VisualizationTypes data:', response);
-  return response.data;
-}
+//   const response = await res.json();
+//   console.log('VisualizationTypes data:', response);
+//   return response.data;
+// }
 
 async function getChartData(chartId: number): Promise<Chart> {
   const res = await fetch(
@@ -54,7 +56,12 @@ export default async function EditChart({
   // console.log('from server', { chartDataDetails });
   return (
     <>
-      <ProjectIdTabs projectName={projectName} projectId={ProjectId} />
+      <Header
+        title={projectName ?? ''}
+        projectId={ProjectId}
+        // description={project.description ?? ''}
+      />
+
       <Label className="font-bold  my-2">Update Chart </Label>
 
       <EditChartWrapper

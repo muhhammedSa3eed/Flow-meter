@@ -3,22 +3,23 @@ import Loading from '@/app/loading';
 import { Shapes } from 'lucide-react';
 import VisualizationTypesTable from '@/components/Data-Tables/VisualizationTypesTable';
 import { VisualizationTypes } from '@/types';
+import { getAllVisualizationTypes } from '@/lib/projectData';
 
-async function getAllVisualizationTypes(): Promise<VisualizationTypes[]> {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/VisualizationTypes`,
-    {
-      cache: 'no-store',
-    }
-  );
+// async function getAllVisualizationTypes(): Promise<VisualizationTypes[]> {
+//   const res = await fetch(
+//     `${process.env.NEXT_PUBLIC_API_BASE_URL}/VisualizationTypes`,
+//     {
+//       cache: 'no-store',
+//     }
+//   );
 
-  if (!res.ok) {
-    throw new Error('Failed to fetch data');
-  }
+//   if (!res.ok) {
+//     throw new Error('Failed to fetch data');
+//   }
 
-  const response = await res.json();
-  return response.data;
-}
+//   const response = await res.json();
+//   return response.data;
+// }
 
 export default async function Page() {
   const VisualizationTypeData = await getAllVisualizationTypes();

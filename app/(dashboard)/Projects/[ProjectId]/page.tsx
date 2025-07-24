@@ -20,6 +20,8 @@ import {
   HoverCardTrigger,
 } from '@/components/ui/hover-card';
 import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import Header from '@/components/header';
 
 async function getProjectById(id: number): Promise<Projects> {
   const res = await fetch(
@@ -42,40 +44,14 @@ export default async function ProjectDetailsPage({
 }) {
   const ProjectId = (await params).ProjectId;
   const project = await getProjectById(ProjectId);
-  // console.log({ project });
+  console.log(project.dashboards);
   return (
     <>
-      <div className="flex flex-nowrap">
-        <div className="m-4">
-          {' '}
-          <HoverCard>
-            <HoverCardTrigger className="font-semibold">
-              <Button variant="outline">
-                <strong>Project name :</strong> {project.name}
-              </Button>
-            </HoverCardTrigger>
-
-            <HoverCardContent className="rounded-[2vw]">
-              <p className="m-2">
-                <strong className="text-custom-green2">Description:</strong>{' '}
-                {project.description || 'No description available'}
-              </p>
-              <p className="m-2">
-                <strong className="text-custom-green2">Created At:</strong>{' '}
-                {new Date(project.createdAt).toLocaleString()}
-              </p>
-              <p className="m-2">
-                <strong className="text-custom-green2">Updated At:</strong>{' '}
-                {new Date(project.updatedAt).toLocaleString()}
-              </p>{' '}
-            </HoverCardContent>
-          </HoverCard>
-        </div>
-        <div>
-          {' '}
-          <ProjectIdTabs projectName={project.name} projectId={ProjectId} />
-        </div>
-      </div>
+      <Header
+        title={project.name}
+        projectId={ProjectId}
+        description={project.description ?? ''}
+      />
 
       <div className="flex flex-col gap-6 m-6">
         {project ? (
@@ -96,7 +72,9 @@ export default async function ProjectDetailsPage({
                       style={{ backgroundColor: view.background }}
                     >
                       <CardHeader className="relative">
-                        <CardTitle>{view.name}</CardTitle>
+                        <CardTitle style={{ color: view.textColor }}>
+                          {view.name}
+                        </CardTitle>
                         <div className="absolute top-0 right-0 p-2 mr-5">
                           <ViewActionsDropdown
                             projectId={ProjectId}
@@ -106,15 +84,15 @@ export default async function ProjectDetailsPage({
                       </CardHeader>
                       <CardContent>
                         <CardDescription>
-                          <p>
+                          <p style={{ color: view.textColor }}>
                             <strong>Description:</strong>{' '}
                             {view.description || 'No description'}
                           </p>
-                          <p>
+                          <p style={{ color: view.textColor }}>
                             <strong>Created At:</strong>{' '}
                             {new Date(view.createdAt).toLocaleString()}
                           </p>
-                          <p>
+                          <p style={{ color: view.textColor }}>
                             <strong>Updated At:</strong>{' '}
                             {new Date(view.updatedAt).toLocaleString()}
                           </p>

@@ -4,17 +4,19 @@ import { ChartNoAxesCombined } from 'lucide-react';
 import ProjectIdTabs from '@/components/ProjectIdTabs';
 import ChartTable from '@/components/Data-Tables/ChartTable';
 import { Chart } from '@/types';
-async function getAllCharts(): Promise<Chart[]> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/Charts`, {
-    cache: 'no-store',
-  });
+import { getAllCharts } from '@/lib/projectData';
+import Header from '@/components/header';
+// async function getAllCharts(): Promise<Chart[]> {
+//   const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/Charts`, {
+//     cache: 'no-store',
+//   });
 
-  if (!res.ok) {
-    throw new Error('Failed to fetch data');
-  }
+//   if (!res.ok) {
+//     throw new Error('Failed to fetch data');
+//   }
 
-  return res.json();
-}
+//   return res.json();
+// }
 export default async function Page({
   params,
 }: {
@@ -27,7 +29,12 @@ export default async function Page({
 
   return (
     <>
-      <ProjectIdTabs projectId={ProjectId} />
+      <Header
+        title={chart[0].dataset.projectName ?? ''}
+        projectId={ProjectId}
+        // description={project.description ?? ''}
+      />
+      {/* <ProjectIdTabs projectId={ProjectId} /> */}
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
         <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min mt-5 p-10">
           <div className="flex flex-row gap-4 text-custom-green2 mb-3">

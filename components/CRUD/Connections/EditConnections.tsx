@@ -60,7 +60,7 @@ console.log("Devices :",device)
       name: device.name,
       dataAccess:device.dataAccess,
       databaseName: device.databaseName,
-      description: device.description,
+      description: device.description??"",
       lastConnected: '',
       polling: 0,
       isActive: device.isActive, 

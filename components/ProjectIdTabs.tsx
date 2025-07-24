@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import Loading from '@/app/loading';
+import Link from 'next/link';
 
 interface ProjectIdTabsProps {
   projectId: number;
@@ -60,11 +61,6 @@ export default function ProjectIdTabs({
     return 'project-details';
   };
 
-  const handleNavigation = (href: string) => {
-    setIsNavigating(true);
-    router.push(href);
-  };
-
   return (
     <div className="m-4">
       <Tabs defaultValue={getDefaultValue()}>
@@ -74,9 +70,9 @@ export default function ProjectIdTabs({
             <TabsTrigger value="project-details">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div
+                  <Link
                     className="flex items-center cursor-pointer"
-                    onClick={() => handleNavigation(`/Projects/${projectId}`)}
+                    href={`/Projects/${projectId}`}
                   >
                     <Layers
                       className="-ms-0.5 me-1.5 opacity-60"
@@ -84,7 +80,7 @@ export default function ProjectIdTabs({
                       aria-hidden="true"
                     />
                     Project Details
-                  </div>
+                  </Link>
                 </TooltipTrigger>
                 <TooltipContent>Go to details</TooltipContent>
               </Tooltip>
@@ -94,11 +90,9 @@ export default function ProjectIdTabs({
             <TabsTrigger value="assign-users">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div
+                  <Link
                     className="flex items-center cursor-pointer"
-                    onClick={() =>
-                      handleNavigation(`/Projects/${projectId}/assignUser`)
-                    }
+                    href={`/Projects/${projectId}/assignUser`}
                   >
                     <List
                       className="-ms-0.5 me-1.5 opacity-60"
@@ -106,7 +100,7 @@ export default function ProjectIdTabs({
                       aria-hidden="true"
                     />
                     Assign Users
-                  </div>
+                  </Link>
                 </TooltipTrigger>
                 <TooltipContent>Go to Assign Users</TooltipContent>
               </Tooltip>
@@ -116,11 +110,9 @@ export default function ProjectIdTabs({
             <TabsTrigger value="connections">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div
+                  <Link
                     className="flex items-center cursor-pointer"
-                    onClick={() =>
-                      handleNavigation(`/Projects/${projectId}/connections`)
-                    }
+                    href={`/Projects/${projectId}/connections`}
                   >
                     <Share2
                       className="-ms-0.5 me-1.5 opacity-60"
@@ -128,7 +120,7 @@ export default function ProjectIdTabs({
                       aria-hidden="true"
                     />
                     Connections
-                  </div>
+                  </Link>
                 </TooltipTrigger>
                 <TooltipContent>Go to Connections</TooltipContent>
               </Tooltip>
@@ -138,11 +130,9 @@ export default function ProjectIdTabs({
             <TabsTrigger value="dataset">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div
+                  <Link
                     className="flex items-center cursor-pointer"
-                    onClick={() =>
-                      handleNavigation(`/Projects/${projectId}/dataset`)
-                    }
+                    href={`/Projects/${projectId}/dataset`}
                   >
                     <Database
                       className="-ms-0.5 me-1.5 opacity-60"
@@ -150,7 +140,7 @@ export default function ProjectIdTabs({
                       aria-hidden="true"
                     />
                     Dataset
-                  </div>
+                  </Link>
                 </TooltipTrigger>
                 <TooltipContent>Go to Dataset</TooltipContent>
               </Tooltip>
@@ -160,11 +150,9 @@ export default function ProjectIdTabs({
             <TabsTrigger value="chart">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div
+                  <Link
                     className="flex items-center cursor-pointer"
-                    onClick={() =>
-                      handleNavigation(`/Projects/${projectId}/chart`)
-                    }
+                    href={`/Projects/${projectId}/chart`}
                   >
                     <ChartNoAxesCombined
                       className="-ms-0.5 me-1.5 opacity-60"
@@ -172,7 +160,7 @@ export default function ProjectIdTabs({
                       aria-hidden="true"
                     />
                     Chart
-                  </div>
+                  </Link>
                 </TooltipTrigger>
                 <TooltipContent>Go to Chart</TooltipContent>
               </Tooltip>
@@ -204,11 +192,9 @@ export default function ProjectIdTabs({
             <TabsTrigger value="settings">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div
+                  <Link
                     className="flex items-center cursor-pointer"
-                    onClick={() =>
-                      handleNavigation(`/Projects/${projectId}/settings`)
-                    }
+                    href={`/Projects/${projectId}/settings`}
                   >
                     <Settings
                       className="-ms-0.5 me-1.5 opacity-60"
@@ -216,7 +202,7 @@ export default function ProjectIdTabs({
                       aria-hidden="true"
                     />
                     Settings
-                  </div>
+                  </Link>
                 </TooltipTrigger>
                 <TooltipContent>Go to Settings</TooltipContent>
               </Tooltip>
@@ -226,11 +212,11 @@ export default function ProjectIdTabs({
         </ScrollArea>
       </Tabs>
 
-      {isNavigating && (
+      {/* {isNavigating && (
         <div className="fixed inset-0 flex items-center justify-center  z-50">
           <Loading />
         </div>
-      )}
+      )} */}
     </div>
   );
 }

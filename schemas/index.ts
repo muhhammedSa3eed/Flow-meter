@@ -316,7 +316,7 @@ export const ChartSchema = z.object({
     .min(1, 'At least one metric is required'),
   // Filters
 
-  filters: z.any().optional(),
+  dynamicFilters: z.any().optional(),
   // .array(
   //   z.object({
   //     columnName: z.any().optional(),

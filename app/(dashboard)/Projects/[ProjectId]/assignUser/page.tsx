@@ -4,6 +4,13 @@ import { Users } from 'lucide-react';
 import { UsersTypes } from '@/types';
 import ProjectIdTabs from '@/components/ProjectIdTabs';
 import AssignUsersTable from '@/components/Data-Tables/AssignUserTable';
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@/components/ui/hover-card';
+import { Button } from '@/components/ui/button';
+import Header from '@/components/header';
 
 async function getUserByProjectId(ProjectId: number): Promise<UsersTypes> {
   const res = await fetch(
@@ -27,10 +34,49 @@ export default async function Page({
 }) {
   const ProjectId = (await params).ProjectId;
   const users = await getUserByProjectId(ProjectId);
-  // console.log({ users });
+  console.log({ users });
   return (
     <>
-      <ProjectIdTabs projectId={ProjectId} />
+      {/* <ProjectIdTabs projectId={ProjectId} /> */}
+      <Header
+        title={users.projectName??""}
+        projectId={ProjectId}
+        // description={project.description ?? ''}
+      />
+      {/* <div className="flex flex-nowrap">
+        <div className="m-4">
+          {' '}
+          <HoverCard>
+            <HoverCardTrigger className="font-semibold">
+              <Button variant="outline">
+                <strong>Project name :</strong> {users.projectName}
+              </Button>
+            </HoverCardTrigger>
+
+            <HoverCardContent className="rounded-[2vw]">
+              <p className="m-2">
+                <strong className="text-custom-green2">Description:</strong>{' '}
+                {users.description || 'No description available'}
+              </p>
+              <p className="m-2">
+                <strong className="text-custom-green2">Created At:</strong>{' '}
+                {new Date(project.createdAt).toLocaleString()}
+              </p>
+              <p className="m-2">
+                <strong className="text-custom-green2">Updated At:</strong>{' '}
+                {new Date(project.updatedAt).toLocaleString()}
+              </p>{' '}
+            </HoverCardContent>
+          </HoverCard>
+        </div>
+        <div>
+          {' '}
+          <ProjectIdTabs
+            projectName={users.projectName}
+            projectId={ProjectId}
+          />
+        </div>
+      </div> */}
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
         <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min mt-5 p-10">
           <div className="flex flex-row gap-4 text-custom-green2 mb-3">

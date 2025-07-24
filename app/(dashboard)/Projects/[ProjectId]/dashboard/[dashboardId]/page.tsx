@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { DashboardWrapper } from '@/components/dashboard/dashboard-wrapper';
+import { getAllCharts } from '@/lib/projectData';
 import { ChartItem, Dashboard } from '@/types';
 
 async function getDashboardsById(
@@ -19,17 +20,17 @@ async function getDashboardsById(
 
   return res.json();
 }
-async function getAllCharts(): Promise<ChartItem[]> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/Charts`, {
-    cache: 'no-store',
-  });
+// async function getAllCharts(): Promise<ChartItem[]> {
+//   const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/Charts`, {
+//     cache: 'no-store',
+//   });
 
-  if (!res.ok) {
-    throw new Error('Failed to fetch data');
-  }
+//   if (!res.ok) {
+//     throw new Error('Failed to fetch data');
+//   }
 
-  return res.json();
-}
+//   return res.json();
+// }
 
 const EditScreenPage = async ({
   params,

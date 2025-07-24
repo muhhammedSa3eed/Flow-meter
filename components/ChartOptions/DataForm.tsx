@@ -156,7 +156,7 @@ export default function DataForm({
   const [filterOptions, setFilterOptions] = useState<Option[]>([]);
   const [selectedFilterColumn, setSelectedFilterColumn] =
     useState<Option | null>(null);
-  const [value, setValue] = useState<string>('');
+  // const [value, setValue] = useState<string>('');
   const [selectedMetricsColumn, setSelectedMetricsColumn] =
     useState<Option | null>(null);
   const [selectedOperator, setSelectedOperator] = useState<Option | null>(null);
@@ -248,7 +248,7 @@ export default function DataForm({
   // }, [selectedDataset]);
 
   const metrics = form.watch('metrics') || [];
-  const filters = form.watch('filters') || [];
+  const filters = form.watch('dynamicFilters') || [];
   const dimensions = form.watch('dimensions') || [];
 
   const handleSaveDimensions = () => {
@@ -303,20 +303,23 @@ export default function DataForm({
     //   // customSql: '',
     // };
 
-    const updatedFilters = (form.watch('filters') || []).filter(
+    const updatedFilters = (form.watch('dynamicFilters') || []).filter(
       (f: { columnName: string }) => f.columnName !== selectedFilterColumn.value
     );
 
     updatedFilters.push(newFilter);
 
-    form.setValue('filters', updatedFilters);
+    form.setValue('dynamicFilters', updatedFilters);
     setSelectedFilterColumn(null);
     setSelectedOperator(null);
     setFilterOptions([]);
     setSelectedFilterValues([]);
     setIsPopoverFiltersOpen(false);
   };
-  console.log("form.watch('filters')=>", JSON.stringify(form.watch('filters')));
+  console.log(
+    "form.watch('filters')=>",
+    JSON.stringify(form.watch('dynamicFilters'))
+  );
   const handleSortByChange = (checked: boolean) => {
     if (checked) {
       const newSortBy = metrics.map((metric) => ({
@@ -761,7 +764,7 @@ export default function DataForm({
       {showFiltersSection && (
         <FormField
           control={form.control}
-          name="filters"
+          name="dynamicFilters"
           render={({ field }) => (
             <FormItem className="mt-2 w-full flex-1">
               <FormLabel>Filters</FormLabel>

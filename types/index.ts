@@ -155,7 +155,7 @@ export type ChartItem = {
   chartId: number;
   width: string;
   backgroundColor: string;
-  textColor:string;
+  textColor: string;
   description: string;
   visualizationType?: VisualizationTypes;
   pieChart: any;
@@ -224,6 +224,12 @@ export type Chart = {
     customSqlExpression: string | null;
   }>;
   filters?: Array<{
+    columnName: string;
+    operator: string;
+    values: string[];
+    customSql: string;
+  }>;
+  dynamicFilters?: Array<{
     columnName: string;
     operator: string;
     values: string[];

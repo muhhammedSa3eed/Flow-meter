@@ -58,6 +58,7 @@ export const DashboardWrapper = ({
 
   const usedChartsIds = cards.map((card) => Number(card.chartId));
 
+  
   if (!edit) {
     redirect(`/Projects/${ProjectId}/dashboard/${dashboardId}?edit=false`);
   }
@@ -156,7 +157,7 @@ export const DashboardWrapper = ({
     Cookies.set('dashboardState', JSON.stringify(cards));
   }, [cards]);
   // console.log({ dataChart });
-  // console.log('xxxx77777', { cards });
+  console.log('xxxx77777', { cards });
   useEffect(() => {
     setDataCharts(charts);
   }, [charts]);
@@ -184,6 +185,7 @@ export const DashboardWrapper = ({
       description: item.description,
       width: item.width,
       backgroundColor: item.backgroundColor,
+
       visualizationType: item.type,
       pieChartData: item.data,
       customizeOptions: item.customizeOptions,

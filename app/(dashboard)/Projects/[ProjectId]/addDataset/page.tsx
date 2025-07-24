@@ -5,6 +5,7 @@ import DatabaseSelect from "@/components/Dataset/DatabaseSelect";
 
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { Projects } from "@/types";
+import Header from "@/components/header";
 
 export default async function Dataset({
   params,
@@ -22,7 +23,12 @@ export default async function Dataset({
   // console.log("projectData:", project);
   return (
     <>
-      <ProjectIdTabs  projectName={projectName} projectId={ProjectId} />
+    <Header
+        title={projectName ?? ''}
+        projectId={ProjectId}
+        // description={project.description ?? ''}
+      />
+      {/* <ProjectIdTabs  projectName={projectName} projectId={ProjectId} /> */}
       <Label className="font-bold ml-4 my-2">New Dataset </Label>
 
       <DatabaseSelect ProjectId={ProjectId} projectName={projectName} />

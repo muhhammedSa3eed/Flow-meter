@@ -8,6 +8,7 @@ import { Suspense } from 'react';
 import Loading from '@/app/loading';
 import ProjectIdTabs from '@/components/ProjectIdTabs';
 import { dataPolling, dataType } from '@/lib/ConnectionsData';
+import Header from '@/components/header';
 
 export default async function Page({
   params,
@@ -17,12 +18,17 @@ export default async function Page({
   const ProjectId = (await params).ProjectId;
   // const projectName = (await params).projectName;
   // const decodedProjectName = decodeURIComponent(projectName);
-  const devices = await getDevices();
+  const devices = await getDevices(ProjectId);
   // const { projectName} = params;
   console.log({ devices });
   return (
     <>
-      <ProjectIdTabs projectId={ProjectId} />
+      <Header
+        title={devices[0].projectName ?? ''}
+        projectId={ProjectId}
+        // description={project.description ?? ''}
+      />
+      {/* <ProjectIdTabs projectId={ProjectId} /> */}
 
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
         <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min mt-5 p-10">

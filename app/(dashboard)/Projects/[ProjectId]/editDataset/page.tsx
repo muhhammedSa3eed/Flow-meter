@@ -5,6 +5,7 @@ import ProjectIdTabs from "@/components/ProjectIdTabs";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { Projects } from "@/types";
 import EditDatasetPage from "@/components/Dataset/EditDatasetPage";
+import Header from "@/components/header";
 async function getProjectById(id: number): Promise<Projects> {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/DB/project/${id}`, {
     cache: "no-store",
@@ -34,7 +35,12 @@ export default async function EditDataset({
  
   return (
     <>
-      <ProjectIdTabs  projectName={projectName} projectId={ProjectId} />
+    <Header
+        title={projectName ?? ''}
+        projectId={ProjectId}
+        // description={project.description ?? ''}
+      />
+      {/* <ProjectIdTabs  projectName={projectName} projectId={ProjectId} /> */}
       <Label className="font-bold ml-4 my-2">Update Dataset </Label>
 
       <EditDatasetPage datasetId={datasetId} ProjectId={ProjectId} projectName={projectName} />

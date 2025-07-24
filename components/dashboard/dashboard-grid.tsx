@@ -293,8 +293,8 @@ const SortableCard = ({
                   Text Color
                 </label>
                 <input
-                  type="textcolor"
-                  value={textColor}
+                  type="color"
+                  value={textColor??"#ffff"}
                   onChange={(e) => setTextColor(e.target.value)}
                   className="w-full h-10 p-1 border rounded cursor-pointer"
                 />
@@ -314,8 +314,8 @@ const SortableCard = ({
           </>
         ) : (
           <>
-            <h3 className="font-medium text-slate-800">{card.name}</h3>
-            <p className="text-sm text-slate-500">{card.description}</p>
+            <h3 className="font-medium" style={{color:card.textColor}}>{card.name}</h3>
+            <p className="text-sm" style={{color:card.textColor}}>{card.description}</p>
 
             {isEditMode && (
               <button

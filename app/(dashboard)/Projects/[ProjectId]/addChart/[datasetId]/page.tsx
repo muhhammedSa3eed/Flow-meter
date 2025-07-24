@@ -5,22 +5,23 @@ import { Label } from '@radix-ui/react-dropdown-menu';
 
 import ChartWithDSId from '@/components/Chart/ChartWithDSId';
 import { VisualizationTypes } from '@/types';
-async function getAllVisualizationTypes(): Promise<VisualizationTypes[]> {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/VisualizationTypes`,
-    {
-      cache: 'no-store',
-    }
-  );
+import { getAllVisualizationTypes } from '@/lib/projectData';
+// async function getAllVisualizationTypes(): Promise<VisualizationTypes[]> {
+//   const res = await fetch(
+//     `${process.env.NEXT_PUBLIC_API_BASE_URL}/VisualizationTypes`,
+//     {
+//       cache: 'no-store',
+//     }
+//   );
 
-  if (!res.ok) {
-    throw new Error('Failed to fetch data');
-  }
+//   if (!res.ok) {
+//     throw new Error('Failed to fetch data');
+//   }
 
-  const response = await res.json();
-  console.log('data', response);
-  return response.data;
-}
+//   const response = await res.json();
+//   console.log('data', response);
+//   return response.data;
+// }
 export default async function AddChartWithDSId({
   params,
 }: {
