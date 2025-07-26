@@ -43,17 +43,23 @@ export const getColumns = (ProjectId: number, projectName: string): ColumnDef<Us
       return searchableRowContent.includes(searchTerm);
     },
     enableHiding: false,
+    enableColumnFilter: true,
+
   },
   {
     header: "Email",
     accessorKey: "email",
     size: 220,
+    enableColumnFilter: true,
+
   },
   {
     header: "Phone number",
     accessorKey: "phoneNumber",
    
     size: 180,
+    enableColumnFilter: true,
+
   },
   // {
   //   header: "Role",

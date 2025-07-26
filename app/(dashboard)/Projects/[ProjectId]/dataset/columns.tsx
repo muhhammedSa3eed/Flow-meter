@@ -30,6 +30,8 @@ export const getColumns = (
     size: 28,
     enableSorting: false,
     enableHiding: false,
+    enableColumnFilter: true,
+
   },
   {
     header: "Name",
@@ -48,30 +50,40 @@ export const getColumns = (
       return searchableRowContent.includes(searchTerm);
     },
     enableHiding: false,
+    enableColumnFilter: true,
+
   },
   {
     header: "Table Name",
     accessorKey: "tableName",
     cell: ({ row }) => <div>{row.getValue("tableName")}</div>,
     size: 220,
+    enableColumnFilter: true,
+
   },
   {
     header: "Schema Name",
     accessorKey: "schemaName",
     cell: ({ row }) => <div>{row.getValue("schemaName")}</div>,
     size: 200,
+    enableColumnFilter: true,
+
   },
   {
     header: "Created At",
     accessorKey: "createdAt",
     cell: ({ row }) => <div>{formatToDateAndTime(row.getValue("createdAt"))}</div>,
     size: 200,
+    enableColumnFilter: true,
+
   },
   {
     header: "Updated At",
     accessorKey: "updatedAt",
     cell: ({ row }) => <div>{formatToDateAndTime(row.getValue("updatedAt"))}</div>,
     size: 200,
+    enableColumnFilter: true,
+
   },
   {
     id: "actions",

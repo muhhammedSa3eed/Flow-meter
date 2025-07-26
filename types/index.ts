@@ -217,6 +217,8 @@ export type Chart = {
   customizeOptions?: Record<string, string | number | boolean>;
   displayFields?: Record<string, boolean>;
   hiddenFields?: Record<string, boolean>;
+  createdAt: string;
+  updatedAt: string;
   metrics?: Array<{
     metricId: number | null;
     columnName: string;

@@ -71,7 +71,8 @@ const fuzzyFilter: FilterFn<Chart> = (row, _columnId, value, addMeta) => {
   const searchable = [
     row.original.id?.toString() ?? "",
     row.original.name ?? "",
-    row.original.visualizationTypeId?.toString() ?? "",
+    row.original.visualizationType?.toString() ?? "",
+    row.original.type ?? "",
   ]
     .join(" ")
     .toLowerCase();
@@ -100,7 +101,6 @@ export default function ChartTable({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [sorting, setSorting] = useState([{ id: "id", desc: false }]);
-  const [globalFilter, setGlobalFilter] = useState("");
 
   const data = chart;
   const columns = getColumns(ProjectId);
@@ -155,21 +155,8 @@ export default function ChartTable({
               type="text"
               aria-label="Search Charts"
             />
-            <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
-              <ListFilterIcon size={16} aria-hidden="true" />
-            </div>
-            {Boolean(table.getColumn("name")?.getFilterValue()) && (
-              <button
-                className="text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
-                aria-label="Clear filter"
-                onClick={() => {
-                  table.getColumn("name")?.setFilterValue("");
-                  if (inputRef.current) inputRef.current.focus();
-                }}
-              >
-                <CircleXIcon size={16} aria-hidden="true" />
-              </button>
-            )}
+       
+            
           </div>
         </div>
         <div className="flex items-center gap-3">

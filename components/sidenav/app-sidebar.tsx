@@ -115,11 +115,7 @@ import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
 
 const navMainItems = [
-  {
-    title: "Visualization types",
-    url: "/Projects/VisualizationTypes",
-    icon: Shapes,
-  },
+
   {
     title: "Projects",
     url: "/Projects",
@@ -129,6 +125,11 @@ const navMainItems = [
     title: "Users",
     url: "/Projects/user",
     icon: Users,
+  },
+  {
+    title: "Visualization types",
+    url: "/Projects/VisualizationTypes",
+    icon: Shapes,
   },
 
 ];
