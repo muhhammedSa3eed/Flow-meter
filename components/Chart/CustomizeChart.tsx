@@ -29,6 +29,7 @@ import { Slider } from '@/components/ui/slider';
 import { useId, useEffect } from 'react';
 import { Chart, VisualizationTypes } from '@/types';
 import { Input } from '../ui/input';
+import { formatLabel } from '@/lib/chart-assets';
 
 const palettes = [
   {
@@ -124,8 +125,8 @@ const lableType = [
   'Template',
 ];
 
-const formatLabel = (label: string) =>
-  label.replace(/([a-z])([A-Z])/g, '$1 $2');
+// const formatLabel = (label: string) =>
+//   label.replace(/([a-z])([A-Z])/g, '$1 $2');
 
 export default function CustomizeChart({
   form,
@@ -228,25 +229,7 @@ export default function CustomizeChart({
     delete activeCustomizeOptions['PutLabelsOutside'];
     delete activeCustomizeOptions['LabelLine'];
   }
-  // useEffect(() => {
-  //   if (chartData) {
-  //     form.reset({
-  //       id: chartData.id,
-  //       name: chartData.name,
-  //       description: chartData.description || '',
-  //       datasetId: chartData.dataset.id,
-  //       // dataset: chartData.dataset,
-  //       visualizationTypeId: chartData.visualizationTypeId,
-  //       metrics: chartData.metrics || [],
-  //       filters: chartData.filters || [],
-  //       sortBy: chartData.sortBy || [],
-  //       rowLimit: chartData.rowLimit || null,
-  //       customizeOptions: chartData.customizeOptions || {},
-  //       displayFields: chartData.displayFields || {},
-  //       dimensions: chartData.dimensions?.map((d: any) => d.columnName) || [],
-  //     });
-  //   }
-  // }, [chartData, form]);
+ 
   const inputFields: Record<string, 'text' | 'number'> = {
     PercentageThreshold: 'number',
     Left: 'text',

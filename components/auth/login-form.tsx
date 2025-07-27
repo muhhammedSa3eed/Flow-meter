@@ -63,7 +63,7 @@ export function LoginForm() {
   const router = useRouter();
 
   const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
-    console.log({ values });
+    // console.log({ values });
     startTransition(async () => {
       const response = await login(values);
       console.log({ response });

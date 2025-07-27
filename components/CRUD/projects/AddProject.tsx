@@ -83,9 +83,8 @@ export default function AddProject() {
       >
         <div className="flex flex-1 flex-col ">
           <div className="w-full h-7 flex items-center ">
-          <Plus />
+            <Plus />
             <span className="text-sm ml-1">Add New Project</span>
-            
           </div>
         </div>
       </DialogTrigger>

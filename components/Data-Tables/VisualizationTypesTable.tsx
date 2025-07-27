@@ -53,7 +53,6 @@ import { Label } from '@/components/ui/label';
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -74,7 +73,12 @@ declare module '@tanstack/table-core' {
   }
 }
 
-const fuzzyFilter: FilterFn<VisualizationTypes> = (row, columnId, value, addMeta) => {
+const fuzzyFilter: FilterFn<VisualizationTypes> = (
+  row,
+  columnId,
+  value,
+  addMeta
+) => {
   // Rank the item
   const itemRank = rankItem(row.getValue(columnId), value);
 
@@ -91,6 +95,7 @@ export default function VisualizationTypesTable({
 }: {
   VisualizationTypesData: VisualizationTypes[];
 }) {
+  console.log({ VisualizationTypesData });
   const id = useId();
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState({});

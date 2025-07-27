@@ -305,6 +305,7 @@ export default function ChooseChart({
   const isPieChart = chartData?.visualizationType?.type
     .toLowerCase()
     .includes('pie');
+  const isLineChart= chartData?.visualizationType?.type.toLowerCase().includes('line');
   const pieChartData = chartData?.data?.map((item) => {
     const keys = Object.keys(item);
     return {

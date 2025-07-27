@@ -6,11 +6,11 @@ import { UseFormReturn, useWatch } from 'react-hook-form';
 import { z } from 'zod';
 import CustomizeChart from './CustomizeChart';
 import CustomizeChartBigNumber from './CustomizeChartBigNumber';
+import CustomizeChartLine from './CustomizeChartLine';
 
 const CustomizeChartWrapper = ({
   form,
   VisualizationTypeData,
-  
 }: {
   form: UseFormReturn<z.infer<typeof ChartSchema>>;
   VisualizationTypeData: VisualizationTypes[];
@@ -24,14 +24,16 @@ const CustomizeChartWrapper = ({
   const selectedTypeData = VisualizationTypeData.find(
     (type) => type.id === selectedTypeId
   );
-  console.log('12345', { selectedTypeId });
-  console.log({ VisualizationTypeData });
-  console.log('selectedTypeData.type', selectedTypeData?.type);
+
   const activecustomizeOptions: Record<string, boolean> =
     selectedTypeData?.optionsFields?.reduce(
       (acc, key) => ({ ...acc, [key]: true }),
       {}
     ) || {};
+  console.log(
+    'selectedTypeData?.optionsFields',
+    selectedTypeData?.optionsFields
+  );
   return (
     <div>
       {selectedTypeData?.type == 'pie' ? (
@@ -42,6 +44,12 @@ const CustomizeChartWrapper = ({
         />
       ) : selectedTypeData?.type == 'bignumber' ? (
         <CustomizeChartBigNumber
+          VisualizationTypeData={VisualizationTypeData}
+          form={form}
+          activeCustomizeOptions={activecustomizeOptions}
+        />
+      ) : selectedTypeData?.type == 'line' ? (
+        <CustomizeChartLine
           VisualizationTypeData={VisualizationTypeData}
           form={form}
           activeCustomizeOptions={activecustomizeOptions}

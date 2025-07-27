@@ -23,7 +23,7 @@ import { getAllVisualizationTypes } from '@/lib/projectData';
 
 export default async function Page() {
   const VisualizationTypeData = await getAllVisualizationTypes();
-
+  
   return (
     <>
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">

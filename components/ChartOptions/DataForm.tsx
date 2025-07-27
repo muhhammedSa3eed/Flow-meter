@@ -169,8 +169,8 @@ export default function DataForm({
   const [selectedFilterValues, setSelectedFilterValues] = useState<Option[]>(
     []
   );
-  console.log('chartData :', chartData);
-  console.log('VisualizationTypeData :', VisualizationTypeData);
+  // console.log('chartData :', chartData);
+  // console.log('VisualizationTypeData :', VisualizationTypeData);
 
   // useEffect(() => {
   //   if (chartData) {
@@ -221,7 +221,7 @@ export default function DataForm({
     }));
     setFilterOptions(values);
   }, [chartData, columnOptions, operators]);
-  console.log('filters=====>>>>', { filterOptions });
+  // console.log('filters=====>>>>', { filterOptions });
   // useEffect(() => {
   //   if (selectedDataset) {
   //     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/DS/${selectedDataset}`)
@@ -316,10 +316,10 @@ export default function DataForm({
     setSelectedFilterValues([]);
     setIsPopoverFiltersOpen(false);
   };
-  console.log(
-    "form.watch('filters')=>",
-    JSON.stringify(form.watch('dynamicFilters'))
-  );
+  // console.log(
+  //   "form.watch('filters')=>",
+  //   JSON.stringify(form.watch('dynamicFilters'))
+  // );
   const handleSortByChange = (checked: boolean) => {
     if (checked) {
       const newSortBy = metrics.map((metric) => ({

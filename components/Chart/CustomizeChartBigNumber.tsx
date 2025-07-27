@@ -29,6 +29,7 @@ import { Slider } from '@/components/ui/slider';
 import { useId, useEffect } from 'react';
 import {  VisualizationTypes } from '@/types';
 import { Input } from '../ui/input';
+import { formatLabel } from '@/lib/chart-assets';
 
 const fontSizes = ['text-sm', 'text-base', 'text-lg', 'text-xl'];
 const numberFormats = ['none', 'comma', 'dot', 'space'];
@@ -44,8 +45,8 @@ const lableType = [
   'Template',
 ];
 
-const formatLabel = (label: string) =>
-  label.replace(/([a-z])([A-Z])/g, '$1 $2');
+// const formatLabel = (label: string) =>
+//   label.replace(/([a-z])([A-Z])/g, '$1 $2');
 
 export default function CustomizeChartBigNumber({
   form,
@@ -54,7 +55,6 @@ export default function CustomizeChartBigNumber({
 }: {
   form: UseFormReturn<z.infer<typeof ChartSchema>>;
   VisualizationTypeData: VisualizationTypes[];
-  
   activeCustomizeOptions:any
 }) {
   // const selectedTypeId = useWatch({
