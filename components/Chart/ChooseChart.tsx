@@ -1,7 +1,7 @@
-'use client';
-import React, { useEffect, useId, useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Label } from '../ui/label';
+"use client";
+import React, { useEffect, useId, useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Label } from "../ui/label";
 import {
   Command,
   CommandEmpty,
@@ -9,20 +9,20 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@/components/ui/command';
+} from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
-import { Braces, CaseUpper, ChevronDownIcon, Clock, Hash } from 'lucide-react';
-import { Button } from '../ui/button';
-import type { TripsLogEntry, TripsLogResponse } from '@/types';
-import { ChartSchema } from '@/schemas';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { toast } from 'react-hot-toast';
+} from "@/components/ui/popover";
+import { Braces, CaseUpper, ChevronDownIcon, Clock, Hash } from "lucide-react";
+import { Button } from "../ui/button";
+import type { TripsLogEntry, TripsLogResponse } from "@/types";
+import { ChartSchema } from "@/schemas";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "react-hot-toast";
 import {
   Form,
   FormControl,
@@ -30,33 +30,33 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '../ui/input';
-import { Chart, Dataset } from '@/types';
+} from "@/components/ui/form";
+import { Input } from "../ui/input";
+import { Chart, Dataset } from "@/types";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion';
+} from "@/components/ui/accordion";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
-} from '@/components/ui/resizable';
+} from "@/components/ui/resizable";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { Separator } from '../ui/separator';
-import { ScrollArea } from '../ui/scroll-area';
-import MultipleSelector, { Option } from '@/components/ui/multiselect';
-import ReactECharts from 'echarts-for-react';
+} from "@/components/ui/tooltip";
+import { Separator } from "../ui/separator";
+import { ScrollArea } from "../ui/scroll-area";
+import MultipleSelector, { Option } from "@/components/ui/multiselect";
+import ReactECharts from "echarts-for-react";
 
-import { VisualizationTypes } from '@/types';
-import DataForm from '../ChartOptions/DataForm';
-import CustomizeChart from './CustomizeChart';
+import { VisualizationTypes } from "@/types";
+import DataForm from "../ChartOptions/DataForm";
+import CustomizeChart from "./CustomizeChart";
 import {
   Table,
   TableBody,
@@ -64,11 +64,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '../ui/table';
-import SampleTable from '../Data-Tables/SampleTable';
-import EmtyChart from '../motion/EmtyChart';
-import { motion } from 'motion/react';
-import CustomizeChartWrapper from './CustomizeChartWrapper';
+} from "../ui/table";
+import SampleTable from "../Data-Tables/SampleTable";
+import EmtyChart from "../motion/EmtyChart";
+import { motion } from "motion/react";
+import CustomizeChartWrapper from "./CustomizeChartWrapper";
 
 export default function ChooseChart({
   VisualizationTypeData,
@@ -95,11 +95,11 @@ export default function ChooseChart({
     resolver: zodResolver(ChartSchema),
     defaultValues: {
       id: 0,
-      name: '',
-      description: '',
+      name: "",
+      description: "",
       datasetId: 0,
       visualizationTypeId: 0,
-      queryContext: '',
+      queryContext: "",
       useExistingQuery: true,
       dimensions: [],
       dynamicFilters: [],
@@ -127,24 +127,24 @@ export default function ChooseChart({
         })
         .then((data: Chart) => {
           setChartData(data);
-          console.log('Chart data updated:', data);
+          console.log("Chart data updated:", data);
         })
         .catch((error) => {
-          console.error('Error fetching chart:', error);
-          toast.error('Failed to load chart data');
+          console.error("Error fetching chart:", error);
+          toast.error("Failed to load chart data");
         });
     }
   }, [createdChartId, updateTrigger]);
 
   async function onSubmit(values: z.infer<typeof ChartSchema>) {
-    console.log('Form submitted!');
-    console.log('Form values:', JSON.stringify(values));
+    console.log("Form submitted!");
+    console.log("Form values:", JSON.stringify(values));
     try {
       const url = createdChartId
         ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/Charts/${createdChartId}`
         : `${process.env.NEXT_PUBLIC_API_BASE_URL}/Charts`;
 
-      const method = createdChartId ? 'PUT' : 'POST';
+      const method = createdChartId ? "PUT" : "POST";
 
       console.log(`Request Method: ${method}, URL: ${url}`);
 
@@ -153,22 +153,22 @@ export default function ChooseChart({
         id: createdChartId ?? values.id,
       };
 
-      console.log('Payload:', payload);
+      console.log("Payload:", payload);
 
       const response = await fetch(url, {
         method,
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
       });
 
-      const contentType = response.headers.get('Content-Type');
+      const contentType = response.headers.get("Content-Type");
 
       if (!response.ok) {
-        let errorMessage = 'An error occurred.';
+        let errorMessage = "An error occurred.";
 
-        if (contentType && contentType.includes('application/json')) {
+        if (contentType && contentType.includes("application/json")) {
           const errorData = await response.json();
           errorMessage = errorData.message || errorMessage;
         } else {
@@ -182,7 +182,7 @@ export default function ChooseChart({
 
       let chartResponse: any;
 
-      if (contentType && contentType.includes('application/json')) {
+      if (contentType && contentType.includes("application/json")) {
         chartResponse = await response.json();
       } else {
         chartResponse = await response.text();
@@ -190,10 +190,10 @@ export default function ChooseChart({
 
       if (!createdChartId) {
         setCreatedChartId(chartResponse.id);
-        form.setValue('id', chartResponse.id);
-        toast.success('Chart has been successfully created.');
+        form.setValue("id", chartResponse.id);
+        toast.success("Chart has been successfully created.");
       } else {
-        toast.success('Chart has been successfully updated.');
+        toast.success("Chart has been successfully updated.");
       }
 
       handleUpdateTrigger();
@@ -204,11 +204,11 @@ export default function ChooseChart({
 
       if (connectionId && schemaName && tableName) {
         console.log(
-          'connectionId :',
+          "connectionId :",
           connectionId,
-          'schemaName :',
+          "schemaName :",
           schemaName,
-          'tableName :',
+          "tableName :",
           tableName
         );
 
@@ -227,14 +227,14 @@ export default function ChooseChart({
     } catch (err) {
       if (err instanceof Error) {
         toast.error(
-          `Failed to ${createdChartId ? 'update' : 'create'} chart: ${
+          `Failed to ${createdChartId ? "update" : "create"} chart: ${
             err.message
           }`
         );
       } else {
         toast.error(
           `Failed to ${
-            createdChartId ? 'update' : 'create'
+            createdChartId ? "update" : "create"
           } chart due to an unknown error.`
         );
       }
@@ -252,7 +252,7 @@ export default function ChooseChart({
       })
       .then((data: Dataset[]) => setDataset(data))
       .catch((error) => {
-        console.error('Error fetching dataset:', error);
+        console.error("Error fetching dataset:", error);
       });
   }, []);
 
@@ -277,23 +277,23 @@ export default function ChooseChart({
           setColumnOptions(options);
         })
         .catch((error) => {
-          console.error('Error fetching columns:', error);
+          console.error("Error fetching columns:", error);
         });
     }
   }, [selectedDataset]);
 
   const getIconForType = (type: string) => {
     if (
-      type.includes('integer') ||
-      type.includes('real') ||
-      type.includes('id')
+      type.includes("integer") ||
+      type.includes("real") ||
+      type.includes("id")
     ) {
       return <Hash size={16} className="text-muted-foreground" />;
-    } else if (type.includes('character varying') || type.includes('string')) {
+    } else if (type.includes("character varying") || type.includes("string")) {
       return <CaseUpper size={16} className="text-muted-foreground" />;
-    } else if (type.includes('timestamp')) {
+    } else if (type.includes("timestamp")) {
       return <Clock size={16} className="text-muted-foreground" />;
-    } else if (type.includes('json')) {
+    } else if (type.includes("json")) {
       return <Braces size={16} className="text-muted-foreground" />;
     }
     return null;
@@ -301,11 +301,16 @@ export default function ChooseChart({
 
   const isBigNumber = chartData?.visualizationType?.type
     .toLowerCase()
-    .includes('bignumber');
+    .includes("bignumber");
   const isPieChart = chartData?.visualizationType?.type
     .toLowerCase()
-    .includes('pie');
-  const isLineChart= chartData?.visualizationType?.type.toLowerCase().includes('line');
+    .includes("pie");
+  const isLineChart = chartData?.visualizationType?.type
+    .toLowerCase()
+    .includes("line");
+  const isBarChart = chartData?.visualizationType?.type
+    .toLowerCase()
+    .includes("bar");
   const pieChartData = chartData?.data?.map((item) => {
     const keys = Object.keys(item);
     return {
@@ -313,7 +318,15 @@ export default function ChooseChart({
       name: String(item[keys[0]]),
     };
   });
+  const xKey =
+    chartData?.dimensions?.[0] ?? Object.keys(chartData?.data?.[0] || {})[0];
 
+  const yKey =
+    chartData?.metrics?.[0]?.columnName ??
+    Object.keys(chartData?.data?.[0] || {})[1];
+
+  const xAxisData = chartData?.data?.map((item) => item?.[xKey]);
+  const seriesData = chartData?.data?.map((item) => item?.[yKey]);
   return (
     <>
       <Form {...form}>
@@ -534,8 +547,8 @@ export default function ChooseChart({
                     </span>
                   </div>
                   <div className="p-6">
-                    <Button type="submit" variant={'custom'} className="w-full">
-                      {createdChartId ? 'Update Chart' : 'Create Chart'}
+                    <Button type="submit" variant={"custom"} className="w-full">
+                      {createdChartId ? "Update Chart" : "Create Chart"}
                     </Button>
                   </div>
                 </ScrollArea>
@@ -563,13 +576,13 @@ export default function ChooseChart({
                               >
                                 <p className="text-base text-muted-foreground font-medium">
                                   {createdChartId
-                                    ? 'Loading updated chart...'
-                                    : 'Welcome to Neuss 👋'}
+                                    ? "Loading updated chart..."
+                                    : "Welcome to Neuss 👋"}
                                 </p>
                                 <p className="text-sm text-muted-foreground">
                                   {createdChartId
-                                    ? 'Your chart preview will appear here once updated.'
-                                    : 'Your chart preview will appear here once created.'}
+                                    ? "Your chart preview will appear here once updated."
+                                    : "Your chart preview will appear here once created."}
                                 </p>
                               </motion.div>
                             </div>
@@ -578,18 +591,18 @@ export default function ChooseChart({
                               <div
                                 className={`font-bold ${
                                   chartData.customizeOptions
-                                    ?.BigNumberFontSize || 'text-8xl'
+                                    ?.BigNumberFontSize || "text-8xl"
                                 }`}
                               >
                                 {chartData.customizeOptions?.CurrencyFormat ===
-                                'Prefix'
-                                  ? chartData.customizeOptions?.Currency || ''
-                                  : ''}
+                                "Prefix"
+                                  ? chartData.customizeOptions?.Currency || ""
+                                  : ""}
                                 {Object.values(chartData.data[0])[0]}
                                 {chartData.customizeOptions?.CurrencyFormat ===
-                                'Suffix'
-                                  ? chartData.customizeOptions?.Currency || ''
-                                  : ''}
+                                "Suffix"
+                                  ? chartData.customizeOptions?.Currency || ""
+                                  : ""}
                               </div>
                               {chartData.customizeOptions?.Subtitle && (
                                 <div className="text-muted-foreground text-sm">
@@ -601,30 +614,30 @@ export default function ChooseChart({
                             <ReactECharts
                               option={{
                                 title: {
-                                  text: chartData.name || 'Chart',
+                                  text: chartData.name || "Chart",
                                   subtext:
-                                    chartData.visualizationType?.type || 'Pie',
-                                  bottom: 'left',
+                                    chartData.visualizationType?.type || "Pie",
+                                  bottom: "left",
                                 },
-                                tooltip: { trigger: 'item' },
+                                tooltip: { trigger: "item" },
                                 legend: {
                                   orient:
                                     chartData.customizeOptions?.Orientation ||
-                                    'horizontal',
-                                  left: 'center',
+                                    "horizontal",
+                                  left: "center",
                                   top:
-                                    chartData.customizeOptions?.Margin || 'top',
+                                    chartData.customizeOptions?.Margin || "top",
                                   selector: true,
-                                  type: 'scroll',
-                                  pageIconColor: '#333',
-                                  pageIconInactiveColor: '#ccc',
+                                  type: "scroll",
+                                  pageIconColor: "#333",
+                                  pageIconInactiveColor: "#ccc",
                                   pageIconSize: 16,
                                   pageButtonGap: 5,
-                                  pageFormatter: '{current}/{total}',
+                                  pageFormatter: "{current}/{total}",
                                   pageIcons: {
                                     horizontal: [
-                                      'path://M4,12 L12,4 L20,12',
-                                      'path://M4,4 L12,12 L20,4',
+                                      "path://M4,12 L12,4 L20,12",
+                                      "path://M4,4 L12,12 L20,4",
                                     ],
                                   },
                                 },
@@ -632,11 +645,11 @@ export default function ChooseChart({
                                   {
                                     name:
                                       chartData.metrics?.[0]?.columnName ||
-                                      'Value',
-                                    type: 'pie',
+                                      "Value",
+                                    type: "pie",
                                     radius: chartData.customizeOptions?.Donut
-                                      ? ['40%', '70%']
-                                      : '50%',
+                                      ? ["40%", "70%"]
+                                      : "50%",
                                     roseType:
                                       chartData.customizeOptions?.RoseType ||
                                       false,
@@ -645,13 +658,45 @@ export default function ChooseChart({
                                       itemStyle: {
                                         shadowBlur: 10,
                                         shadowOffsetX: 0,
-                                        shadowColor: 'rgba(0, 0, 0, 0.5)',
+                                        shadowColor: "rgba(0, 0, 0, 0.5)",
                                       },
                                     },
                                   },
                                 ],
                               }}
-                              style={{ height: 400, width: '100%' }}
+                              style={{ height: 400, width: "100%" }}
+                            />
+                          ) : isBarChart && chartData.data ? (
+                            <ReactECharts
+                              option={{
+                                title: {
+                                  text: chartData.name || "Bar Chart",
+                                  left: "center",
+                                },
+                                tooltip: { trigger: "axis" },
+                                xAxis: {
+                                  type: "category",
+                                  data: xAxisData,
+                                  axisLabel: { rotate: 45 },
+                                },
+                                yAxis: {
+                                  type: "value",
+                                },
+                                series: [
+                                  {
+                                    name: yKey,
+                                    type: "bar",
+                                    data: seriesData,
+                                    itemStyle: {
+                                      color:
+                                        chartData.customizeOptions?.BarColor ||
+                                        "#409EFF",
+                                      borderRadius: 4,
+                                    },
+                                  },
+                                ],
+                              }}
+                              style={{ height: 400, width: "100%" }}
                             />
                           ) : (
                             <div className="text-muted-foreground text-sm italic">
@@ -712,8 +757,8 @@ export default function ChooseChart({
                                           className="whitespace-nowrap p-2 border-b text-muted-foreground"
                                         >
                                           {val === null
-                                            ? '-'
-                                            : typeof val === 'number'
+                                            ? "-"
+                                            : typeof val === "number"
                                             ? val.toLocaleString()
                                             : String(val)}
                                         </TableCell>
@@ -735,7 +780,7 @@ export default function ChooseChart({
                           value="tab-2"
                           className="h-[calc(100%-40px)] truncate max-w-[800px]"
                         >
-                          <SampleTable sampleData={sampleData ?? []} />{' '}
+                          <SampleTable sampleData={sampleData ?? []} />{" "}
                         </TabsContent>
                       </Tabs>
                     </ResizablePanel>

@@ -1,5 +1,5 @@
-import React, { useEffect, useId, useState } from 'react';
-import { Label } from '@radix-ui/react-dropdown-menu';
+import React, { useEffect, useId, useState } from "react";
+import { Label } from "@radix-ui/react-dropdown-menu";
 import {
   Select,
   SelectContent,
@@ -7,25 +7,25 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { z } from 'zod';
-import { ChartSchema } from '@/schemas';
-import { UseFormReturn } from 'react-hook-form';
+} from "@/components/ui/form";
+import { z } from "zod";
+import { ChartSchema } from "@/schemas";
+import { UseFormReturn } from "react-hook-form";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
-import MultipleSelector, { Option } from '@/components/ui/multiselect';
+} from "@/components/ui/popover";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import MultipleSelector, { Option } from "@/components/ui/multiselect";
 import {
   AreaChart,
   BarChart,
@@ -39,10 +39,10 @@ import {
   Radius,
   SquareAsterisk,
   Table,
-} from 'lucide-react';
-import { Chart, Dataset, DistinctValue, VisualizationTypes } from '@/types';
-import { Textarea } from '../ui/textarea';
-import { Checkbox } from '../ui/checkbox';
+} from "lucide-react";
+import { Chart, Dataset, DistinctValue, VisualizationTypes } from "@/types";
+import { Textarea } from "../ui/textarea";
+import { Checkbox } from "../ui/checkbox";
 import {
   Command,
   CommandEmpty,
@@ -50,80 +50,81 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@/components/ui/command';
-import { Separator } from '../ui/separator';
+} from "@/components/ui/command";
+import { Separator } from "../ui/separator";
+import { Switch } from "../ui/switch";
 const aggregate: Option[] = [
-  { value: 'AVG', label: 'AVG' },
-  { value: 'COUNT', label: 'COUNT' },
-  { value: 'COUNT_DISTINCT', label: 'COUNT_DISTINCT', disable: true },
-  { value: 'MAX', label: 'MAX' },
-  { value: 'MIN', label: 'MIN' },
-  { value: 'SUM', label: 'SUM' },
+  { value: "AVG", label: "AVG" },
+  { value: "COUNT", label: "COUNT" },
+  { value: "COUNT_DISTINCT", label: "COUNT_DISTINCT", disable: true },
+  { value: "MAX", label: "MAX" },
+  { value: "MIN", label: "MIN" },
+  { value: "SUM", label: "SUM" },
 ];
 
 const RowLimit = [
-  { value: 'none', label: 'none' },
-  { value: 10, label: '10' },
-  { value: 20, label: '20' },
-  { value: 50, label: '50' },
-  { value: 100, label: '100' },
-  { value: 250, label: '250' },
-  { value: 500, label: '500' },
-  { value: 1000, label: '1000' },
-  { value: 5000, label: '5000' },
-  { value: 10000, label: '10000' },
+  { value: "none", label: "none" },
+  { value: 10, label: "10" },
+  { value: 20, label: "20" },
+  { value: 50, label: "50" },
+  { value: 100, label: "100" },
+  { value: 250, label: "250" },
+  { value: 500, label: "500" },
+  { value: 1000, label: "1000" },
+  { value: 5000, label: "5000" },
+  { value: 10000, label: "10000" },
 ];
 
 const operators: Option[] = [
-  { value: 'Equals', label: 'Equals to (=)' },
-  { value: 'NotEquals', label: 'Not Equals to (≠)' },
-  { value: 'GreaterThan', label: 'Greater Than (>)' },
-  { value: 'LessThan', label: 'Less Than (<)' },
-  { value: 'GreaterThanOrEqual', label: 'Greater  or Equal (>=)' },
-  { value: 'LessThanOrEqual', label: 'Less  or Equal (<=)' },
-  { value: 'NotNull', label: 'Not null' },
-  { value: 'In', label: 'In' },
-  { value: 'NotIn', label: 'Not in' },
+  { value: "Equals", label: "Equals to (=)" },
+  { value: "NotEquals", label: "Not Equals to (≠)" },
+  { value: "GreaterThan", label: "Greater Than (>)" },
+  { value: "LessThan", label: "Less Than (<)" },
+  { value: "GreaterThanOrEqual", label: "Greater  or Equal (>=)" },
+  { value: "LessThanOrEqual", label: "Less  or Equal (<=)" },
+  { value: "NotNull", label: "Not null" },
+  { value: "In", label: "In" },
+  { value: "NotIn", label: "Not in" },
 ];
 
 export const ChartItems = [
   {
-    value: 'table',
-    label: 'Table',
+    value: "table",
+    label: "Table",
     icon: Table,
   },
   {
-    value: 'line chart',
-    label: 'Line chart',
+    value: "line chart",
+    label: "Line chart",
     icon: LineChartIcon,
   },
   {
-    value: 'piechart',
-    label: 'Pie chart',
+    value: "piechart",
+    label: "Pie chart",
     icon: ChartPie,
   },
   {
-    value: 'bar chart',
-    label: 'Bar chart',
+    value: "bar chart",
+    label: "Bar chart",
     icon: ChartBarStacked,
   },
   {
-    value: 'bignumber',
-    label: 'Big number',
+    value: "bignumber",
+    label: "Big number",
     icon: Radius,
   },
 ];
 
 export const IconOptions = [
-  { id: 1, value: 'bar', label: 'Bar Chart', icon: <BarChart size={20} /> },
-  { id: 2, value: 'pie', label: 'Pie Chart', icon: <PieChart size={20} /> },
-  { id: 3, value: 'line', label: 'Line Chart', icon: <LineChart size={20} /> },
-  { id: 4, value: 'area', label: 'Area Chart', icon: <AreaChart size={20} /> },
-  { id: 5, value: 'table', label: 'Table', icon: <Table size={20} /> },
+  { id: 1, value: "bar", label: "Bar Chart", icon: <BarChart size={20} /> },
+  { id: 2, value: "pie", label: "Pie Chart", icon: <PieChart size={20} /> },
+  { id: 3, value: "line", label: "Line Chart", icon: <LineChart size={20} /> },
+  { id: 4, value: "area", label: "Area Chart", icon: <AreaChart size={20} /> },
+  { id: 5, value: "table", label: "Table", icon: <Table size={20} /> },
   {
     id: 6,
-    value: 'bignumber',
-    label: 'Big number',
+    value: "bignumber",
+    label: "Big number",
     icon: <SquareAsterisk size={20} />,
   },
 ];
@@ -161,6 +162,10 @@ export default function DataForm({
     useState<Option | null>(null);
   const [selectedOperator, setSelectedOperator] = useState<Option | null>(null);
   const [isPopoverDimensionsOpen, setIsPopoverDimensionsOpen] = useState(false);
+  const [isPopoverXaxisOpen, setIsPopoverXaxisOpen] = useState(false);
+  const [selectedXaxisColumn, setSelectedXaxisColumn] = useState<Option | null>(
+    null
+  );
   const [isPopoverMetricsOpen, setIsPopoverMetricsOpen] = useState(false);
   const [selectedDimensionColumn, setSelectedDimensionColumn] =
     useState<Option | null>(null);
@@ -169,34 +174,6 @@ export default function DataForm({
   const [selectedFilterValues, setSelectedFilterValues] = useState<Option[]>(
     []
   );
-  // console.log('chartData :', chartData);
-  // console.log('VisualizationTypeData :', VisualizationTypeData);
-
-  // useEffect(() => {
-  //   if (chartData) {
-  //     form.reset({
-  //       id: chartData.id,
-  //       name: chartData.name,
-  //       description: chartData.description || '',
-  //       datasetId: chartData.dataset.id,
-  //       // dataset: chartData.dataset,
-  //       visualizationTypeId: chartData.visualizationTypeId,
-  //       metrics: chartData.metrics || [],
-  //       filters:
-  //         chartData.filters?.map((f: any) => ({
-  //           columnName: f.columnName,
-  //           operator: f.operator,
-  //           values: f.values,
-  //           customSql: f.customSql ?? '',
-  //         })) || [],
-  //       sortBy: chartData.sortBy || [],
-  //       rowLimit: chartData.rowLimit || null,
-  //       customizeOptions: chartData.customizeOptions || {},
-  //       displayFields: chartData.displayFields || {},
-  //       dimensions: chartData.dimensions || [],
-  //     });
-  //   }
-  // }, [chartData, form]);
 
   useEffect(() => {
     if (!chartData?.filters || chartData.filters.length === 0) return;
@@ -221,39 +198,15 @@ export default function DataForm({
     }));
     setFilterOptions(values);
   }, [chartData, columnOptions, operators]);
-  // console.log('filters=====>>>>', { filterOptions });
-  // useEffect(() => {
-  //   if (selectedDataset) {
-  //     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/DS/${selectedDataset}`)
-  //       .then(async (response) => {
-  //         if (!response.ok) {
-  //           const errorText = await response.text();
-  //           throw new Error(`Server error: ${errorText}`);
-  //         }
-  //         return response.json();
-  //       })
-  //       .then((data: Dataset) => {
-  //         const options = Object.entries(data.fieldsAndTypes).map(
-  //           ([key, value]) => ({
-  //             value: key,
-  //             label: `${key} (${value})`,
-  //           })
-  //         );
-  //         setColumnOptions(options);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error fetching columns:", error);
-  //       });
-  //   }
-  // }, [selectedDataset]);
 
-  const metrics = form.watch('metrics') || [];
-  const filters = form.watch('dynamicFilters') || [];
-  const dimensions = form.watch('dimensions') || [];
+  const metrics = form.watch("metrics") || [];
+  const filters = form.watch("dynamicFilters") || [];
+  const dimensions = form.watch("dimensions") || [];
+  const xAxis = form.watch("xAxis") || [];
 
   const handleSaveDimensions = () => {
     if (selectedDimensionColumn) {
-      form.setValue('dimensions', [
+      form.setValue("dimensions", [
         ...dimensions,
         selectedDimensionColumn.value,
       ]);
@@ -261,6 +214,13 @@ export default function DataForm({
     }
     setIsPopoverDimensionsOpen(false);
   };
+  // const handleSaveXaxis = () => {
+  //   if (selectedDimensionColumn) {
+  //     form.setValue("xAxis", [...xAxis, selectedXaxisColumn.value]);
+  //     setSelectedXaxisColumn(null);
+  //   }
+  //   setIsPopoverXaxisOpen(false);
+  // };
 
   const handleSaveMetrics = () => {
     if (selectedAggregate && selectedMetricsColumn) {
@@ -268,7 +228,7 @@ export default function DataForm({
         columnName: selectedMetricsColumn.value,
         aggregationFunction: selectedAggregate.value,
       };
-      form.setValue('metrics', [...metrics, newMetric]);
+      form.setValue("metrics", [...metrics, newMetric]);
       setSelectedAggregate(null);
       setSelectedFilterColumn(null);
     }
@@ -288,7 +248,7 @@ export default function DataForm({
       columnName: selectedFilterColumn.value,
       operator: selectedOperator.value,
       values: filterValues,
-      customSql: '',
+      customSql: "",
     };
     // const newFilter = {
     //   // id: 0,
@@ -303,13 +263,13 @@ export default function DataForm({
     //   // customSql: '',
     // };
 
-    const updatedFilters = (form.watch('dynamicFilters') || []).filter(
+    const updatedFilters = (form.watch("dynamicFilters") || []).filter(
       (f: { columnName: string }) => f.columnName !== selectedFilterColumn.value
     );
 
     updatedFilters.push(newFilter);
 
-    form.setValue('dynamicFilters', updatedFilters);
+    form.setValue("dynamicFilters", updatedFilters);
     setSelectedFilterColumn(null);
     setSelectedOperator(null);
     setFilterOptions([]);
@@ -324,26 +284,27 @@ export default function DataForm({
     if (checked) {
       const newSortBy = metrics.map((metric) => ({
         columnName: metric.columnName,
-        sortDirection: 'ASC',
+        sortDirection: "ASC",
       }));
-      form.setValue('sortBy', newSortBy);
+      form.setValue("sortBy", newSortBy);
     } else {
-      form.setValue('sortBy', []);
+      form.setValue("sortBy", []);
     }
   };
 
-  const selectedTypeId = form.watch('visualizationTypeId');
+  const selectedTypeId = form.watch("visualizationTypeId");
   const selectedTypeName =
     VisualizationTypeData.find((type) => type.id === selectedTypeId)?.type ||
-    '';
+    "";
   const selectedTypeData = VisualizationTypeData.find(
     (type) => type.id === selectedTypeId
   );
   const displayFields = selectedTypeData?.displayFields || [];
-  const showFiltersSection = displayFields.includes('Filters');
-  const showDimensionsSection = displayFields.includes('Dimensions');
-  const showRowLimitSection = displayFields.includes('RowLimit');
-  const showSortBySection = displayFields.includes('SortBy');
+  const showFiltersSection = displayFields.includes("Filters");
+  const showDimensionsSection = displayFields.includes("Dimensions");
+  const showRowLimitSection = displayFields.includes("RowLimit");
+  const showSortBySection = displayFields.includes("SortBy");
+  const showXAxsisSection = displayFields.includes("X-axis");
 
   const visualizationType = chartData?.visualizationType;
 
@@ -359,7 +320,7 @@ export default function DataForm({
       .then(async (res) => {
         const data = await res.json();
         if (!Array.isArray(data)) {
-          throw new Error('Expected an array but got: ' + JSON.stringify(data));
+          throw new Error("Expected an array but got: " + JSON.stringify(data));
         }
 
         const options = (data as DistinctValue[]).map((item) => {
@@ -370,7 +331,7 @@ export default function DataForm({
         setFilterOptions(options);
       })
       .catch((err) => {
-        if (err.name !== 'AbortError') console.error(err);
+        if (err.name !== "AbortError") console.error(err);
       });
 
     return () => controller.abort();
@@ -486,6 +447,53 @@ export default function DataForm({
   </div>
 )}
       <Separator /> */}
+
+      {showXAxsisSection && (
+        <>
+          <FormField
+            control={form.control}
+            name="xAxis.column"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>X-Axis</FormLabel>
+                <FormControl>
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select X-axis" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {columnOptions.map(
+                        (item: { value: string; label: string }) => (
+                          <SelectItem key={item.value} value={item.value}>
+                            {item.label}
+                          </SelectItem>
+                        )
+                      )}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="xAxis.forceCategorical"
+            render={({ field }) => (
+              <FormItem className="mt-2">
+                <FormLabel>Force Categorical</FormLabel>
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </>
+      )}
+
       {/* Dimensions Section */}
       {showDimensionsSection && (
         <FormField
@@ -542,7 +550,7 @@ export default function DataForm({
                             <div className="space-y-4">
                               <div>
                                 <Select
-                                  value={selectedDimensionColumn?.value || ''}
+                                  value={selectedDimensionColumn?.value || ""}
                                   onValueChange={(value) => {
                                     const selected = columnOptions.find(
                                       (item: any) => item.value === value
@@ -578,7 +586,7 @@ export default function DataForm({
                                   Enter Custom SQL Query
                                 </span>
                                 <Textarea id={id} placeholder="" />
-                              </div>{' '}
+                              </div>{" "}
                             </div>
                           </TabsContent>
                         </Tabs>
@@ -637,18 +645,18 @@ export default function DataForm({
                     }
                     // Only allow one metric if chart type is Pie
                     maxSelected={
-                      selectedTypeName.toLowerCase() === 'piechart'
+                      selectedTypeName.toLowerCase() === "piechart"
                         ? 1
                         : undefined
                     }
                     // Disable adding more metrics if Pie chart and already has one
                     disabled={
-                      selectedTypeName.toLowerCase() === 'piechart' &&
+                      selectedTypeName.toLowerCase() === "piechart" &&
                       metrics.length >= 1
                     }
                   />
                   {metrics.length === 0 ||
-                  selectedTypeName.toLowerCase() !== 'piechart' ? (
+                  selectedTypeName.toLowerCase() !== "piechart" ? (
                     <Popover
                       open={isPopoverMetricsOpen}
                       onOpenChange={setIsPopoverMetricsOpen}
@@ -659,7 +667,7 @@ export default function DataForm({
                           size="icon"
                           className="h-10 w-10"
                           disabled={
-                            selectedTypeName.toLowerCase() === 'piechart' &&
+                            selectedTypeName.toLowerCase() === "piechart" &&
                             metrics.length >= 1
                           }
                         >
@@ -676,7 +684,7 @@ export default function DataForm({
                             <div className="space-y-4">
                               <div>
                                 <Select
-                                  value={selectedMetricsColumn?.value || ''}
+                                  value={selectedMetricsColumn?.value || ""}
                                   onValueChange={(value) => {
                                     const selected = columnOptions.find(
                                       (item: any) => item.value === value
@@ -703,7 +711,7 @@ export default function DataForm({
                               </div>
                               <div>
                                 <Select
-                                  value={selectedAggregate?.value || ''}
+                                  value={selectedAggregate?.value || ""}
                                   onValueChange={(value) => {
                                     const selected = aggregate.find(
                                       (item) => item.value === value
@@ -782,7 +790,7 @@ export default function DataForm({
                           value: JSON.stringify(filter),
                           label: `${filter.columnName} ${
                             filter.operator
-                          } ${filter?.values?.join(', ')}`,
+                          } ${filter?.values?.join(", ")}`,
                         })
                       )}
                       onChange={(values) => {
@@ -829,7 +837,7 @@ export default function DataForm({
                             <div className="space-y-4">
                               {/* Column Name */}
                               <Select
-                                value={selectedFilterColumn?.value || ''}
+                                value={selectedFilterColumn?.value || ""}
                                 onValueChange={(value) => {
                                   const selected = columnOptions.find(
                                     (item: any) => item.value === value
@@ -856,7 +864,7 @@ export default function DataForm({
 
                               {/* Operator */}
                               <Select
-                                value={selectedOperator?.value || ''}
+                                value={selectedOperator?.value || ""}
                                 onValueChange={(value) => {
                                   const selected = operators.find(
                                     (item) => item.value === value
@@ -905,7 +913,7 @@ export default function DataForm({
                                   Enter Custom SQL Query
                                 </span>
                                 <Textarea id={id} placeholder="" />
-                              </div>{' '}
+                              </div>{" "}
                             </div>
                           </TabsContent>
                         </Tabs>
@@ -940,10 +948,10 @@ export default function DataForm({
                 <div className="*:not-first:mt-2">
                   <Select
                     value={
-                      field.value == null ? 'none' : field.value.toString()
+                      field.value == null ? "none" : field.value.toString()
                     }
                     onValueChange={(value) => {
-                      field.onChange(value === 'none' ? null : Number(value));
+                      field.onChange(value === "none" ? null : Number(value));
                     }}
                   >
                     <SelectTrigger id={id}>
@@ -954,7 +962,7 @@ export default function DataForm({
                         {RowLimit.map((item) => (
                           <SelectItem
                             key={item.value}
-                            value={item.value?.toString() ?? ''}
+                            value={item.value?.toString() ?? ""}
                           >
                             {item.label}
                           </SelectItem>

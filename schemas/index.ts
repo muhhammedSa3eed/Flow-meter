@@ -287,6 +287,13 @@ export const ChartSchema = z.object({
 
   // Dimensions
   dimensions: z.array(z.string()).optional(),
+
+
+
+  xAxis: z.object({
+    column: z.string().min(1, 'Please select a column'),
+    forceCategorical: z.boolean().default(false),
+  }),
   // Metrics
   // metrics: z
   //   .array(
