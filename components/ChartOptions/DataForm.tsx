@@ -480,14 +480,28 @@ export default function DataForm({
             control={form.control}
             name="xAxis.forceCategorical"
             render={({ field }) => (
-              <FormItem className="mt-2">
-                <FormLabel>Force Categorical</FormLabel>
+              <FormItem className="mt-2 w-full flex-1">
                 <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
+                  <div className="flex items-start gap-2">
+                    <Checkbox
+                      id={id}
+                      aria-describedby={`${id}-description`}
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                    <div className="grid grow gap-2">
+                      <FormLabel>Force Categorical</FormLabel>
+                      <p
+                        id={`${id}-description`}
+                        className="text-muted-foreground text-xs"
+                      >
+                        You can use this checkbox with a label and a
+                        description.
+                      </p>
+                    </div>
+                  </div>
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />

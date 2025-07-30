@@ -318,15 +318,32 @@ export default function ChooseChart({
       name: String(item[keys[0]]),
     };
   });
+  const dataKeys = chartData?.data?.[0] ? Object.keys(chartData.data[0]) : [];
+
   const xKey =
-    chartData?.dimensions?.[0] ?? Object.keys(chartData?.data?.[0] || {})[0];
-
+    chartData?.dimensions?.[0] && dataKeys.includes(chartData.dimensions[0])
+      ? chartData.dimensions[0]
+      : dataKeys[0]; // fallback if not valid
+  
   const yKey =
-    chartData?.metrics?.[0]?.columnName ??
-    Object.keys(chartData?.data?.[0] || {})[1];
-
-  const xAxisData = chartData?.data?.map((item) => item?.[xKey]);
-  const seriesData = chartData?.data?.map((item) => item?.[yKey]);
+    chartData?.metrics?.[0]?.columnName &&
+    dataKeys.includes(chartData.metrics[0].columnName)
+      ? chartData.metrics[0].columnName
+      : dataKeys.find((k) => k !== xKey); // fallback if not valid
+  
+  const xAxisData = chartData?.data?.map((item) => item?.[xKey] ?? "N/A");
+  const seriesData = chartData?.data?.map((item) => {
+    if (!yKey) return 0;
+    const val = item?.[yKey];
+    return typeof val === "number" ? val : Number(val) || 0;
+  });
+  
+  // Debugging logs
+  console.log("Final xKey:", xKey);
+  console.log("Final yKey:", yKey);
+  console.log("Data keys:", dataKeys);
+  console.log("xAxisData:", xAxisData);
+  console.log("seriesData:", seriesData);
   return (
     <>
       <Form {...form}>
@@ -666,7 +683,7 @@ export default function ChooseChart({
                               }}
                               style={{ height: 400, width: "100%" }}
                             />
-                          ) : isBarChart && chartData.data ? (
+                          ) : isBarChart && xAxisData && seriesData && xAxisData.length > 0 && seriesData.some(v => v !== undefined) ? (
                             <ReactECharts
                               option={{
                                 title: {
@@ -684,13 +701,11 @@ export default function ChooseChart({
                                 },
                                 series: [
                                   {
-                                    name: yKey,
+                                    name: yKey || "Value",
                                     type: "bar",
                                     data: seriesData,
                                     itemStyle: {
-                                      color:
-                                        chartData.customizeOptions?.BarColor ||
-                                        "#409EFF",
+                                      color: chartData.customizeOptions?.BarColor || "#409EFF",
                                       borderRadius: 4,
                                     },
                                   },
