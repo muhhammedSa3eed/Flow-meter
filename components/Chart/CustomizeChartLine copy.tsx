@@ -16,6 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -23,16 +24,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useId } from 'react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Slider } from '@/components/ui/slider';
+import { useId, useEffect, useState } from 'react';
 import { VisualizationTypes } from '@/types';
 import { Input } from '../ui/input';
 import {
-  axisTitlePositionOption,
   fontStyleTypes,
   fontWeightTypes,
   formatLabel,
   LinePalettes,
-  marginAxisTitle,
 } from '@/lib/chart-assets';
 import { Button } from '../ui/button';
 import { Trash2 } from 'lucide-react';
@@ -47,6 +48,40 @@ const CustomizeChartLine = ({
 
   activeCustomizeOptions: any;
 }) => {
+  const [xValues, setXValues] = useState<string[]>([]);
+  const [yValues, setYValues] = useState<string[]>([]);
+  const addX = () => setXValues([...xValues, '']);
+  const addY = () => setYValues([...yValues, '']);
+
+  const updateX = (index: number, value: string) => {
+    const updated = [...xValues];
+    updated[index] = value;
+    setXValues(updated);
+    updateCustomizeOption('xAxis', updated);
+  };
+
+  const updateY = (index: number, value: string) => {
+    const updated = [...yValues];
+    updated[index] = value;
+    setYValues(updated);
+    updateCustomizeOption('yAxis', updated);
+  };
+
+  const removeX = (index: number) => {
+    const updated = [...xValues];
+    updated.splice(index, 1);
+    setXValues(updated);
+    updateCustomizeOption('xAxis', updated);
+  };
+
+  const removeY = (index: number) => {
+    const updated = [...yValues];
+    updated.splice(index, 1);
+    setYValues(updated);
+    updateCustomizeOption('yAxis', updated);
+  };
+
+  const isDataValid = xValues.length === yValues.length && xValues.length > 0;
   const updateCustomizeOption = (key: string, value: any) => {
     const currentOptions = form.getValues('customizeOptions') || {};
     const updatedOptions = { ...currentOptions, [key]: value };
@@ -56,7 +91,6 @@ const CustomizeChartLine = ({
     'form.getValues(customizeOptions)',
     form.getValues('customizeOptions')
   );
-  console.log('xxxxxx=>123', { activeCustomizeOptions });
 
   const showLegendValue = useWatch({
     control: form.control,
@@ -67,7 +101,6 @@ const CustomizeChartLine = ({
     name: 'customizeOptions.textStyle',
   });
   console.log('showTextStyleValue', showTextStyleValue);
-
   if (activeCustomizeOptions['textStyle']) {
     activeCustomizeOptions['color'] = true;
     activeCustomizeOptions['fontFamily'] = true;
@@ -81,14 +114,11 @@ const CustomizeChartLine = ({
     delete activeCustomizeOptions['fontStyle'];
     delete activeCustomizeOptions['fontWeight'];
   }
-
   console.log({ activeCustomizeOptions });
   const inputFields: Record<string, 'text' | 'number' | 'color'> = {
-    'X-AxisTitle': 'text',
     color: 'color',
     fontFamily: 'text',
     fontSize: 'number',
-    'Y-AxisTitle': 'text',
   };
   const renderField = (key: string) => {
     if (inputFields[key]) {
@@ -132,7 +162,7 @@ const CustomizeChartLine = ({
           name={`customizeOptions.${key}`}
           render={({ field }: any) => (
             <FormItem>
-              <FormLabel>{formatLabel('Color Platte')}</FormLabel>
+              <FormLabel>{formatLabel(key)}</FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -176,49 +206,59 @@ const CustomizeChartLine = ({
         />
       );
     }
+    if (key === 'xAxis') {
+      return (
+        <div key={key}>
+          <Label className="mb-1 block">{formatLabel(key)} Labels</Label>
+          {xValues.map((x, index) => (
+            <div key={index} className="flex gap-2 mb-2">
+              <Input
+                value={x}
+                onChange={(e) => updateX(index, e.target.value)}
+                placeholder={`Label ${index + 1}`}
+                className="w-[200px]"
+              />
+              <Button
+                type="button"
+                className=" text-destructive bg-transparent shadow-none py-1 px-1.5 hover:bg-gray-200"
+                onClick={() => removeX(index)}
+              >
+                <Trash2 className="w-1 h-1" />
+              </Button>
+            </div>
+          ))}
+          <Button type="button" onClick={addX}>
+            + Add X
+          </Button>
+        </div>
+      );
+    }
 
-    if (key === 'X-AxisTitleMargin') {
+    if (key === 'yAxis') {
       return (
-        <SelectField
-          key={key}
-          form={form}
-          name={key}
-          options={marginAxisTitle}
-          updateCustomizeOption={updateCustomizeOption}
-        />
-      );
-    }
-    if (key === 'Y-AxisTitleMargin') {
-      return (
-        <SelectField
-          key={key}
-          form={form}
-          name={key}
-          options={marginAxisTitle}
-          updateCustomizeOption={updateCustomizeOption}
-        />
-      );
-    }
-    if (key === 'Y-AxisTitleMargin') {
-      return (
-        <SelectField
-          key={key}
-          form={form}
-          name={key}
-          options={marginAxisTitle}
-          updateCustomizeOption={updateCustomizeOption}
-        />
-      );
-    }
-    if (key === 'Y-AxisTitlePosition') {
-      return (
-        <SelectField
-          key={key}
-          form={form}
-          name={key}
-          options={axisTitlePositionOption}
-          updateCustomizeOption={updateCustomizeOption}
-        />
+        <div key={key}>
+          <Label className="mb-1 block">{formatLabel(key)} Values</Label>
+          {yValues.map((y, index) => (
+            <div key={index} className="flex gap-2 mb-2">
+              <Input
+                value={y}
+                onChange={(e) => updateY(index, e.target.value)}
+                placeholder={`Value ${index + 1}`}
+                className="w-[200px]"
+              />
+              <Button
+                type="button"
+                className=" text-destructive bg-transparent shadow-none py-1 px-1.5 hover:bg-gray-200"
+                onClick={() => removeY(index)}
+              >
+                <Trash2 className="w-1 h-1" />
+              </Button>
+            </div>
+          ))}
+          <Button type="button" onClick={addY}>
+            + Add Y
+          </Button>
+        </div>
       );
     }
   };

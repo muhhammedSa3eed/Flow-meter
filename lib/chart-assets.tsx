@@ -7,7 +7,14 @@ import {
   PieChart,
   SquareAsterisk,
   Table,
+  ChartBarStacked,
+  ChartPie,
+  ChevronDownIcon,
+  LineChartIcon,
+  Plus,
+  Radius,
 } from 'lucide-react';
+
 export const formatLabel = (label: string) =>
   label.replace(/([a-z])([A-Z])/g, '$1 $2');
 
@@ -85,27 +92,29 @@ export const CustomizationOptions: Option[] = [
   // { value: "Donut", label: "Donut" },
   // { value: "Subtitle", label: "Subtitle" },
   // { value: "BarOrientation", label: "Bar orientation" },
-  // { value: "AxisTitle", label: "Axis Title" },
-  // { value: "AXISTITLEMARGIN", label: "AXIS TITLE MARGIN" },
-  // { value: "AXISTITLEPOSITION", label: "AXIS TITLE POSITION" },
+  { value: 'X-AxisTitle', label: 'X Axis Title' },
+  { value: 'X-AxisTitleMargin', label: 'X Axis Title Margin' },
+  { value: 'Y-AxisTitle', label: 'Y Axis Title' },
+  { value: 'Y-AxisTitleMargin', label: 'Y Axis Title Margin' },
+  { value: 'Y-AxisTitlePosition', label: 'Y Axis Title Position' },
   // { value: "SortSeriesBy", label: "Sort Series By" },
-  // { value: "SortSeriesAscending", label: "Sort Series Ascending" },
+  { value: 'SortSeriesAscending', label: 'Sort Series Ascending' },
   // { value: "Show Value", label: "Show Value" },
   // { value: "StackedStyle", label: "Stacked Style" },
   // { value: "Minorticks", label: "Minor ticks" },
   // { value: "DataZoom", label: "Data Zoom" },
-  // { value: "ShowLegend", label: "Show legend" },
-  // { value: "TimeFormat", label: "Time format" },
-  // { value: "RotateXaxisLabel", label: "Rotate x axis label" },
-  // { value: "TruncateXAxis", label: "Truncate X Axis" },
+  { value: 'ShowLegend', label: 'Show legend' },
+  { value: 'TimeFormat', label: 'Time format' },
+  { value: 'RotateXaxisLabel', label: 'Rotate x axis label' },
+  { value: 'TruncateXAxis', label: 'Truncate X Axis' },
   // { value: "RichTooltip", label: "Rich tooltip" },
   // { value: "ShowPercentage", label: "Show percentage" },
   // { value: "TooltipSortByMetric", label: "Tooltip sort by metric" },
   // { value: "TooltipTimeFormat", label: "Tooltip time format" },
-  // { value: "AxisFormat", label: "Axis Format" },
+  { value: 'AxisFormat', label: 'Axis Format' },
   // { value: "LogarithmicAxis", label: "Logarithmic axis" },
   // { value: "MinorSplitLine", label: "Minor Split Line" },
-  // { value: "TruncateAxis", label: "Truncate Axis" },
+  { value: 'TruncateYAxis', label: 'Truncate Y Axis' },
 ];
 export const IconOptions = [
   { id: 1, value: 'bar', label: 'Bar Chart', icon: <BarChart size={20} /> },
@@ -120,7 +129,94 @@ export const IconOptions = [
     icon: <SquareAsterisk size={20} />,
   },
 ];
+export const aggregate: Option[] = [
+  { value: 'AVG', label: 'AVG' },
+  { value: 'COUNT', label: 'COUNT' },
+  { value: 'COUNT_DISTINCT', label: 'COUNT_DISTINCT', disable: true },
+  { value: 'MAX', label: 'MAX' },
+  { value: 'MIN', label: 'MIN' },
+  { value: 'SUM', label: 'SUM' },
+];
 
+export const RowLimit = [
+  { value: 'none', label: 'none' },
+  { value: 10, label: '10' },
+  { value: 20, label: '20' },
+  { value: 50, label: '50' },
+  { value: 100, label: '100' },
+  { value: 250, label: '250' },
+  { value: 500, label: '500' },
+  { value: 1000, label: '1000' },
+  { value: 5000, label: '5000' },
+  { value: 10000, label: '10000' },
+];
+
+export const operators: Option[] = [
+  { value: 'Equals', label: 'Equals to (=)' },
+  { value: 'NotEquals', label: 'Not Equals to (≠)' },
+  { value: 'GreaterThan', label: 'Greater Than (>)' },
+  { value: 'LessThan', label: 'Less Than (<)' },
+  { value: 'GreaterThanOrEqual', label: 'Greater  or Equal (>=)' },
+  { value: 'LessThanOrEqual', label: 'Less  or Equal (<=)' },
+  { value: 'NotNull', label: 'Not null' },
+  { value: 'In', label: 'In' },
+  { value: 'NotIn', label: 'Not in' },
+];
+
+export const ChartItems = [
+  {
+    value: 'table',
+    label: 'Table',
+    icon: Table,
+  },
+  {
+    value: 'line chart',
+    label: 'Line chart',
+    icon: LineChartIcon,
+  },
+  {
+    value: 'piechart',
+    label: 'Pie chart',
+    icon: ChartPie,
+  },
+  {
+    value: 'bar chart',
+    label: 'Bar chart',
+    icon: ChartBarStacked,
+  },
+  {
+    value: 'bignumber',
+    label: 'Big number',
+    icon: Radius,
+  },
+];
+
+// export const marginXAxisTitle = [
+//   { value: 'none', label: 'none' },
+//   { value: 15, label: '15' },
+//   { value: 30, label: '30' },
+//   { value: 50, label: '50' },
+//   { value: 75, label: '75' },
+//   { value: 100, label: '100' },
+//   { value: 125, label: '125' },
+//   { value: 150, label: '150' },
+//   { value: 175, label: '175' },
+//   { value: 200, label: '200' },
+// ];
+export const marginAxisTitle = [
+  'none',
+  '15',
+  '30',
+  '50',
+  '75',
+  '100',
+  '125',
+  '150',
+  '175',
+  '200',
+];
+
+export const axisTitlePositionOption = ['Left', 'Top'];
 // export const DisplayAndHideOptions: Option[] = [
 //   { value: 'Metrics', label: 'Metrics' },
 //   { value: 'Dimensions', label: 'Dimensions' },

@@ -1,5 +1,5 @@
 import React, { useEffect, useId, useState } from 'react';
-import { Label } from '@radix-ui/react-dropdown-menu';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -26,20 +26,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import MultipleSelector, { Option } from '@/components/ui/multiselect';
-import {
-  AreaChart,
-  BarChart,
-  ChartBarStacked,
-  ChartPie,
-  ChevronDownIcon,
-  LineChart,
-  LineChartIcon,
-  PieChart,
-  Plus,
-  Radius,
-  SquareAsterisk,
-  Table,
-} from 'lucide-react';
+import { ChevronDownIcon, Plus } from 'lucide-react';
 import { Chart, Dataset, DistinctValue, VisualizationTypes } from '@/types';
 import { Textarea } from '../ui/textarea';
 import { Checkbox } from '../ui/checkbox';
@@ -52,81 +39,12 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { Separator } from '../ui/separator';
-const aggregate: Option[] = [
-  { value: 'AVG', label: 'AVG' },
-  { value: 'COUNT', label: 'COUNT' },
-  { value: 'COUNT_DISTINCT', label: 'COUNT_DISTINCT', disable: true },
-  { value: 'MAX', label: 'MAX' },
-  { value: 'MIN', label: 'MIN' },
-  { value: 'SUM', label: 'SUM' },
-];
-
-const RowLimit = [
-  { value: 'none', label: 'none' },
-  { value: 10, label: '10' },
-  { value: 20, label: '20' },
-  { value: 50, label: '50' },
-  { value: 100, label: '100' },
-  { value: 250, label: '250' },
-  { value: 500, label: '500' },
-  { value: 1000, label: '1000' },
-  { value: 5000, label: '5000' },
-  { value: 10000, label: '10000' },
-];
-
-const operators: Option[] = [
-  { value: 'Equals', label: 'Equals to (=)' },
-  { value: 'NotEquals', label: 'Not Equals to (≠)' },
-  { value: 'GreaterThan', label: 'Greater Than (>)' },
-  { value: 'LessThan', label: 'Less Than (<)' },
-  { value: 'GreaterThanOrEqual', label: 'Greater  or Equal (>=)' },
-  { value: 'LessThanOrEqual', label: 'Less  or Equal (<=)' },
-  { value: 'NotNull', label: 'Not null' },
-  { value: 'In', label: 'In' },
-  { value: 'NotIn', label: 'Not in' },
-];
-
-export const ChartItems = [
-  {
-    value: 'table',
-    label: 'Table',
-    icon: Table,
-  },
-  {
-    value: 'line chart',
-    label: 'Line chart',
-    icon: LineChartIcon,
-  },
-  {
-    value: 'piechart',
-    label: 'Pie chart',
-    icon: ChartPie,
-  },
-  {
-    value: 'bar chart',
-    label: 'Bar chart',
-    icon: ChartBarStacked,
-  },
-  {
-    value: 'bignumber',
-    label: 'Big number',
-    icon: Radius,
-  },
-];
-
-export const IconOptions = [
-  { id: 1, value: 'bar', label: 'Bar Chart', icon: <BarChart size={20} /> },
-  { id: 2, value: 'pie', label: 'Pie Chart', icon: <PieChart size={20} /> },
-  { id: 3, value: 'line', label: 'Line Chart', icon: <LineChart size={20} /> },
-  { id: 4, value: 'area', label: 'Area Chart', icon: <AreaChart size={20} /> },
-  { id: 5, value: 'table', label: 'Table', icon: <Table size={20} /> },
-  {
-    id: 6,
-    value: 'bignumber',
-    label: 'Big number',
-    icon: <SquareAsterisk size={20} />,
-  },
-];
+import {
+  aggregate,
+  IconOptions,
+  operators,
+  RowLimit,
+} from '@/lib/chart-assets';
 
 type ChartFormValues = z.infer<typeof ChartSchema>;
 
@@ -156,14 +74,18 @@ export default function DataForm({
   const [filterOptions, setFilterOptions] = useState<Option[]>([]);
   const [selectedFilterColumn, setSelectedFilterColumn] =
     useState<Option | null>(null);
-  // const [value, setValue] = useState<string>('');
+  const [showXAxis, setShowXAxis] = useState(false);
   const [selectedMetricsColumn, setSelectedMetricsColumn] =
     useState<Option | null>(null);
   const [selectedOperator, setSelectedOperator] = useState<Option | null>(null);
   const [isPopoverDimensionsOpen, setIsPopoverDimensionsOpen] = useState(false);
   const [isPopoverMetricsOpen, setIsPopoverMetricsOpen] = useState(false);
+  const [isPopoverXAxisOpen, setIsPopoverXAxisOpen] = useState(false);
   const [selectedDimensionColumn, setSelectedDimensionColumn] =
     useState<Option | null>(null);
+  const [selectedXAxisColumn, setSelectedXAxisColumn] = useState<Option | null>(
+    null
+  );
   const [isPopoveFiltersOpen, setIsPopoverFiltersOpen] = useState(false);
 
   const [selectedFilterValues, setSelectedFilterValues] = useState<Option[]>(
@@ -220,7 +142,7 @@ export default function DataForm({
       label: val,
     }));
     setFilterOptions(values);
-  }, [chartData, columnOptions, operators]);
+  }, [chartData, columnOptions]);
   // console.log('filters=====>>>>', { filterOptions });
   // useEffect(() => {
   //   if (selectedDataset) {
@@ -250,7 +172,20 @@ export default function DataForm({
   const metrics = form.watch('metrics') || [];
   const filters = form.watch('dynamicFilters') || [];
   const dimensions = form.watch('dimensions') || [];
+  const xAxis = form.watch('xAxis') || {};
 
+  const handleSaveXAxis = () => {
+    if (selectedXAxisColumn) {
+      const newXAxis = {
+        column: selectedXAxisColumn.value,
+        forceCategorical: false,
+      };
+
+      form.setValue('xAxis', newXAxis);
+      setSelectedXAxisColumn(null);
+    }
+    setIsPopoverXAxisOpen(false);
+  };
   const handleSaveDimensions = () => {
     if (selectedDimensionColumn) {
       form.setValue('dimensions', [
@@ -290,18 +225,6 @@ export default function DataForm({
       values: filterValues,
       customSql: '',
     };
-    // const newFilter = {
-    //   // id: 0,
-    //   columnName: selectedFilterColumn.value,
-    //   operator: selectedOperator.value,
-    //   values: filterValues,
-    //   // isHavingFilter: true,
-    //   // timeRangeType: 'NoFilter',
-    //   // timeRangeValue: 'string',
-    //   // fromDate: '2025-07-19T12:21:25.157Z',
-    //   // toDate: '2025-07-19T12:21:25.157Z',
-    //   // customSql: '',
-    // };
 
     const updatedFilters = (form.watch('dynamicFilters') || []).filter(
       (f: { columnName: string }) => f.columnName !== selectedFilterColumn.value
@@ -344,6 +267,7 @@ export default function DataForm({
   const showDimensionsSection = displayFields.includes('Dimensions');
   const showRowLimitSection = displayFields.includes('RowLimit');
   const showSortBySection = displayFields.includes('SortBy');
+  const showXAxisSection = selectedTypeData?.type == 'line';
 
   const visualizationType = chartData?.visualizationType;
 
@@ -450,8 +374,27 @@ export default function DataForm({
                             onSelect={(currentValue) => {
                               const selectedId = Number(currentValue);
                               field.onChange(selectedId);
+
+                              const selectedItem = VisualizationTypeData.find(
+                                (item) => item.id === selectedId
+                              );
+                              console.log('Selected item:', selectedItem);
+
+                              setShowXAxis(selectedItem?.type === 'line');
                               setOpen(false);
                             }}
+                            // onSelect={(currentValue) => {
+                            //   const selectedId = Number(currentValue);
+                            //   field.onChange(selectedId);
+                            //   const selectedLine = VisualizationTypeData.find(
+                            //     (i) => i.id === selectedId
+                            //   );
+                            //   console.log({ selectedLine });
+                            //   if (selectedLine?.type == 'line')
+                            //     setShowXAxis(true);
+                            //   else setShowXAxis(false);
+                            //   setOpen(false);
+                            // }}
                             className="flex items-center justify-between"
                           >
                             <div className="flex items-center gap-2">
@@ -486,6 +429,256 @@ export default function DataForm({
   </div>
 )}
       <Separator /> */}
+      {/* xAxis Show Section */}
+      {/* {showXAxis && (
+        <FormField
+          control={form.control}
+          name="xAxis"
+          render={({ field }) => (
+            <FormItem className="mt-2 w-full flex-1">
+              <FormLabel>X-axis</FormLabel>
+              <FormControl>
+                <div className="*:not-first:mt-2">
+                  <Label>Select X-axis</Label>
+                  <div className="flex items-center gap-2">
+                    <MultipleSelector
+                      value={
+                        field.value?.map((axis: any) => ({
+                          value: axis,
+                          label: axis,
+                        })) || []
+                      }
+                      creatable
+                      onChange={(values) => {
+                        const newAxis = values.map((val) => val.value);
+                        field.onChange(newAxis);
+                      }}
+                      placeholder="Select X-axis..."
+                      hideClearAllButton
+                      hidePlaceholderWhenSelected
+                      emptyIndicator={
+                        <p className="text-center text-sm">
+                          No X-axis selected
+                        </p>
+                      }
+                    />
+                    <Popover
+                      open={isPopoverXAxisOpen}
+                      onOpenChange={setIsPopoverXAxisOpen}
+                    >
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-10 w-10"
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-96">
+                        <Tabs defaultValue="simple">
+                          <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value="simple">Simple</TabsTrigger>
+                            <TabsTrigger value="custom">Custom SQL</TabsTrigger>
+                          </TabsList>
+                          <TabsContent value="simple">
+                            <div className="space-y-4">
+                              <div>
+                                <Select
+                                  value={selectedXAxisColumn?.value || ''}
+                                  onValueChange={(value) => {
+                                    const selected = columnOptions.find(
+                                      (item: any) => item.value === value
+                                    );
+                                    setSelectedXAxisColumn(selected || null);
+                                  }}
+                                >
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select Column(s)" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectGroup>
+                                      {columnOptions.map((item: any) => (
+                                        <SelectItem
+                                          key={item.value}
+                                          value={item.value}
+                                        >
+                                          {item.label}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectGroup>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </div>
+                          </TabsContent>
+                          <TabsContent value="custom">
+                            <div className="space-y-4">
+                              <div className="group relative">
+                                <span className="inline-flex bg-background px-2">
+                                  Enter Custom SQL Query
+                                </span>
+                                <Textarea id={id} placeholder="" />
+                              </div>{' '}
+                            </div>
+                          </TabsContent>
+                        </Tabs>
+                        <div className="flex justify-end gap-2 mt-4">
+                          <Button
+                            variant="outline"
+                            onClick={() => setIsPopoverXAxisOpen(false)}
+                          >
+                            Cancel
+                          </Button>
+                          <Button onClick={handleSaveXAxis}>Save</Button>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      )} */}
+      {showXAxisSection && (
+        <FormField
+          control={form.control}
+          name="xAxis"
+          render={({ field }) => (
+            <FormItem className="mt-2 w-full flex-1">
+              <FormLabel>X-axis</FormLabel>
+              <FormControl>
+                <div className="*:not-first:mt-2">
+                  <Label>Select X-axis</Label>
+                  <div className="flex items-center gap-2">
+                    <MultipleSelector
+                      value={
+                        field.value
+                          ? [
+                              {
+                                value: field.value.column,
+                                label: field.value.column,
+                              },
+                            ]
+                          : []
+                      }
+                      creatable
+                      onChange={(values) => {
+                        const selectedValue = values[0]?.value || '';
+                        field.onChange({
+                          column: selectedValue,
+                          forceCategorical: false,
+                        });
+                      }}
+                      maxSelected={1}
+                      placeholder="Select X-axis..."
+                      hideClearAllButton
+                      hidePlaceholderWhenSelected
+                      emptyIndicator={
+                        <p className="text-center text-sm">
+                          No X-axis selected
+                        </p>
+                      }
+                    />
+
+                    <Popover
+                      open={isPopoverXAxisOpen}
+                      onOpenChange={setIsPopoverXAxisOpen}
+                    >
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-10 w-10"
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-96">
+                        <Tabs defaultValue="simple">
+                          <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value="simple">Simple</TabsTrigger>
+                            <TabsTrigger value="custom">Custom SQL</TabsTrigger>
+                          </TabsList>
+                          <TabsContent value="simple">
+                            <div className="space-y-4">
+                              <div>
+                                <Select
+                                  value={selectedXAxisColumn?.value || ''}
+                                  onValueChange={(value) => {
+                                    const selected = columnOptions.find(
+                                      (item: any) => item.value === value
+                                    );
+                                    setSelectedXAxisColumn(selected || null);
+                                  }}
+                                >
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select Column(s)" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectGroup>
+                                      {columnOptions.map((item: any) => (
+                                        <SelectItem
+                                          key={item.value}
+                                          value={item.value}
+                                        >
+                                          {item.label}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectGroup>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </div>
+                          </TabsContent>
+                          <TabsContent value="custom">
+                            <div className="space-y-4">
+                              <div className="group relative">
+                                <span className="inline-flex bg-background px-2">
+                                  Enter Custom SQL Query
+                                </span>
+                                <Textarea id={id} placeholder="" />
+                              </div>
+                            </div>
+                          </TabsContent>
+                        </Tabs>
+                        <div className="flex justify-end gap-2 mt-4">
+                          <Button
+                            variant="outline"
+                            onClick={() => setIsPopoverXAxisOpen(false)}
+                          >
+                            Cancel
+                          </Button>
+                          <Button onClick={handleSaveXAxis}>Save</Button>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  {field.value?.column && (
+                    <div className="flex items-center space-x-2 mt-2">
+                      <Checkbox
+                        id={id}
+                        checked={field.value.forceCategorical}
+                        onCheckedChange={(checked) => {
+                          field.onChange({
+                            ...field.value,
+                            forceCategorical: checked === true,
+                          });
+                        }}
+                      />
+                      <Label htmlFor={id}>Force categorical</Label>
+                    </div>
+                  )}
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      )}
+
       {/* Dimensions Section */}
       {showDimensionsSection && (
         <FormField

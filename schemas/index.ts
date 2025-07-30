@@ -317,6 +317,9 @@ export const ChartSchema = z.object({
   // Filters
 
   dynamicFilters: z.any().optional(),
+  xAxis: z.any().optional(),
+  xAxisSortBy: z.string().optional(),
+  xAxisSortAscending: z.any().optional(),
   // .array(
   //   z.object({
   //     columnName: z.any().optional(),

@@ -30,10 +30,7 @@ const CustomizeChartWrapper = ({
       (acc, key) => ({ ...acc, [key]: true }),
       {}
     ) || {};
-  console.log(
-    'selectedTypeData?.optionsFields',
-    selectedTypeData?.optionsFields
-  );
+
   return (
     <div>
       {selectedTypeData?.type == 'pie' ? (

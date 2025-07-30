@@ -95,7 +95,7 @@ export default function VisualizationTypesTable({
 }: {
   VisualizationTypesData: VisualizationTypes[];
 }) {
-  console.log({ VisualizationTypesData });
+  // console.log({ VisualizationTypesData });
   const id = useId();
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState({});

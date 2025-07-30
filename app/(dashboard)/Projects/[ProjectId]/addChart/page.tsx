@@ -32,14 +32,11 @@ export default async function AddChart({
   }>;
 }) {
   const ProjectId = (await params).ProjectId;
-
- 
   // console.log('dataset :', datasetId);
   const VisualizationTypeData = await getAllVisualizationTypes();
 
   return (
     <>
-      
       <ProjectIdTabs projectId={ProjectId} />
       <Label className="font-bold my-2">Chart</Label>
       <ChooseChart VisualizationTypeData={VisualizationTypeData} isAddChart={true} />

@@ -229,7 +229,7 @@ export default function CustomizeChart({
     delete activeCustomizeOptions['PutLabelsOutside'];
     delete activeCustomizeOptions['LabelLine'];
   }
- 
+
   const inputFields: Record<string, 'text' | 'number'> = {
     PercentageThreshold: 'number',
     Left: 'text',
@@ -249,7 +249,6 @@ export default function CustomizeChart({
     inactiveBorderColor: 'text',
     inactiveBorderWidth: 'text',
     Margin: 'number',
-
     Subtitle: 'text',
     AxisTitle: 'text',
     AXISTITLEMARGIN: 'number',
@@ -259,6 +258,7 @@ export default function CustomizeChart({
     TooltipTimeFormat: 'text',
     AxisFormat: 'text',
   };
+  
   const renderField = (key: string) => {
     if (inputFields[key]) {
       return (
