@@ -7,6 +7,7 @@ import { z } from 'zod';
 import CustomizeChart from './CustomizeChart';
 import CustomizeChartBigNumber from './CustomizeChartBigNumber';
 import CustomizeChartLine from './CustomizeChartLine';
+import CustomizeChartBar from './CustomizeChartBar';
 
 const CustomizeChartWrapper = ({
   form,
@@ -47,6 +48,12 @@ const CustomizeChartWrapper = ({
         />
       ) : selectedTypeData?.type == 'line' ? (
         <CustomizeChartLine
+          VisualizationTypeData={VisualizationTypeData}
+          form={form}
+          activeCustomizeOptions={activecustomizeOptions}
+        />
+      ) : selectedTypeData?.type == 'bar' ? (
+        <CustomizeChartBar
           VisualizationTypeData={VisualizationTypeData}
           form={form}
           activeCustomizeOptions={activecustomizeOptions}
