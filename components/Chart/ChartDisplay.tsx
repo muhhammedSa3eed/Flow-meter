@@ -5,11 +5,25 @@ import ReactECharts from 'echarts-for-react';
 import EmtyChart from '../motion/EmtyChart';
 import { motion } from 'framer-motion';
 
-const ChartDisplay = ({ chartData, createdChartId }: { chartData: any; createdChartId?: number | null }) => {
-  const isBigNumber = chartData?.visualizationType?.type?.toLowerCase().includes('bignumber');
-  const isPieChart = chartData?.visualizationType?.type?.toLowerCase().includes('pie');
-  const isBarChart = chartData?.visualizationType?.type?.toLowerCase().includes('bar');
-
+const ChartDisplay = ({
+  chartData,
+  createdChartId,
+}: {
+  chartData: any;
+  createdChartId?: number | null;
+}) => {
+  const isBigNumber = chartData?.visualizationType?.type
+    ?.toLowerCase()
+    .includes('bignumber');
+  const isPieChart = chartData?.visualizationType?.type
+    ?.toLowerCase()
+    .includes('pie');
+  const isBarChart = chartData?.visualizationType?.type
+    ?.toLowerCase()
+    .includes('bar');
+  const isLineChart = chartData?.visualizationType?.type
+    ?.toLowerCase()
+    .includes('line');
   const pieChartData = chartData?.data?.map((item: any) => {
     const keys = Object.keys(item);
     return {
@@ -20,13 +34,16 @@ const ChartDisplay = ({ chartData, createdChartId }: { chartData: any; createdCh
 
   const dataKeys = chartData?.data?.[0] ? Object.keys(chartData.data[0]) : [];
 
-  const xKey = chartData?.dimensions?.[0] && dataKeys.includes(chartData.dimensions[0])
-    ? chartData.dimensions[0]
-    : dataKeys[0];
+  const xKey =
+    chartData?.dimensions?.[0] && dataKeys.includes(chartData.dimensions[0])
+      ? chartData.dimensions[0]
+      : dataKeys[0];
 
-  const yKey = chartData?.metrics?.[0]?.columnName && dataKeys.includes(chartData.metrics[0].columnName)
-    ? chartData.metrics[0].columnName
-    : dataKeys.find((k) => k !== xKey);
+  const yKey =
+    chartData?.metrics?.[0]?.columnName &&
+    dataKeys.includes(chartData.metrics[0].columnName)
+      ? chartData.metrics[0].columnName
+      : dataKeys.find((k) => k !== xKey);
 
   const xAxisData = chartData?.data?.map((item: any) => item?.[xKey] ?? 'N/A');
   const seriesData = chartData?.data?.map((item: any) => {
@@ -46,7 +63,9 @@ const ChartDisplay = ({ chartData, createdChartId }: { chartData: any; createdCh
           transition={{ duration: 0.6, delay: 0.2 }}
         >
           <p className="text-base text-muted-foreground font-medium">
-            {createdChartId ? 'Loading updated chart...' : 'Welcome to Neuss 👋'}
+            {createdChartId
+              ? 'Loading updated chart...'
+              : 'Welcome to Neuss 👋'}
           </p>
           <p className="text-sm text-muted-foreground">
             {createdChartId
@@ -61,7 +80,11 @@ const ChartDisplay = ({ chartData, createdChartId }: { chartData: any; createdCh
   if (isBigNumber) {
     return (
       <div className="text-center space-y-2">
-        <div className={`font-bold ${chartData.customizeOptions?.BigNumberFontSize || 'text-8xl'}`}>
+        <div
+          className={`font-bold ${
+            chartData.customizeOptions?.BigNumberFontSize || 'text-8xl'
+          }`}
+        >
           {chartData.customizeOptions?.CurrencyFormat === 'Prefix'
             ? chartData.customizeOptions?.Currency || ''
             : ''}
@@ -100,7 +123,9 @@ const ChartDisplay = ({ chartData, createdChartId }: { chartData: any; createdCh
             {
               name: chartData.metrics?.[0]?.columnName || 'Value',
               type: 'pie',
-              radius: chartData.customizeOptions?.Donut ? ['40%', '70%'] : '50%',
+              radius: chartData.customizeOptions?.Donut
+                ? ['40%', '70%']
+                : '50%',
               roseType: chartData.customizeOptions?.RoseType || false,
               data: pieChartData,
               emphasis: {
@@ -118,7 +143,11 @@ const ChartDisplay = ({ chartData, createdChartId }: { chartData: any; createdCh
     );
   }
 
-  if (isBarChart && xAxisData?.length > 0 && seriesData?.some((v: any) => v !== undefined)) {
+  if (
+    isBarChart &&
+    xAxisData?.length > 0 &&
+    seriesData?.some((v: any) => v !== undefined)
+  ) {
     return (
       <ReactECharts
         option={{
@@ -151,7 +180,43 @@ const ChartDisplay = ({ chartData, createdChartId }: { chartData: any; createdCh
       />
     );
   }
-
+  if (
+    isLineChart &&
+    xAxisData?.length > 0 &&
+    seriesData?.some((v: any) => v !== undefined)
+  ) {
+    return (
+      <ReactECharts
+        option={{
+          title: {
+            text: chartData.name || 'Line Chart',
+            left: 'center',
+          },
+          tooltip: { trigger: 'axis' },
+          xAxis: {
+            type: 'category',
+            data: xAxisData,
+            axisLabel: { rotate: 45 },
+          },
+          yAxis: {
+            type: 'value',
+          },
+          series: [
+            {
+              name: yKey || 'Value',
+              type: 'line',
+              data: seriesData,
+              itemStyle: {
+                color: chartData.customizeOptions?.BarColor || '#409EFF',
+                borderRadius: 4,
+              },
+            },
+          ],
+        }}
+        style={{ height: 400, width: '100%' }}
+      />
+    );
+  }
   return (
     <div className="text-muted-foreground text-sm italic">
       No data available to display.
