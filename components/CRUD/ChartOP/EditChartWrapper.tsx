@@ -58,8 +58,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 
-import CustomizeChart from '@/components/Chart/CustomizeChart';
-import DataForm, { IconOptions } from '@/components/ChartOptions/DataForm';
+import DataForm from '@/components/ChartOptions/DataForm';
 import {
   Table,
   TableBody,
@@ -77,6 +76,7 @@ import { useRouter } from 'next/navigation';
 import { Option } from '@/components/ui/multiselect';
 import CustomizeChartBigNumber from '@/components/Chart/CustomizeChartBigNumber';
 import CustomizeChartWrapper from '@/components/Chart/CustomizeChartWrapper';
+import ChartDisplay from '@/components/Chart/ChartDisplay';
 
 export default function EditChartWrapper({
   ProjectId,
@@ -407,49 +407,49 @@ export default function EditChartWrapper({
     'chartData.visualizationType?.type',
     chartData.visualizationType?.type
   );
-  const chartTitle = chartData?.name || 'Chart Title';
-  const chartSubtitle = chartData?.description || '';
+  // const chartTitle = chartData?.name || 'Chart Title';
+  // const chartSubtitle = chartData?.description || '';
 
-  const formatData = (value: any) => {
-    const numberFormat = chartData?.customizeOptions?.NumberFormat || 'none';
-    const dateFormat = chartData?.customizeOptions?.DateFormat || 'YYYY-MM-DD';
-    const forceDateFormat = chartData?.customizeOptions?.ForceDateFormat;
+  // const formatData = (value: any) => {
+  //   const numberFormat = chartData?.customizeOptions?.NumberFormat || 'none';
+  //   const dateFormat = chartData?.customizeOptions?.DateFormat || 'YYYY-MM-DD';
+  //   const forceDateFormat = chartData?.customizeOptions?.ForceDateFormat;
 
-    if (forceDateFormat && !isNaN(Date.parse(value))) {
-      const date = new Date(value);
-      switch (dateFormat) {
-        case 'YYYY-MM-DD':
-          return date.toISOString().split('T')[0];
-        case 'DD/MM/YYYY':
-          return date.toLocaleDateString('en-GB');
-        case 'MM/DD/YYYY':
-          return date.toLocaleDateString('en-US');
-        case 'DD MMM YYYY':
-          return date.toLocaleDateString('en-GB', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric',
-          });
-        default:
-          return date.toISOString().split('T')[0];
-      }
-    }
+  //   if (forceDateFormat && !isNaN(Date.parse(value))) {
+  //     const date = new Date(value);
+  //     switch (dateFormat) {
+  //       case 'YYYY-MM-DD':
+  //         return date.toISOString().split('T')[0];
+  //       case 'DD/MM/YYYY':
+  //         return date.toLocaleDateString('en-GB');
+  //       case 'MM/DD/YYYY':
+  //         return date.toLocaleDateString('en-US');
+  //       case 'DD MMM YYYY':
+  //         return date.toLocaleDateString('en-GB', {
+  //           day: '2-digit',
+  //           month: 'short',
+  //           year: 'numeric',
+  //         });
+  //       default:
+  //         return date.toISOString().split('T')[0];
+  //     }
+  //   }
 
-    if (typeof value === 'number') {
-      switch (numberFormat) {
-        case 'comma':
-          return value.toLocaleString('en-US');
-        case 'dot':
-          return value.toLocaleString('de-DE');
-        case 'space':
-          return value.toLocaleString('fr-FR').replace(/,/g, ' ');
-        default:
-          return value;
-      }
-    }
+  //   if (typeof value === 'number') {
+  //     switch (numberFormat) {
+  //       case 'comma':
+  //         return value.toLocaleString('en-US');
+  //       case 'dot':
+  //         return value.toLocaleString('de-DE');
+  //       case 'space':
+  //         return value.toLocaleString('fr-FR').replace(/,/g, ' ');
+  //       default:
+  //         return value;
+  //     }
+  //   }
 
-    return value;
-  };
+  //   return value;
+  // };
 
   return (
     <>
@@ -493,132 +493,128 @@ export default function EditChartWrapper({
           >
             <ResizablePanel defaultSize={25} minSize={20} className="min-w-0">
               <ScrollArea className="h-full w-full">
-                <div className="p-6">
-                  <span className="font-semibold">
-                    <FormField
-                      control={form.control}
-                      name="datasetId"
-                      render={({ field }) => (
-                        <FormItem className="group relative mb-5">
-                          <div className="*:not-first:mt-2">
-                            <Label htmlFor={id}>Dataset</Label>
-                            <Popover
-                              open={openDataset}
-                              onOpenChange={setOpenDataset}
-                            >
-                              <PopoverTrigger asChild>
-                                <Button
-                                  id={id}
-                                  variant="outline"
-                                  role="combobox"
-                                  aria-expanded={open}
-                                  className="bg-background hover:bg-background border-input w-full justify-between px-3 font-normal outline-offset-0 outline-none focus-visible:outline-[3px]"
-                                >
-                                  {field.value ? (
-                                    <span className="flex min-w-0 items-center gap-2">
-                                      <span className="truncate">
-                                        {
-                                          databases.find(
-                                            (item) => item.id === field.value
-                                          )?.name
-                                        }
-                                      </span>
-                                    </span>
-                                  ) : (
-                                    <span className="text-muted-foreground">
-                                      Select dataset
-                                    </span>
-                                  )}
-                                  <ChevronDownIcon
-                                    size={16}
-                                    className="text-muted-foreground/80 shrink-0"
-                                    aria-hidden="true"
-                                  />
-                                </Button>
-                              </PopoverTrigger>
-                              <PopoverContent
-                                className="border-input w-full min-w-[var(--radix-popper-anchor-width)] p-0"
-                                align="start"
+                <div className="p-6 font-semibold">
+                  <FormField
+                    control={form.control}
+                    name="datasetId"
+                    render={({ field }) => (
+                      <FormItem className="group relative mb-5">
+                        <div className="*:not-first:mt-2">
+                          <Label htmlFor={id}>Dataset</Label>
+                          <Popover
+                            open={openDataset}
+                            onOpenChange={setOpenDataset}
+                          >
+                            <PopoverTrigger asChild>
+                              <Button
+                                id={id}
+                                variant="outline"
+                                role="combobox"
+                                aria-expanded={open}
+                                className="bg-background hover:bg-background border-input w-full justify-between px-3 font-normal outline-offset-0 outline-none focus-visible:outline-[3px]"
                               >
-                                <Command>
-                                  <CommandInput placeholder="Search databases..." />
-                                  <CommandList>
-                                    <CommandEmpty>
-                                      No dataset found.
-                                    </CommandEmpty>
-                                    <CommandGroup>
-                                      {databases.map((item) => (
-                                        <CommandItem
-                                          key={item.id}
-                                          value={item.id.toString()}
-                                          onSelect={(currentValue: string) => {
-                                            const selectedId =
-                                              Number(currentValue);
-                                            setSelectedDataset(selectedId);
-                                            field.onChange(selectedId);
-                                            setOpenDataset(false);
-                                          }}
-                                          className="flex items-center justify-between"
-                                        >
-                                          <div className="flex items-center gap-2">
-                                            {item.name}
-                                          </div>
-                                          <span className="text-muted-foreground text-xs">
-                                            {item.id.toLocaleString()}
-                                          </span>
-                                        </CommandItem>
-                                      ))}
-                                    </CommandGroup>
-                                  </CommandList>
-                                </Command>
-                              </PopoverContent>
-                            </Popover>
-                          </div>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Accordion
-                      type="single"
-                      collapsible
-                      className="w-full px-3"
-                      defaultValue="item-2"
-                    >
-                      <AccordionItem value="item-2">
-                        <AccordionTrigger>Columns</AccordionTrigger>
-                        <AccordionContent>
-                          {fieldsAndTypes ? (
-                            <div className="space-y-2">
-                              {Object.entries(fieldsAndTypes).map(
-                                ([field, type]) => (
-                                  <div
-                                    key={field}
-                                    className="flex items-center justify-between"
-                                  >
-                                    <div className="flex items-center gap-2">
-                                      <Tooltip>
-                                        <TooltipTrigger>
-                                          {getIconForType(type)}
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                          <p>Type: {type}</p>
-                                        </TooltipContent>
-                                      </Tooltip>
-                                      <span>{field}</span>
-                                    </div>
+                                {field.value ? (
+                                  <span className="flex min-w-0 items-center gap-2">
+                                    <span className="truncate">
+                                      {
+                                        databases.find(
+                                          (item) => item.id === field.value
+                                        )?.name
+                                      }
+                                    </span>
+                                  </span>
+                                ) : (
+                                  <span className="text-muted-foreground">
+                                    Select dataset
+                                  </span>
+                                )}
+                                <ChevronDownIcon
+                                  size={16}
+                                  className="text-muted-foreground/80 shrink-0"
+                                  aria-hidden="true"
+                                />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent
+                              className="border-input w-full min-w-[var(--radix-popper-anchor-width)] p-0"
+                              align="start"
+                            >
+                              <Command>
+                                <CommandInput placeholder="Search databases..." />
+                                <CommandList>
+                                  <CommandEmpty>No dataset found.</CommandEmpty>
+                                  <CommandGroup>
+                                    {databases.map((item) => (
+                                      <CommandItem
+                                        key={item.id}
+                                        value={item.id.toString()}
+                                        onSelect={(currentValue: string) => {
+                                          const selectedId =
+                                            Number(currentValue);
+                                          setSelectedDataset(selectedId);
+                                          field.onChange(selectedId);
+                                          setOpenDataset(false);
+                                        }}
+                                        className="flex items-center justify-between"
+                                      >
+                                        <div className="flex items-center gap-2">
+                                          {item.name}
+                                        </div>
+                                        <span className="text-muted-foreground text-xs">
+                                          {item.id.toLocaleString()}
+                                        </span>
+                                      </CommandItem>
+                                    ))}
+                                  </CommandGroup>
+                                </CommandList>
+                              </Command>
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Accordion
+                    type="single"
+                    collapsible
+                    className="w-full px-3"
+                    defaultValue="item-2"
+                  >
+                    <AccordionItem value="item-2">
+                      <AccordionTrigger>Columns</AccordionTrigger>
+                      <AccordionContent>
+                        {fieldsAndTypes ? (
+                          <div className="space-y-2">
+                            {Object.entries(fieldsAndTypes).map(
+                              ([field, type]) => (
+                                <div
+                                  key={field}
+                                  className="flex items-center justify-between"
+                                >
+                                  <div className="flex items-center gap-2">
+                                    <Tooltip>
+                                      <TooltipTrigger>
+                                        {getIconForType(type)}
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>Type: {type}</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                    <span>{field}</span>
                                   </div>
-                                )
-                              )}
-                            </div>
-                          ) : (
-                            <span className="text-muted-foreground">
-                              No columns selected.
-                            </span>
-                          )}
-                        </AccordionContent>
-                      </AccordionItem>
-                    </Accordion>
-                  </span>
+                                </div>
+                              )
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-muted-foreground">
+                            No columns selected.
+                          </span>
+                        )}
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
                 </div>
               </ScrollArea>
             </ResizablePanel>
@@ -628,50 +624,45 @@ export default function EditChartWrapper({
             <ResizablePanel defaultSize={25} minSize={20} className="min-w-0">
               <ScrollArea className="h-full w-full">
                 <div className="p-6">
-                  <span className="font-semibold">
-                    <Tabs defaultValue="data" className="w-full">
-                      <TabsList className="flex w-full">
-                        <TabsTrigger
-                          value="data"
-                          className="flex-1 text-center"
-                        >
-                          Data
-                        </TabsTrigger>
-                        <TabsTrigger
-                          value="customize"
-                          className="flex-1 text-center"
-                        >
-                          Customize
-                        </TabsTrigger>
-                      </TabsList>
-                      <TabsContent value="data" className="py-3">
-                        <DataForm
-                          chartData={chartData}
-                          form={form}
-                          selectedDataset={selectedDataset}
-                          VisualizationTypeData={VisualizationTypeData}
-                          columnOptions={columnOptions}
-                        />
-                      </TabsContent>
-                      <TabsContent value="customize">
-                        {/* <CustomizeChart
+                  <Tabs defaultValue="data" className="w-full">
+                    <TabsList className="flex w-full">
+                      <TabsTrigger value="data" className="flex-1 text-center">
+                        Data
+                      </TabsTrigger>
+                      <TabsTrigger
+                        value="customize"
+                        className="flex-1 text-center"
+                      >
+                        Customize
+                      </TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="data" className="py-3">
+                      <DataForm
+                        chartData={chartData}
+                        form={form}
+                        selectedDataset={selectedDataset}
+                        VisualizationTypeData={VisualizationTypeData}
+                        columnOptions={columnOptions}
+                      />
+                    </TabsContent>
+                    <TabsContent value="customize">
+                      {/* <CustomizeChart
                           chartData={chartData}
                           VisualizationTypeData={VisualizationTypeData}
                           form={form}
                         /> */}
-                        {/* <CustomizeChartBigNumber
+                      {/* <CustomizeChartBigNumber
                           chartData={chartData}
                           VisualizationTypeData={VisualizationTypeData}
                           form={form}
                         /> */}
-                        <CustomizeChartWrapper
-                          // chartData={chartData}
-                          VisualizationTypeData={VisualizationTypeData}
-                          form={form}
-                        />
-                      </TabsContent>
-                    </Tabs>
-                  </span>
+                      <CustomizeChartWrapper
+                        // chartData={chartData}
+                        VisualizationTypeData={VisualizationTypeData}
+                        form={form}
+                      />
+                    </TabsContent>
+                  </Tabs>
                 </div>
                 <div className="p-6">
                   <Button type="submit" variant={'custom'} className="w-full">
@@ -691,7 +682,11 @@ export default function EditChartWrapper({
                   <ResizablePanel defaultSize={70} minSize={40}>
                     <div className="flex flex-col h-full p-6">
                       <span className="font-semibold">Display chart</span>
-                      <div className="flex-1 mt-4 p-4 flex items-center justify-center">
+                      <ChartDisplay
+                        chartData={chartData}
+                        // createdChartId={createdChartId}
+                      />
+                      {/* <div className="flex-1 mt-4 p-4 flex items-center justify-center">
                         {!chartDetails?.data?.[0] ? (
                           <div className="flex flex-col items-center justify-center h-full">
                             <EmtyChart />
@@ -807,12 +802,12 @@ export default function EditChartWrapper({
                           />
                         ) : (
                           <div className="text-muted-foreground text-sm italic">
-                            {/* Optional placeholder for other chart types */}
+                            
                             This chart type will be rendered in its respective
                             preview component.
                           </div>
                         )}
-                      </div>
+                      </div> */}
                     </div>
                   </ResizablePanel>
 

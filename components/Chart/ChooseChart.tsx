@@ -1,13 +1,13 @@
-"use client";
-import React, { useEffect, useId, useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "../ui/button";
-import type { TripsLogEntry, TripsLogResponse } from "@/types";
-import { ChartSchema } from "@/schemas";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "react-hot-toast";
+'use client';
+import React, { useEffect, useId, useState } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '../ui/button';
+import type { TripsLogEntry, TripsLogResponse } from '@/types';
+import { ChartSchema } from '@/schemas';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'react-hot-toast';
 import {
   Form,
   FormControl,
@@ -15,21 +15,21 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "../ui/input";
-import { Chart, Dataset } from "@/types";
+} from '@/components/ui/form';
+import { Input } from '../ui/input';
+import { Chart, Dataset } from '@/types';
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
-} from "@/components/ui/resizable";
+} from '@/components/ui/resizable';
 
-import { Separator } from "../ui/separator";
-import { ScrollArea } from "../ui/scroll-area";
-import { Option } from "@/components/ui/multiselect";
+import { Separator } from '../ui/separator';
+import { ScrollArea } from '../ui/scroll-area';
+import { Option } from '@/components/ui/multiselect';
 
-import { VisualizationTypes } from "@/types";
-import DataForm from "../ChartOptions/DataForm";
+import { VisualizationTypes } from '@/types';
+import DataForm from '../ChartOptions/DataForm';
 import {
   Table,
   TableBody,
@@ -37,19 +37,20 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../ui/table";
-import SampleTable from "../Data-Tables/SampleTable";
-import CustomizeChartWrapper from "./CustomizeChartWrapper";
-import ChartDisplay from "./ChartDisplay";
-import DatasetSelector from "./DatasetSelector";
+} from '../ui/table';
+import SampleTable from '../Data-Tables/SampleTable';
+import CustomizeChartWrapper from './CustomizeChartWrapper';
+import ChartDisplay from './ChartDisplay';
+import DatasetSelector from './DatasetSelector';
 
 export default function ChooseChart({
   VisualizationTypeData,
-  isAddChart,
+  dataSet,
 }: {
   VisualizationTypeData: VisualizationTypes[];
-  isAddChart?: boolean;
+  dataSet: Dataset[];
 }) {
+  console.log({ dataSet });
   const id = useId();
   const [createdChartId, setCreatedChartId] = useState<number | null>(null);
   const [chartData, setChartData] = useState<Chart | null>(null);
@@ -62,15 +63,16 @@ export default function ChooseChart({
   > | null>(null);
   const [sampleData, setSampleData] = useState<TripsLogEntry[] | null>(null);
   const [columnOptions, setColumnOptions] = useState<Option[]>([]);
+  const [isAddChart, setIsAddChart] = useState<boolean>(true);
   const form = useForm<z.infer<typeof ChartSchema>>({
     resolver: zodResolver(ChartSchema),
     defaultValues: {
       id: 0,
-      name: "",
-      description: "",
+      name: '',
+      description: '',
       datasetId: 0,
       visualizationTypeId: 0,
-      queryContext: "",
+      queryContext: '',
       useExistingQuery: true,
       dimensions: [],
       dynamicFilters: [],
@@ -79,7 +81,7 @@ export default function ChooseChart({
       rowLimit: null,
       customizeOptions: {},
       xAxis: {},
-      xAxisSortBy: "",
+      xAxisSortBy: '',
       xAxisSortAscending: null,
     },
   });
@@ -87,7 +89,9 @@ export default function ChooseChart({
 
   const handleUpdateTrigger = () => {
     setUpdateTrigger((prev) => !prev);
+    setIsAddChart(false);
   };
+  
 
   useEffect(() => {
     if (createdChartId) {
@@ -101,25 +105,25 @@ export default function ChooseChart({
         })
         .then((data: Chart) => {
           setChartData(data);
-          console.log("Chart data updated:", data);
+          console.log('Chart data updated:', data);
         })
         .catch((error) => {
-          console.error("Error fetching chart:", error);
-          toast.error("Failed to load chart data");
+          console.error('Error fetching chart:', error);
+          toast.error('Failed to load chart data');
         });
     }
   }, [createdChartId, updateTrigger]);
 
   async function onSubmit(values: z.infer<typeof ChartSchema>) {
-    console.log("Form submitted!");
-    console.log("Form values:", JSON.stringify(values));
+    console.log('Form submitted!');
+    console.log('Form values:', JSON.stringify(values));
     try {
       const url = createdChartId
         ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/Charts/${createdChartId}`
         : `${process.env.NEXT_PUBLIC_API_BASE_URL}/Charts`;
 
-      const method = createdChartId ? "PUT" : "POST";
-
+      const method = createdChartId ? 'PUT' : 'POST';
+      // createdChartId ? setIsAddChart(false) : setIsAddChart(true);
       console.log(`Request Method: ${method}, URL: ${url}`);
 
       const payload = {
@@ -127,22 +131,22 @@ export default function ChooseChart({
         id: createdChartId ?? values.id,
       };
 
-      console.log("Payload:", payload);
+      console.log('Payload:', payload);
 
       const response = await fetch(url, {
         method,
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload),
       });
 
-      const contentType = response.headers.get("Content-Type");
+      const contentType = response.headers.get('Content-Type');
 
       if (!response.ok) {
-        let errorMessage = "An error occurred.";
+        let errorMessage = 'An error occurred.';
 
-        if (contentType && contentType.includes("application/json")) {
+        if (contentType && contentType.includes('application/json')) {
           const errorData = await response.json();
           errorMessage = errorData.message || errorMessage;
         } else {
@@ -156,7 +160,7 @@ export default function ChooseChart({
 
       let chartResponse: any;
 
-      if (contentType && contentType.includes("application/json")) {
+      if (contentType && contentType.includes('application/json')) {
         chartResponse = await response.json();
       } else {
         chartResponse = await response.text();
@@ -164,10 +168,10 @@ export default function ChooseChart({
 
       if (!createdChartId) {
         setCreatedChartId(chartResponse.id);
-        form.setValue("id", chartResponse.id);
-        toast.success("Chart has been successfully created.");
+        form.setValue('id', chartResponse.id);
+        toast.success('Chart has been successfully created.');
       } else {
-        toast.success("Chart has been successfully updated.");
+        toast.success('Chart has been successfully updated.');
       }
 
       handleUpdateTrigger();
@@ -178,11 +182,11 @@ export default function ChooseChart({
 
       if (connectionId && schemaName && tableName) {
         console.log(
-          "connectionId :",
+          'connectionId :',
           connectionId,
-          "schemaName :",
+          'schemaName :',
           schemaName,
-          "tableName :",
+          'tableName :',
           tableName
         );
 
@@ -201,34 +205,37 @@ export default function ChooseChart({
     } catch (err) {
       if (err instanceof Error) {
         toast.error(
-          `Failed to ${createdChartId ? "update" : "create"} chart: ${
+          `Failed to ${createdChartId ? 'update' : 'create'} chart: ${
             err.message
           }`
         );
       } else {
         toast.error(
           `Failed to ${
-            createdChartId ? "update" : "create"
+            createdChartId ? 'update' : 'create'
           } chart due to an unknown error.`
         );
       }
     }
   }
 
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/DS`)
-      .then(async (response) => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`Server error: ${errorText}`);
-        }
-        return response.json();
-      })
-      .then((data: Dataset[]) => setDataset(data))
-      .catch((error) => {
-        console.error("Error fetching dataset:", error);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/DS`)
+  //     .then(async (response) => {
+  //       if (!response.ok) {
+  //         const errorText = await response.text();
+  //         throw new Error(`Server error: ${errorText}`);
+  //       }
+  //       return response.json();
+  //     })
+  //     .then((data: Dataset[]) => {
+  //       console.log('xxxxxx=>', { data });
+  //       setDataset(data);
+  //     })
+  //     .catch((error) => {
+  //       console.error('Error fetching dataset:', error);
+  //     });
+  // }, []);
 
   useEffect(() => {
     if (selectedDataset) {
@@ -251,7 +258,7 @@ export default function ChooseChart({
           setColumnOptions(options);
         })
         .catch((error) => {
-          console.error("Error fetching columns:", error);
+          console.error('Error fetching columns:', error);
         });
     }
   }, [selectedDataset]);
@@ -300,7 +307,7 @@ export default function ChooseChart({
               <ResizablePanel defaultSize={25} minSize={20}>
                 <ScrollArea className="h-full w-full">
                   <DatasetSelector
-                    databases={databases}
+                    databases={dataSet}
                     openDataset={openDataset}
                     setOpenDataset={setOpenDataset}
                     selectedDataset={selectedDataset}
@@ -342,10 +349,7 @@ export default function ChooseChart({
                           />
                         </TabsContent>
                         <TabsContent value="customize">
-                          {/* <CustomizeChart
-                            VisualizationTypeData={VisualizationTypeData}
-                            form={form}
-                          /> */}
+                          
                           <CustomizeChartWrapper
                             chartData={chartData}
                             VisualizationTypeData={VisualizationTypeData}
@@ -356,8 +360,8 @@ export default function ChooseChart({
                     </span>
                   </div>
                   <div className="p-6">
-                    <Button type="submit" variant={"custom"} className="w-full">
-                      {createdChartId ? "Update Chart" : "Create Chart"}
+                    <Button type="submit" variant={'custom'} className="w-full">
+                      {createdChartId ? 'Update Chart' : 'Create Chart'}
                     </Button>
                   </div>
                 </ScrollArea>
@@ -430,8 +434,8 @@ export default function ChooseChart({
                                           className="whitespace-nowrap p-2 border-b text-muted-foreground"
                                         >
                                           {val === null
-                                            ? "-"
-                                            : typeof val === "number"
+                                            ? '-'
+                                            : typeof val === 'number'
                                             ? val.toLocaleString()
                                             : String(val)}
                                         </TableCell>
@@ -453,7 +457,7 @@ export default function ChooseChart({
                           value="tab-2"
                           className="h-[calc(100%-40px)] truncate max-w-[800px]"
                         >
-                          <SampleTable sampleData={sampleData ?? []} />{" "}
+                          <SampleTable sampleData={sampleData ?? []} />{' '}
                         </TabsContent>
                       </Tabs>
                     </ResizablePanel>
