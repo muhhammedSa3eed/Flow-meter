@@ -29,101 +29,10 @@ import { Slider } from '@/components/ui/slider';
 import { useId, useEffect } from 'react';
 import { Chart, VisualizationTypes } from '@/types';
 import { Input } from '../ui/input';
-import { formatLabel } from '@/lib/chart-assets';
+import { chartTypes, Currency, CurrencyFormat, formatLabel, lableType, orientations, palettes, roseTypes } from '@/lib/chart-assets';
 
-const palettes = [
-  {
-    name: 'Superset Colors',
-    colors: [
-      '#1f77b4',
-      '#2ca02c',
-      '#ff7f0e',
-      '#d62728',
-      '#9467bd',
-      '#8c564b',
-      '#e377c2',
-      '#7f7f7f',
-      '#bcbd22',
-      '#17becf',
-    ],
-  },
-  {
-    name: 'Waves of blue',
-    colors: ['#001f3f', '#0056b3', '#0074d9', '#7fdbff', '#cceeff'],
-  },
-  {
-    name: 'Airbnb Colors',
-    colors: ['#00a699', '#ff5a5f', '#484848', '#767676', '#b0b0b0'],
-  },
-  {
-    name: 'D3 Category 10',
-    colors: [
-      '#1f77b4',
-      '#ff7f0e',
-      '#2ca02c',
-      '#d62728',
-      '#9467bd',
-      '#8c564b',
-      '#e377c2',
-      '#7f7f7f',
-      '#bcbd22',
-      '#17becf',
-    ],
-  },
-  {
-    name: 'Blue to Green',
-    colors: [
-      '#003f5c',
-      '#2f4b7c',
-      '#665191',
-      '#a05195',
-      '#d45087',
-      '#f95d6a',
-      '#ff7c43',
-      '#ffa600',
-    ],
-  },
-  {
-    name: 'Colors of Rainbow',
-    colors: [
-      '#ff0000',
-      '#ff7f00',
-      '#ffff00',
-      '#00ff00',
-      '#0000ff',
-      '#4b0082',
-      '#9400d3',
-    ],
-  },
-  {
-    name: 'Modern Sunset',
-    colors: ['#f6d365', '#fda085', '#fbc2eb', '#a6c1ee', '#84fab0', '#8fd3f4'],
-  },
-];
-const roseTypes = ['area', 'radius', 'none'];
-const orientations = ['Left', 'Right', 'Top', 'Bottom'];
-const chartTypes = ['scroll', 'plain'];
-const CurrencyFormat = ['Prefix', 'Suffix'];
-const Currency = [
-  { label: '$ (USD)', value: '$' },
-  { label: '€ (EUR)', value: '€' },
-  { label: '£ (GBP)', value: '£' },
-  { label: '₹ (INR)', value: '₹' },
-  { label: '¥ (JPY)', value: '¥' },
-  { label: 'MX$ (MXN)', value: 'MX$' },
-  { label: 'CN¥ (CNY)', value: 'CN¥' },
-];
 
-const lableType = [
-  'Value',
-  'Category Name',
-  'Percentage',
-  'Category & Value',
-  'Category & Percentage',
-  'Category ,Value & Percentage',
-  'Value & Percentage',
-  'Template',
-];
+
 
 // const formatLabel = (label: string) =>
 //   label.replace(/([a-z])([A-Z])/g, '$1 $2');

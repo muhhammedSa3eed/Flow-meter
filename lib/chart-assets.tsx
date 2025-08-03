@@ -98,7 +98,7 @@ export const CustomizationOptions: Option[] = [
   { value: "AXISTITLEPOSITION", label: "AXIS TITLE POSITION" },
   { value: "SortSeriesBy", label: "Sort Series By" },
   { value: "SortSeriesAscending", label: "Sort Series Ascending" },
-  { value: "Show Value", label: "Show Value" },
+  { value: "ShowValue", label: "Show Value" },
   { value: "StackedStyle", label: "Stacked Style" },
   { value: "Minorticks", label: "Minor ticks" },
   { value: "DataZoom", label: "Data Zoom" },
@@ -233,3 +233,111 @@ export const axisTitlePositionOption = ['Left', 'Top'];
 //   { value: 'TruncateMetric', label: 'Truncate Metric' },
 //   { value: 'ShowEmptyColumns', label: 'Show empty columns' },
 // ];
+export const sortSeriesOptions = [
+  "Total value",
+  "Category name",
+  "Minimum value",
+  "Maximum value",
+  "Average value",
+];
+
+export const stackedStyleOptions = ["None", "stack", "stream"];
+
+export const palettes = [
+  {
+    name: 'Superset Colors',
+    colors: [
+      '#1f77b4',
+      '#2ca02c',
+      '#ff7f0e',
+      '#d62728',
+      '#9467bd',
+      '#8c564b',
+      '#e377c2',
+      '#7f7f7f',
+      '#bcbd22',
+      '#17becf',
+    ],
+  },
+  {
+    name: 'Waves of blue',
+    colors: ['#001f3f', '#0056b3', '#0074d9', '#7fdbff', '#cceeff'],
+  },
+  {
+    name: 'Airbnb Colors',
+    colors: ['#00a699', '#ff5a5f', '#484848', '#767676', '#b0b0b0'],
+  },
+  {
+    name: 'D3 Category 10',
+    colors: [
+      '#1f77b4',
+      '#ff7f0e',
+      '#2ca02c',
+      '#d62728',
+      '#9467bd',
+      '#8c564b',
+      '#e377c2',
+      '#7f7f7f',
+      '#bcbd22',
+      '#17becf',
+    ],
+  },
+  {
+    name: 'Blue to Green',
+    colors: [
+      '#003f5c',
+      '#2f4b7c',
+      '#665191',
+      '#a05195',
+      '#d45087',
+      '#f95d6a',
+      '#ff7c43',
+      '#ffa600',
+    ],
+  },
+  {
+    name: 'Colors of Rainbow',
+    colors: [
+      '#ff0000',
+      '#ff7f00',
+      '#ffff00',
+      '#00ff00',
+      '#0000ff',
+      '#4b0082',
+      '#9400d3',
+    ],
+  },
+  {
+    name: 'Modern Sunset',
+    colors: ['#f6d365', '#fda085', '#fbc2eb', '#a6c1ee', '#84fab0', '#8fd3f4'],
+  },
+];
+
+
+export const roseTypes = ['area', 'radius', 'none'];
+export const orientations = ['Left', 'Right', 'Top', 'Bottom'];
+export const chartTypes = ['scroll', 'plain'];
+export const CurrencyFormat = ['Prefix', 'Suffix'];
+export const Currency = [
+  { label: '$ (USD)', value: '$' },
+  { label: '€ (EUR)', value: '€' },
+  { label: '£ (GBP)', value: '£' },
+  { label: '₹ (INR)', value: '₹' },
+  { label: '¥ (JPY)', value: '¥' },
+  { label: 'MX$ (MXN)', value: 'MX$' },
+  { label: 'CN¥ (CNY)', value: 'CN¥' },
+];
+
+export const lableType = [
+  'Value',
+  'Category Name',
+  'Percentage',
+  'Category & Value',
+  'Category & Percentage',
+  'Category ,Value & Percentage',
+  'Value & Percentage',
+  'Template',
+];
+
+export const AxisMarginOptions = ["15", "30", "50", "75", "100", "125", "150", "200"];
+export const yAxisPositionOptions = ["Left", "Top"];

@@ -1,132 +1,46 @@
-'use client';
-
-import { ChartSchema } from '@/schemas';
-import { UseFormReturn, useWatch } from 'react-hook-form';
-import { z } from 'zod';
+"use client";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ChartSchema } from "@/schemas";
+import { UseFormReturn, useWatch } from "react-hook-form";
+import { z } from "zod";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion';
+} from "@/components/ui/accordion";
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Label } from '@/components/ui/label';
+} from "@/components/ui/form";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Slider } from '@/components/ui/slider';
-import { useId, useEffect } from 'react';
-import { Chart, VisualizationTypes } from '@/types';
-import { Input } from '../ui/input';
-import { formatLabel } from '@/lib/chart-assets';
-
-const palettes = [
-  {
-    name: 'Superset Colors',
-    colors: [
-      '#1f77b4',
-      '#2ca02c',
-      '#ff7f0e',
-      '#d62728',
-      '#9467bd',
-      '#8c564b',
-      '#e377c2',
-      '#7f7f7f',
-      '#bcbd22',
-      '#17becf',
-    ],
-  },
-  {
-    name: 'Waves of blue',
-    colors: ['#001f3f', '#0056b3', '#0074d9', '#7fdbff', '#cceeff'],
-  },
-  {
-    name: 'Airbnb Colors',
-    colors: ['#00a699', '#ff5a5f', '#484848', '#767676', '#b0b0b0'],
-  },
-  {
-    name: 'D3 Category 10',
-    colors: [
-      '#1f77b4',
-      '#ff7f0e',
-      '#2ca02c',
-      '#d62728',
-      '#9467bd',
-      '#8c564b',
-      '#e377c2',
-      '#7f7f7f',
-      '#bcbd22',
-      '#17becf',
-    ],
-  },
-  {
-    name: 'Blue to Green',
-    colors: [
-      '#003f5c',
-      '#2f4b7c',
-      '#665191',
-      '#a05195',
-      '#d45087',
-      '#f95d6a',
-      '#ff7c43',
-      '#ffa600',
-    ],
-  },
-  {
-    name: 'Colors of Rainbow',
-    colors: [
-      '#ff0000',
-      '#ff7f00',
-      '#ffff00',
-      '#00ff00',
-      '#0000ff',
-      '#4b0082',
-      '#9400d3',
-    ],
-  },
-  {
-    name: 'Modern Sunset',
-    colors: ['#f6d365', '#fda085', '#fbc2eb', '#a6c1ee', '#84fab0', '#8fd3f4'],
-  },
-];
-const roseTypes = ['area', 'radius', 'none'];
-const orientations = ['Left', 'Right', 'Top', 'Bottom'];
-const chartTypes = ['scroll', 'plain'];
-const CurrencyFormat = ['Prefix', 'Suffix'];
-const Currency = [
-  { label: '$ (USD)', value: '$' },
-  { label: '€ (EUR)', value: '€' },
-  { label: '£ (GBP)', value: '£' },
-  { label: '₹ (INR)', value: '₹' },
-  { label: '¥ (JPY)', value: '¥' },
-  { label: 'MX$ (MXN)', value: 'MX$' },
-  { label: 'CN¥ (CNY)', value: 'CN¥' },
-];
-
-const lableType = [
-  'Value',
-  'Category Name',
-  'Percentage',
-  'Category & Value',
-  'Category & Percentage',
-  'Category ,Value & Percentage',
-  'Value & Percentage',
-  'Template',
-];
-
-// const formatLabel = (label: string) =>
-//   label.replace(/([a-z])([A-Z])/g, '$1 $2');
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Slider } from "@/components/ui/slider";
+import { useId, useEffect } from "react";
+import { Chart, VisualizationTypes } from "@/types";
+import { Input } from "../ui/input";
+import {
+  Currency,
+  CurrencyFormat,
+  formatLabel,
+  palettes,
+  sortSeriesOptions,
+  stackedStyleOptions,
+  AxisMarginOptions,
+  yAxisPositionOptions,
+  orientations,
+  chartTypes,
+} from "@/lib/chart-assets";
 
 export default function CustomizeChartBar({
   form,
@@ -138,163 +52,337 @@ export default function CustomizeChartBar({
   VisualizationTypeData: VisualizationTypes[];
   activeCustomizeOptions: any;
 }) {
-  // const selectedTypeId = useWatch({
-  //   control: form.control,
-  //   name: 'visualizationTypeId',
-  // });
-
-  // const selectedTypeData = VisualizationTypeData.find(
-  //   (type) => type.id === selectedTypeId
-  // );
-  // console.log({ VisualizationTypeData });
-  // console.log({ selectedTypeData });
-  // const activeCustomizeOptions: Record<string, boolean> =
-  //   selectedTypeData?.optionsFields?.reduce(
-  //     (acc, key) => ({ ...acc, [key]: true }),
-  //     {}
-  //   ) || {};
-  console.log({ activeCustomizeOptions });
+  const id = useId();
   const showLegendValue = useWatch({
     control: form.control,
-    name: 'customizeOptions.Legend',
+    name: "customizeOptions.ShowLegend",
   });
-  const DonutValue = useWatch({
-    control: form.control,
-    name: 'customizeOptions.Donut',
-  });
-
-  if (DonutValue) {
-    activeCustomizeOptions['InnerRadius'] = true;
-  } else {
-    delete activeCustomizeOptions['InnerRadius'];
-  }
-  if (showLegendValue) {
-    activeCustomizeOptions['Orientation'] = true;
-    activeCustomizeOptions['Left'] = true;
-    activeCustomizeOptions['z'] = true;
-    activeCustomizeOptions['top'] = true;
-    activeCustomizeOptions['align'] = true;
-    activeCustomizeOptions['Show'] = true;
-    activeCustomizeOptions['backgroundColor'] = true;
-    activeCustomizeOptions['borderColor'] = true;
-    activeCustomizeOptions['borderRadius'] = true;
-    activeCustomizeOptions['borderWidth'] = true;
-    activeCustomizeOptions['padding'] = true;
-    activeCustomizeOptions['itemGap'] = true;
-    activeCustomizeOptions['itemWidth'] = true;
-    activeCustomizeOptions['itemHeight'] = true;
-    activeCustomizeOptions['symbolRotate'] = true;
-    activeCustomizeOptions['symbolKeepAspect'] = true;
-    activeCustomizeOptions['inactiveColor'] = true;
-    activeCustomizeOptions['inactiveBorderColor'] = true;
-    activeCustomizeOptions['inactiveBorderWidth'] = true;
-  } else {
-    delete activeCustomizeOptions['Orientation'];
-    delete activeCustomizeOptions['Left'];
-    delete activeCustomizeOptions['z'];
-    delete activeCustomizeOptions['top'];
-    delete activeCustomizeOptions['align'];
-    delete activeCustomizeOptions['Show'];
-    delete activeCustomizeOptions['backgroundColor'];
-    delete activeCustomizeOptions['borderColor'];
-    delete activeCustomizeOptions['borderRadius'];
-    delete activeCustomizeOptions['borderWidth'];
-    delete activeCustomizeOptions['padding'];
-    delete activeCustomizeOptions['itemGap'];
-    delete activeCustomizeOptions['itemWidth'];
-    delete activeCustomizeOptions['itemHeight'];
-    delete activeCustomizeOptions['symbolRotate'];
-    delete activeCustomizeOptions['symbolKeepAspect'];
-    delete activeCustomizeOptions['inactiveColor'];
-    delete activeCustomizeOptions['inactiveBorderColor'];
-    delete activeCustomizeOptions['inactiveBorderWidth'];
-  }
-
   const ShowLabelsValue = useWatch({
     control: form.control,
-    name: 'customizeOptions.ShowLabels',
+    name: "customizeOptions.ShowLabels",
   });
   const updateCustomizeOption = (key: string, value: any) => {
-    const currentOptions = form.getValues('customizeOptions') || {};
+    const currentOptions = form.getValues("customizeOptions") || {};
     const updatedOptions = { ...currentOptions, [key]: value };
-    form.setValue('customizeOptions', updatedOptions);
+    form.setValue("customizeOptions", updatedOptions);
   };
-
-  console.log('form===>', form.getValues('customizeOptions'));
 
   if (ShowLabelsValue) {
-    activeCustomizeOptions['PutLabelsOutside'] = true;
-    activeCustomizeOptions['LabelLine'] = true;
+    activeCustomizeOptions["PutLabelsOutside"] = true;
+    activeCustomizeOptions["LabelLine"] = true;
   } else {
-    delete activeCustomizeOptions['PutLabelsOutside'];
-    delete activeCustomizeOptions['LabelLine'];
+    delete activeCustomizeOptions["PutLabelsOutside"];
+    delete activeCustomizeOptions["LabelLine"];
   }
- 
-  const inputFields: Record<string, 'text' | 'number'> = {
-    PercentageThreshold: 'number',
-    Left: 'text',
-    z: 'number',
-    top: 'number',
-    align: 'text',
-    backgroundColor: 'text',
-    borderColor: 'text',
-    borderRadius: 'number',
-    borderWidth: 'number',
-    padding: 'number',
-    itemGap: 'number',
-    itemWidth: 'number',
-    itemHeight: 'number',
-    symbolRotate: 'text',
-    inactiveColor: 'text',
-    inactiveBorderColor: 'text',
-    inactiveBorderWidth: 'text',
-    Margin: 'number',
+  useEffect(() => {
+    if (showLegendValue) {
+      const current = form.getValues("customizeOptions") || {};
+      if (!current.Type) updateCustomizeOption("Type", "plain");
+      if (!current.Orientation) updateCustomizeOption("Orientation", "Top");
+      if (!("Margin" in current)) updateCustomizeOption("Margin", "");
+    } else {
+      const updated = { ...form.getValues("customizeOptions") };
+      delete updated.Type;
+      delete updated.Orientation;
+      delete updated.Margin;
+      form.setValue("customizeOptions", updated);
+    }
+  }, [showLegendValue]);
+  const legendFields = ["Type", "Orientation", "Margin"];
 
-    Subtitle: 'text',
-    AxisTitle: 'text',
-    AXISTITLEMARGIN: 'number',
-    AXISTITLEPOSITION: 'text',
-    SortSeriesBy: 'text',
-    TimeFormat: 'text',
-    TooltipTimeFormat: 'text',
-    AxisFormat: 'text',
-  };
   const renderField = (key: string) => {
-    if (inputFields[key]) {
+    if (key === "BarOrientation") {
       return (
-        <InputField
+        <FormField
           key={key}
-          form={form}
-          name={key}
-          type={inputFields[key]}
-          updateCustomizeOption={updateCustomizeOption}
+          control={form.control}
+          name={`customizeOptions.${key}`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Bar orientation</FormLabel>
+              <Tabs
+                value={field.value ?? "vertical"}
+                onValueChange={(value) => {
+                  field.onChange(value);
+                  updateCustomizeOption(key, value);
+                }}
+                className="w-full"
+              >
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="vertical">Vertical</TabsTrigger>
+                  <TabsTrigger value="horizontal">Horizontal</TabsTrigger>
+                </TabsList>
+              </Tabs>
+              <FormMessage />
+            </FormItem>
+          )}
         />
       );
     }
 
-    if (key === 'LabelType') {
+    // Axis Groups
+    if (key === "xAxis") {
       return (
-        <SelectField
-          key={key}
-          form={form}
-          name={key}
-          options={lableType}
-          updateCustomizeOption={updateCustomizeOption}
+        <Accordion
+          type="single"
+          collapsible
+          className="w-full"
+          defaultValue="x-axis"
+        >
+          <AccordionItem value="x-axis">
+            <AccordionTrigger className="text-sm">X Axis</AccordionTrigger>
+            <AccordionContent>
+              <div className="space-y-4">
+                <div className="space-y-1">
+                  <Label htmlFor="y-axis-title">X Axis Title</Label>
+                  <Input
+                    id="x-axis-title"
+                    value={activeCustomizeOptions?.["XAXISTITL"] || ""}
+                    onChange={(e) =>
+                      updateCustomizeOption("XAXISTITL", e.target.value)
+                    }
+                    type="text"
+                  />
+                </div>
+
+                {/* Y AXIS TITL EMARGIN */}
+                <div className="space-y-1">
+                  <Label htmlFor="x-axis-emargin">Y Axis Title margin</Label>
+                  <Select
+                    value={activeCustomizeOptions?.["XAXISTITLEMARGIN"] || ""}
+                    onValueChange={(val) =>
+                      updateCustomizeOption("XAXISTITLEMARGIN", val)
+                    }
+                  >
+                    <SelectTrigger id="x-axis-emargin">
+                      <SelectValue placeholder="Select margin" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {AxisMarginOptions.map((option) => (
+                        <SelectItem key={option} value={option}>
+                          {option}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      );
+    }
+
+    if (key === "yAxis") {
+      return (
+        <Accordion
+          type="single"
+          collapsible
+          className="w-full"
+          defaultValue="y-axis"
+        >
+          <AccordionItem value="y-axis">
+            <AccordionTrigger className="text-sm">Y Axis</AccordionTrigger>
+            <AccordionContent>
+              <div className="space-y-4">
+                {/* Y AXIS TITL */}
+                <div className="space-y-1">
+                  <Label htmlFor="y-axis-title">Y Axis Title</Label>
+                  <Input
+                    id="y-axis-title"
+                    value={activeCustomizeOptions?.["YAXISTITL"] || ""}
+                    onChange={(e) =>
+                      updateCustomizeOption("YAXISTITL", e.target.value)
+                    }
+                    type="text"
+                  />
+                </div>
+
+                {/* Y AXIS TITL EMARGIN */}
+                <div className="space-y-1">
+                  <Label htmlFor="y-axis-emargin">Y Axis Title margin</Label>
+                  <Select
+                    value={activeCustomizeOptions?.["YAXISTITLEMARGIN"] || ""}
+                    onValueChange={(val) =>
+                      updateCustomizeOption("YAXISTITL EMARGIN", val)
+                    }
+                  >
+                    <SelectTrigger id="y-axis-emargin">
+                      <SelectValue placeholder="Select margin" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {AxisMarginOptions.map((option) => (
+                        <SelectItem key={option} value={option}>
+                          {option}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Y AXIS TITLE POSITION */}
+                <div className="space-y-1">
+                  <Label htmlFor="y-axis-title-position">
+                    Y Axis Title Position
+                  </Label>
+                  <Select
+                    value={activeCustomizeOptions?.["YAXISTITLEPOSITION"] || ""}
+                    onValueChange={(val) =>
+                      updateCustomizeOption("YAXISTITLEPOSITION", val)
+                    }
+                  >
+                    <SelectTrigger id="y-axis-title-position">
+                      <SelectValue placeholder="Select position" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {yAxisPositionOptions.map((option) => (
+                        <SelectItem key={option} value={option}>
+                          {option}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      );
+    }
+
+    {
+      /* Sort Series By */
+    }
+
+    if (key === "SortSeriesBy") {
+      return (
+        <div>
+          <Label className="mb-2 block">Sort Series By</Label>
+          <Select
+            value={activeCustomizeOptions?.SortSeriesBy || "Total value"}
+            onValueChange={(val) => updateCustomizeOption("SortSeriesBy", val)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select sort option" />
+            </SelectTrigger>
+            <SelectContent>
+              {sortSeriesOptions.map((option) => (
+                <SelectItem key={option} value={option}>
+                  {option}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      );
+    }
+    {
+      /* Sort Series Ascending */
+    }
+
+    if (key === "SortSeriesAscending") {
+      return (
+        <FormField
+          control={form.control}
+          name={`customizeOptions.SortSeriesAscending`}
+          render={({ field }: any) => (
+            <FormItem>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id={id}
+                  checked={field.value === true}
+                  // onCheckedChange={field.onChange}
+                  onCheckedChange={(value) => {
+                    field.onChange(value);
+                    updateCustomizeOption(key, value);
+                  }}
+                />
+                <Label htmlFor={id}>Sort Series Ascending</Label>
+              </div>
+              <FormMessage />
+            </FormItem>
+          )}
         />
       );
     }
-    // if (key === 'DateFormat') {
-    //   return (
-    //     <SelectField
-    //       key={key}
-    //       form={form}
-    //       name={key}
-    //       options={dateFormats}
-    //       updateCustomizeOption={updateCustomizeOption}
-    //     />
-    //   );
-    // }
-    if (key === 'Color') {
+
+    {
+      /* Stacked Style */
+    }
+    if (key === "StackedStyle") {
+      return (
+        <div>
+          <Label className="mb-2 block">Stacked Style</Label>
+          <Select
+            value={activeCustomizeOptions?.StackedStyle || "None"}
+            onValueChange={(val) => updateCustomizeOption("StackedStyle", val)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select stacked style" />
+            </SelectTrigger>
+            <SelectContent>
+              {stackedStyleOptions.map((option) => (
+                <SelectItem key={option} value={option}>
+                  {option}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      );
+    }
+    if (key === "Minorticks") {
+      return (
+        <FormField
+          control={form.control}
+          name={`customizeOptions.Minorticks`}
+          render={({ field }: any) => (
+            <FormItem>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id={id}
+                  checked={field.value === true}
+                  // onCheckedChange={field.onChange}
+                  onCheckedChange={(value) => {
+                    field.onChange(value);
+                    updateCustomizeOption(key, value);
+                  }}
+                />
+                <Label htmlFor={id}>Minor ticks</Label>
+              </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      );
+    }
+    if (key === "DataZoom") {
+      return (
+        <FormField
+          control={form.control}
+          name={`customizeOptions.DataZoom`}
+          render={({ field }: any) => (
+            <FormItem>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id={id}
+                  checked={field.value === true}
+                  // onCheckedChange={field.onChange}
+                  onCheckedChange={(value) => {
+                    field.onChange(value);
+                    updateCustomizeOption(key, value);
+                  }}
+                />
+                <Label htmlFor={id}>Data Zoom</Label>
+              </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      );
+    }
+
+    if (key === "ColorScheme") {
       return (
         <FormField
           key={key}
@@ -353,65 +441,306 @@ export default function CustomizeChartBar({
         />
       );
     }
-
-    if (key === 'Orientation') {
+    if (key === "ShowValue") {
       return (
-        <SelectField
-          key={key}
-          form={form}
-          name={key}
-          options={orientations}
-          updateCustomizeOption={updateCustomizeOption}
+        <FormField
+          control={form.control}
+          name={`customizeOptions.ShowValue`}
+          render={({ field }: any) => (
+            <FormItem>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id={id}
+                  checked={field.value === true}
+                  // onCheckedChange={field.onChange}
+                  onCheckedChange={(value) => {
+                    field.onChange(value);
+                    updateCustomizeOption(key, value);
+                  }}
+                />
+                <Label htmlFor={id}>Show Value</Label>
+              </div>
+              <FormMessage />
+            </FormItem>
+          )}
         />
       );
     }
-    if (key === 'Type') {
-      return (
-        <SelectField
-          key={key}
-          form={form}
-          name={key}
-          options={chartTypes}
-          updateCustomizeOption={updateCustomizeOption}
-        />
-      );
-    }
-    if (key === 'CurrencyFormat') {
+    if (key === "CurrencyFormat") {
       return (
         <div
           key="currency-group"
           className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full"
         >
-          <div className="min-w-0 w-full">
-            <SelectField
-              form={form}
-              name="CurrencyFormat"
-              options={CurrencyFormat}
-              updateCustomizeOption={updateCustomizeOption}
-            />
+          {/* Currency Format */}
+          <div className="min-w-0 w-full space-y-1">
+            <Label htmlFor="currency-format">Currency Format</Label>
+            <Select
+              value={activeCustomizeOptions?.CurrencyFormat || ""}
+              onValueChange={(val) =>
+                updateCustomizeOption("CurrencyFormat", val)
+              }
+            >
+              <SelectTrigger id="currency-format">
+                <SelectValue placeholder="Select format" />
+              </SelectTrigger>
+              <SelectContent>
+                {CurrencyFormat.map((option) => (
+                  <SelectItem key={option} value={option}>
+                    {option}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-          <div className="min-w-0 w-full">
-            <CurrencySelectField
-              form={form}
-              name="Currency"
-              options={Currency}
-              updateCustomizeOption={updateCustomizeOption}
-            />
+
+          {/* Currency */}
+          <div className="min-w-0 w-full space-y-1">
+            <Label htmlFor="currency">Currency</Label>
+            <Select
+              value={activeCustomizeOptions?.Currency || ""}
+              onValueChange={(val) => updateCustomizeOption("Currency", val)}
+            >
+              <SelectTrigger id="currency">
+                <SelectValue placeholder="Select currency" />
+              </SelectTrigger>
+              <SelectContent>
+                {Currency.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
       );
     }
-   
-    const excludedCheckboxFields = ['Color', 'CurrencyFormat', 'Currency'];
-if (excludedCheckboxFields.includes(key)) return null;
-    return (
-      <CheckboxField
-        key={key}
-        form={form}
-        name={key}
-        updateCustomizeOption={updateCustomizeOption}
-      />
-    );
+
+    if (key === "ShowLegend") {
+      return (
+        <>
+          <FormField
+            control={form.control}
+            name={`customizeOptions.ShowLegend`}
+            render={({ field }: any) => (
+              <FormItem>
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id={id}
+                    checked={field.value === true}
+                    onCheckedChange={(value) => {
+                      field.onChange(value);
+                      updateCustomizeOption(key, value);
+                    }}
+                  />
+                  <Label htmlFor={id}>Show Legend</Label>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+    
+          {showLegendValue && (
+            <div className="space-y-4 pl-6 mt-2 border-l">
+              {renderField("Type")}
+              {renderField("Orientation")}
+              {renderField("Margin")}
+            </div>
+          )}
+        </>
+      );
+    }
+    if (key === "Orientation") {
+      return (
+        <FormField
+          control={form.control}
+          name={`customizeOptions.Orientation`}
+          render={({ field }: any) => (
+            <FormItem>
+              <FormLabel>Legend Orientation</FormLabel>
+              <Select
+                onValueChange={(val) => {
+                  field.onChange(val);
+                  updateCustomizeOption("Orientation", val);
+                }}
+                value={field.value}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select orientation" />
+                </SelectTrigger>
+                <SelectContent>
+                  {orientations.map((option) => (
+                    <SelectItem key={option} value={option}>
+                      {option}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      );
+    }
+
+    if (key === "Type") {
+      return (
+        <FormField
+          control={form.control}
+          name={`customizeOptions.Type`}
+          render={({ field }: any) => (
+            <FormItem>
+              <FormLabel>Legend Type</FormLabel>
+              <Select
+                onValueChange={(val) => {
+                  field.onChange(val);
+                  updateCustomizeOption("Type", val);
+                }}
+                value={field.value}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {["scroll", "plain"].map((option) => (
+                    <SelectItem key={option} value={option}>
+                      {option}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      );
+    }
+
+    if (key === "Margin") {
+      return (
+        <FormField
+          control={form.control}
+          name={`customizeOptions.Margin`}
+          render={({ field }: any) => (
+            <FormItem>
+              <FormLabel>Legend Margin</FormLabel>
+              <Input
+                type="text"
+                value={field.value || ""}
+                onChange={(e) => {
+                  field.onChange(e.target.value);
+                  updateCustomizeOption("Margin", e.target.value);
+                }}
+              />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      );
+    }
+
+    if (key === "RichTooltip") {
+      return (
+        <FormField
+          control={form.control}
+          name={`customizeOptions.RichTooltip`}
+          render={({ field }: any) => (
+            <FormItem>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id={id}
+                  checked={field.value === true}
+                  // onCheckedChange={field.onChange}
+                  onCheckedChange={(value) => {
+                    field.onChange(value);
+                    updateCustomizeOption(key, value);
+                  }}
+                />
+                <Label htmlFor={id}>Rich Tooltip</Label>
+              </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      );
+    }
+
+    if (key === "ShowTotal") {
+      return (
+        <FormField
+          control={form.control}
+          name={`customizeOptions.ShowTotal`}
+          render={({ field }: any) => (
+            <FormItem>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id={id}
+                  checked={field.value === true}
+                  // onCheckedChange={field.onChange}
+                  onCheckedChange={(value) => {
+                    field.onChange(value);
+                    updateCustomizeOption(key, value);
+                  }}
+                />
+                <Label htmlFor={id}>Show Total</Label>
+              </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      );
+    }
+    if (key === "ShowPercentage") {
+      return (
+        <FormField
+          control={form.control}
+          name={`customizeOptions.ShowPercentage`}
+          render={({ field }: any) => (
+            <FormItem>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id={id}
+                  checked={field.value === true}
+                  // onCheckedChange={field.onChange}
+                  onCheckedChange={(value) => {
+                    field.onChange(value);
+                    updateCustomizeOption(key, value);
+                  }}
+                />
+                <Label htmlFor={id}>Show Percentage</Label>
+              </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      );
+    }
+    if (key === "TooltipSortByMetric") {
+      return (
+        <FormField
+          control={form.control}
+          name={`customizeOptions.TooltipSortByMetric`}
+          render={({ field }: any) => (
+            <FormItem>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id={id}
+                  checked={field.value === true}
+                  // onCheckedChange={field.onChange}
+                  onCheckedChange={(value) => {
+                    field.onChange(value);
+                    updateCustomizeOption(key, value);
+                  }}
+                />
+                <Label htmlFor={id}>Tooltip Sort By Metric</Label>
+              </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      );
+    }
   };
 
   return (
@@ -419,7 +748,7 @@ if (excludedCheckboxFields.includes(key)) return null;
       <Accordion
         type="multiple"
         className="w-full"
-        defaultValue={['chart-options']}
+        defaultValue={["chart-options"]}
       >
         <AccordionItem value="chart-options">
           <AccordionTrigger className="text-md font-semibold mb-2">
@@ -427,12 +756,15 @@ if (excludedCheckboxFields.includes(key)) return null;
           </AccordionTrigger>
           <AccordionContent>
             <div className="space-y-4">
-              {activeCustomizeOptions &&
-                Object.keys(activeCustomizeOptions).map((fieldKey) =>
-                  activeCustomizeOptions[fieldKey]
-                    ? renderField(fieldKey)
-                    : null
+              {Object.keys(activeCustomizeOptions)
+                .filter((fieldKey) => !legendFields.includes(fieldKey))
+                .map((fieldKey) =>
+                  activeCustomizeOptions[fieldKey] ? (
+                    <div key={fieldKey}>{renderField(fieldKey)}</div>
+                  ) : null
                 )}
+
+        
             </div>
           </AccordionContent>
         </AccordionItem>
@@ -440,272 +772,3 @@ if (excludedCheckboxFields.includes(key)) return null;
     </div>
   );
 }
-
-// --- Components ---
-
-const SelectField = ({ form, name, options, updateCustomizeOption }: any) => (
-  <FormField
-    control={form.control}
-    name={`customizeOptions.${name}`}
-    render={({ field }: any) => (
-      <FormItem>
-        <FormLabel>{formatLabel(name)}</FormLabel>
-        <Select
-          onValueChange={(value) => {
-            field.onChange(value);
-            updateCustomizeOption(name, value);
-          }}
-          value={field.value}
-        >
-          <FormControl>
-            <SelectTrigger>
-              <SelectValue placeholder={`Select ${formatLabel(name)}`} />
-            </SelectTrigger>
-          </FormControl>
-          <SelectContent>
-            {options.map((opt: any) => (
-              <SelectItem key={opt} value={opt}>
-                {opt}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <FormMessage />
-      </FormItem>
-    )}
-  />
-);
-const SliderField = ({ form, name, updateCustomizeOption }: any) => {
-  const id = useId();
-  return (
-    <FormField
-      control={form.control}
-      name={`customizeOptions.${name}`}
-      render={({ field }: any) => (
-        <FormItem>
-          <div className="flex items-center justify-between gap-2">
-            <FormLabel htmlFor={id}>{formatLabel(name)}</FormLabel>
-            <output className="text-sm font-medium tabular-nums">
-              {typeof field.value === 'number' ? field.value : 0}
-            </output>
-          </div>
-          <Slider
-            id={id}
-            value={[typeof field.value === 'number' ? field.value : 0]}
-            onValueChange={(value) => {
-              field.onChange(value[0]);
-              updateCustomizeOption(name, value[0]);
-            }}
-            aria-label="Slider with output"
-            min={0}
-            max={100}
-          />
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  );
-};
-
-// const SliderField = ({ form, name, updateCustomizeOption }: any) => {
-//   const id = useId();
-//   return (
-//     <FormField
-//       control={form.control}
-//       name={`customizeOptions.${name}`}
-//       render={({ field }: any) => (
-//         <FormItem>
-//           <div className="flex items-center justify-between gap-2">
-//             <FormLabel htmlFor={id}>{formatLabel(name)}</FormLabel>
-//             <output className="text-sm font-medium tabular-nums">
-//               {typeof field.value === 'number' ? field.value : 0}
-//             </output>
-//           </div>
-//           <Slider
-//             id={id}
-//             value={[typeof field.value === 'number' ? field.value : 0]}
-//             onValueChange={(value) => {
-//               field.onChange(value[0]);
-//               updateCustomizeOption(name, value);
-//             }}
-//             aria-label="Slider with output"
-//             min={0}
-//             max={100}
-//           />
-//           <FormMessage />
-//         </FormItem>
-//       )}
-//     />
-//   );
-// };
-
-// const CheckboxField = ({ form, name, updateCustomizeOption }: any) => {
-//   const id = useId();
-//   return (
-//     <FormField
-//       control={form.control}
-//       name={`customizeOptions.${name}`}
-//       render={({ field }: any) => (
-//         <FormItem>
-//           <div className="flex items-center gap-2">
-//             <Checkbox
-//               id={id}
-//               checked={field.value === true}
-//               // onCheckedChange={field.onChange}
-//               onCheckedChange={(value) => {
-//                 field.onChange(value);
-//                 updateCustomizeOption(name, value);
-//               }}
-//             />
-//             <Label htmlFor={id}>{formatLabel(name)}</Label>
-//           </div>
-//           <FormMessage />
-//         </FormItem>
-//       )}
-//     />
-//   );
-// };
-const CheckboxField = ({ form, name, updateCustomizeOption }: any) => {
-  const id = useId();
-  return (
-    <FormField
-      control={form.control}
-      name={`customizeOptions.${name}`}
-      render={({ field }: any) => (
-        <FormItem>
-          <div className="flex items-center gap-2">
-            <Checkbox
-              id={id}
-              checked={field.value === true}
-              onCheckedChange={(value) => {
-                field.onChange(value);
-                updateCustomizeOption(name, value);
-              }}
-            />
-            <Label htmlFor={id}>{formatLabel(name)}</Label>
-          </div>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  );
-};
-
-const InputField = ({
-  form,
-  name,
-  type,
-  updateCustomizeOption,
-}: {
-  form: any;
-  name: string;
-  type: 'text' | 'number';
-  updateCustomizeOption: any;
-}) => {
-  const id = useId();
-  return (
-    <FormField
-      control={form.control}
-      name={`customizeOptions.${name}`}
-      render={({ field }: any) => (
-        <FormItem>
-          <FormLabel htmlFor={id}>{formatLabel(name)}</FormLabel>
-          <FormControl>
-            <Input
-              id={id}
-              type={type}
-              value={field.value ?? (type === 'number' ? 0 : '')}
-              onChange={(e) => {
-                const value =
-                  type === 'number' ? Number(e.target.value) : e.target.value;
-                field.onChange(value);
-                updateCustomizeOption(name, value);
-              }}
-              className="w-full rounded-md border px-3 py-2 text-sm"
-            />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  );
-};
-
-// const InputField = ({
-//   form,
-//   name,
-//   type,
-//   updateCustomizeOption,
-// }: {
-//   form: any;
-//   name: string;
-//   type: 'text' | 'number';
-//   updateCustomizeOption: any;
-// }) => {
-//   const id = useId();
-//   return (
-//     <FormField
-//       control={form.control}
-//       name={`customizeOptions.${name}`}
-//       render={({ field }: any) => (
-//         <FormItem>
-//           <FormLabel htmlFor={id}>{formatLabel(name)}</FormLabel>
-//           <FormControl>
-//             <Input
-//               id={id}
-//               type={type}
-//               {...field}
-//               value={field.value ?? (type === 'number' ? 0 : '')}
-//               onValueChange={(value: any) => {
-//                 field.onChange(value);
-//                 updateCustomizeOption(name, value);
-//               }}
-//               className="w-full rounded-md border px-3 py-2 text-sm"
-//             />
-//           </FormControl>
-//           <FormMessage />
-//         </FormItem>
-//       )}
-//     />
-//   );
-// };
-const CurrencySelectField = ({
-  form,
-  name,
-  options,
-  updateCustomizeOption,
-}: any) => (
-  <FormField
-    control={form.control}
-    name={`customizeOptions.${name}`}
-    render={({ field }: any) => (
-      <FormItem>
-        <FormLabel>{formatLabel(name)}</FormLabel>
-        <Select
-          onValueChange={(value: any) => {
-            field.onChange(value);
-            updateCustomizeOption(name, value);
-          }}
-          value={field.value}
-        >
-          <FormControl>
-            <SelectTrigger>
-              <SelectValue placeholder={`Select ${formatLabel(name)}`}>
-                {options.find((opt: any) => opt.value === field.value)?.label ||
-                  'Select Currency'}
-              </SelectValue>
-            </SelectTrigger>
-          </FormControl>
-          <SelectContent>
-            {options.map((opt: any) => (
-              <SelectItem key={opt.value} value={opt.value}>
-                {opt.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <FormMessage />
-      </FormItem>
-    )}
-  />
-);
