@@ -41,7 +41,12 @@ import {
   orientations,
   chartTypes,
 } from "@/lib/chart-assets";
-
+const tooltipFields = [
+  "RichTooltip",
+  "ShowTotal",
+  "ShowPercentage",
+  "TooltipSortByMetric",
+];
 export default function CustomizeChartBar({
   form,
   VisualizationTypeData,
@@ -130,7 +135,9 @@ export default function CustomizeChartBar({
           defaultValue="x-axis"
         >
           <AccordionItem value="x-axis">
-            <AccordionTrigger className="text-sm">X Axis</AccordionTrigger>
+            <AccordionTrigger className="text-md font-semibold mb-2">
+              X Axis
+            </AccordionTrigger>
             <AccordionContent>
               <div className="space-y-4">
                 <div className="space-y-1">
@@ -182,7 +189,9 @@ export default function CustomizeChartBar({
           defaultValue="y-axis"
         >
           <AccordionItem value="y-axis">
-            <AccordionTrigger className="text-sm">Y Axis</AccordionTrigger>
+            <AccordionTrigger className="text-md font-semibold mb-2">
+              Y Axis
+            </AccordionTrigger>
             <AccordionContent>
               <div className="space-y-4">
                 {/* Y AXIS TITL */}
@@ -256,24 +265,12 @@ export default function CustomizeChartBar({
 
     if (key === "SortSeriesBy") {
       return (
-        <div>
-          <Label className="mb-2 block">Sort Series By</Label>
-          <Select
-            value={activeCustomizeOptions?.SortSeriesBy || "Total value"}
-            onValueChange={(val) => updateCustomizeOption("SortSeriesBy", val)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select sort option" />
-            </SelectTrigger>
-            <SelectContent>
-              {sortSeriesOptions.map((option) => (
-                <SelectItem key={option} value={option}>
-                  {option}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        <SelectField
+          form={form}
+          name="SortSeriesBy"
+          options={sortSeriesOptions}
+          updateCustomizeOption={updateCustomizeOption}
+        />
       );
     }
     {
@@ -311,73 +308,11 @@ export default function CustomizeChartBar({
     }
     if (key === "StackedStyle") {
       return (
-        <div>
-          <Label className="mb-2 block">Stacked Style</Label>
-          <Select
-            value={activeCustomizeOptions?.StackedStyle || "None"}
-            onValueChange={(val) => updateCustomizeOption("StackedStyle", val)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select stacked style" />
-            </SelectTrigger>
-            <SelectContent>
-              {stackedStyleOptions.map((option) => (
-                <SelectItem key={option} value={option}>
-                  {option}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      );
-    }
-    if (key === "Minorticks") {
-      return (
-        <FormField
-          control={form.control}
-          name={`customizeOptions.Minorticks`}
-          render={({ field }: any) => (
-            <FormItem>
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  id={id}
-                  checked={field.value === true}
-                  // onCheckedChange={field.onChange}
-                  onCheckedChange={(value) => {
-                    field.onChange(value);
-                    updateCustomizeOption(key, value);
-                  }}
-                />
-                <Label htmlFor={id}>Minor ticks</Label>
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      );
-    }
-    if (key === "DataZoom") {
-      return (
-        <FormField
-          control={form.control}
-          name={`customizeOptions.DataZoom`}
-          render={({ field }: any) => (
-            <FormItem>
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  id={id}
-                  checked={field.value === true}
-                  // onCheckedChange={field.onChange}
-                  onCheckedChange={(value) => {
-                    field.onChange(value);
-                    updateCustomizeOption(key, value);
-                  }}
-                />
-                <Label htmlFor={id}>Data Zoom</Label>
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
+        <SelectField
+          form={form}
+          name="StackedStyle"
+          options={stackedStyleOptions}
+          updateCustomizeOption={updateCustomizeOption}
         />
       );
     }
@@ -472,46 +407,21 @@ export default function CustomizeChartBar({
           key="currency-group"
           className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full"
         >
-          {/* Currency Format */}
-          <div className="min-w-0 w-full space-y-1">
-            <Label htmlFor="currency-format">Currency Format</Label>
-            <Select
-              value={activeCustomizeOptions?.CurrencyFormat || ""}
-              onValueChange={(val) =>
-                updateCustomizeOption("CurrencyFormat", val)
-              }
-            >
-              <SelectTrigger id="currency-format">
-                <SelectValue placeholder="Select format" />
-              </SelectTrigger>
-              <SelectContent>
-                {CurrencyFormat.map((option) => (
-                  <SelectItem key={option} value={option}>
-                    {option}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="min-w-0 w-full">
+            <SelectField
+              form={form}
+              name="CurrencyFormat"
+              options={CurrencyFormat}
+              updateCustomizeOption={updateCustomizeOption}
+            />
           </div>
-
-          {/* Currency */}
-          <div className="min-w-0 w-full space-y-1">
-            <Label htmlFor="currency">Currency</Label>
-            <Select
-              value={activeCustomizeOptions?.Currency || ""}
-              onValueChange={(val) => updateCustomizeOption("Currency", val)}
-            >
-              <SelectTrigger id="currency">
-                <SelectValue placeholder="Select currency" />
-              </SelectTrigger>
-              <SelectContent>
-                {Currency.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="min-w-0 w-full">
+            <CurrencySelectField
+              form={form}
+              name="Currency"
+              options={Currency}
+              updateCustomizeOption={updateCustomizeOption}
+            />
           </div>
         </div>
       );
@@ -540,79 +450,43 @@ export default function CustomizeChartBar({
               </FormItem>
             )}
           />
-    
+
           {showLegendValue && (
-            <div className="space-y-4 pl-6 mt-2 border-l">
-              {renderField("Type")}
-              {renderField("Orientation")}
-              {renderField("Margin")}
-            </div>
+            <Accordion type="single" collapsible className="w-full mt-2">
+              <AccordionItem value="legend">
+                <AccordionTrigger className="text-md font-semibold mb-2">
+                  Legend
+                </AccordionTrigger>
+                <AccordionContent className="space-y-4">
+                  {renderField("Type")}
+                  {renderField("Orientation")}
+                  {renderField("Margin")}
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           )}
         </>
       );
     }
+
     if (key === "Orientation") {
       return (
-        <FormField
-          control={form.control}
-          name={`customizeOptions.Orientation`}
-          render={({ field }: any) => (
-            <FormItem>
-              <FormLabel>Legend Orientation</FormLabel>
-              <Select
-                onValueChange={(val) => {
-                  field.onChange(val);
-                  updateCustomizeOption("Orientation", val);
-                }}
-                value={field.value}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select orientation" />
-                </SelectTrigger>
-                <SelectContent>
-                  {orientations.map((option) => (
-                    <SelectItem key={option} value={option}>
-                      {option}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
+        <SelectField
+          form={form}
+          name="Orientation"
+          options={orientations}
+          updateCustomizeOption={updateCustomizeOption}
         />
       );
     }
 
     if (key === "Type") {
       return (
-        <FormField
-          control={form.control}
-          name={`customizeOptions.Type`}
-          render={({ field }: any) => (
-            <FormItem>
-              <FormLabel>Legend Type</FormLabel>
-              <Select
-                onValueChange={(val) => {
-                  field.onChange(val);
-                  updateCustomizeOption("Type", val);
-                }}
-                value={field.value}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {["scroll", "plain"].map((option) => (
-                    <SelectItem key={option} value={option}>
-                      {option}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
+        <SelectField
+          form={form}
+          name="Type"
+          options={chartTypes}
+          updateCustomizeOption={updateCustomizeOption}
         />
       );
     }
@@ -640,104 +514,26 @@ export default function CustomizeChartBar({
       );
     }
 
-    if (key === "RichTooltip") {
+    if (
+      [
+        "SortSeriesAscending",
+        "Minorticks",
+        "DataZoom",
+        "ShowValue",
+        "RichTooltip",
+        "ShowTotal",
+        "ShowPercentage",
+        "TooltipSortByMetric",
+        "LogarithmicAxis",
+        "MinorSplitLine",
+        "TruncateAxis",
+      ].includes(key)
+    ) {
       return (
-        <FormField
-          control={form.control}
-          name={`customizeOptions.RichTooltip`}
-          render={({ field }: any) => (
-            <FormItem>
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  id={id}
-                  checked={field.value === true}
-                  // onCheckedChange={field.onChange}
-                  onCheckedChange={(value) => {
-                    field.onChange(value);
-                    updateCustomizeOption(key, value);
-                  }}
-                />
-                <Label htmlFor={id}>Rich Tooltip</Label>
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      );
-    }
-
-    if (key === "ShowTotal") {
-      return (
-        <FormField
-          control={form.control}
-          name={`customizeOptions.ShowTotal`}
-          render={({ field }: any) => (
-            <FormItem>
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  id={id}
-                  checked={field.value === true}
-                  // onCheckedChange={field.onChange}
-                  onCheckedChange={(value) => {
-                    field.onChange(value);
-                    updateCustomizeOption(key, value);
-                  }}
-                />
-                <Label htmlFor={id}>Show Total</Label>
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      );
-    }
-    if (key === "ShowPercentage") {
-      return (
-        <FormField
-          control={form.control}
-          name={`customizeOptions.ShowPercentage`}
-          render={({ field }: any) => (
-            <FormItem>
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  id={id}
-                  checked={field.value === true}
-                  // onCheckedChange={field.onChange}
-                  onCheckedChange={(value) => {
-                    field.onChange(value);
-                    updateCustomizeOption(key, value);
-                  }}
-                />
-                <Label htmlFor={id}>Show Percentage</Label>
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      );
-    }
-    if (key === "TooltipSortByMetric") {
-      return (
-        <FormField
-          control={form.control}
-          name={`customizeOptions.TooltipSortByMetric`}
-          render={({ field }: any) => (
-            <FormItem>
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  id={id}
-                  checked={field.value === true}
-                  // onCheckedChange={field.onChange}
-                  onCheckedChange={(value) => {
-                    field.onChange(value);
-                    updateCustomizeOption(key, value);
-                  }}
-                />
-                <Label htmlFor={id}>Tooltip Sort By Metric</Label>
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
+        <CheckboxField
+          form={form}
+          name={key}
+          updateCustomizeOption={updateCustomizeOption}
         />
       );
     }
@@ -748,8 +544,9 @@ export default function CustomizeChartBar({
       <Accordion
         type="multiple"
         className="w-full"
-        defaultValue={["chart-options"]}
+        defaultValue={["chart-options", "legend-options", "tooltip-options"]}
       >
+        {/* Main Chart Options */}
         <AccordionItem value="chart-options">
           <AccordionTrigger className="text-md font-semibold mb-2">
             Chart Options
@@ -757,14 +554,30 @@ export default function CustomizeChartBar({
           <AccordionContent>
             <div className="space-y-4">
               {Object.keys(activeCustomizeOptions)
-                .filter((fieldKey) => !legendFields.includes(fieldKey))
+                .filter(
+                  (fieldKey) =>
+                    !legendFields.includes(fieldKey) &&
+                    !tooltipFields.includes(fieldKey)
+                )
                 .map((fieldKey) =>
                   activeCustomizeOptions[fieldKey] ? (
                     <div key={fieldKey}>{renderField(fieldKey)}</div>
                   ) : null
                 )}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
 
-        
+        {/* Tooltip Section */}
+        <AccordionItem value="tooltip-options">
+          <AccordionTrigger className="text-md font-semibold mb-2">
+            Tooltip
+          </AccordionTrigger>
+          <AccordionContent>
+            <div className="space-y-4">
+              {tooltipFields.map((key) => (
+                <div key={key}>{renderField(key)}</div>
+              ))}
             </div>
           </AccordionContent>
         </AccordionItem>
@@ -772,3 +585,110 @@ export default function CustomizeChartBar({
     </div>
   );
 }
+const CheckboxField = ({
+  form,
+  name,
+  updateCustomizeOption,
+}: {
+  form: any;
+  name: string;
+  updateCustomizeOption: (key: string, value: any) => void;
+}) => {
+  const id = useId();
+  return (
+    <FormField
+      control={form.control}
+      name={`customizeOptions.${name}`}
+      render={({ field }: any) => (
+        <FormItem>
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id={id}
+              checked={field.value === true}
+              onCheckedChange={(value) => {
+                field.onChange(value);
+                updateCustomizeOption(name, value);
+              }}
+            />
+            <Label htmlFor={id}>{formatLabel(name)}</Label>
+          </div>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+
+const SelectField = ({ form, name, options, updateCustomizeOption }: any) => (
+  <FormField
+    control={form.control}
+    name={`customizeOptions.${name}`}
+    render={({ field }: any) => (
+      <FormItem>
+        <FormLabel>{formatLabel(name)}</FormLabel>
+        <Select
+          onValueChange={(value) => {
+            field.onChange(value);
+            updateCustomizeOption(name, value);
+          }}
+          value={field.value}
+        >
+          <FormControl>
+            <SelectTrigger>
+              <SelectValue placeholder={`Select ${formatLabel(name)}`} />
+            </SelectTrigger>
+          </FormControl>
+          <SelectContent>
+            {options.map((opt: any) => (
+              <SelectItem key={opt} value={opt}>
+                {opt}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+);
+
+const CurrencySelectField = ({
+  form,
+  name,
+  options,
+  updateCustomizeOption,
+}: any) => (
+  <FormField
+    control={form.control}
+    name={`customizeOptions.${name}`}
+    render={({ field }: any) => (
+      <FormItem>
+        <FormLabel>{formatLabel(name)}</FormLabel>
+        <Select
+          onValueChange={(value: any) => {
+            field.onChange(value);
+            updateCustomizeOption(name, value);
+          }}
+          value={field.value}
+        >
+          <FormControl>
+            <SelectTrigger>
+              <SelectValue placeholder={`Select ${formatLabel(name)}`}>
+                {options.find((opt: any) => opt.value === field.value)?.label ||
+                  "Select Currency"}
+              </SelectValue>
+            </SelectTrigger>
+          </FormControl>
+          <SelectContent>
+            {options.map((opt: any) => (
+              <SelectItem key={opt.value} value={opt.value}>
+                {opt.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+);

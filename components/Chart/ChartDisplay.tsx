@@ -4,6 +4,7 @@ import React from 'react';
 import ReactECharts from 'echarts-for-react';
 import EmtyChart from '../motion/EmtyChart';
 import { motion } from 'framer-motion';
+import { palettes } from '@/lib/chart-assets';
 
 const ChartDisplay = ({
   chartData,
@@ -24,6 +25,11 @@ const ChartDisplay = ({
   const isLineChart = chartData?.visualizationType?.type
     ?.toLowerCase()
     .includes('line');
+
+  const selectedPaletteName = chartData.customizeOptions?.ColorScheme;
+  const selectedPalette = palettes.find(p => p.name === selectedPaletteName);
+  const colors = selectedPalette?.colors || ['#409EFF'];
+
   const pieChartData = chartData?.data?.map((item: any) => {
     const keys = Object.keys(item);
     return {
@@ -112,12 +118,13 @@ const ChartDisplay = ({
             bottom: 'left',
           },
           tooltip: { trigger: 'item' },
+          color: colors,
           legend: {
             orient: chartData.customizeOptions?.Orientation || 'horizontal',
             left: 'center',
             top: chartData.customizeOptions?.Margin || 'top',
             selector: true,
-            type: 'scroll',
+            type: chartData.customizeOptions?.type,
           },
           series: [
             {
@@ -153,9 +160,11 @@ const ChartDisplay = ({
         option={{
           title: {
             text: chartData.name || 'Bar Chart',
-            left: 'center',
+            subtext: chartData.visualizationType?.type || 'Bar',
+            bottom: 'left',
           },
           tooltip: { trigger: 'axis' },
+          color: colors,
           xAxis: {
             type: 'category',
             data: xAxisData,
@@ -164,13 +173,19 @@ const ChartDisplay = ({
           yAxis: {
             type: 'value',
           },
+          legend: {
+            orient: chartData.customizeOptions?.Orientation || 'horizontal',
+            left: 'center',
+            top: chartData.customizeOptions?.Margin || 'top',
+            selector: true,
+            type: chartData.customizeOptions?.type,
+          },
           series: [
             {
               name: yKey || 'Value',
               type: 'bar',
               data: seriesData,
               itemStyle: {
-                color: chartData.customizeOptions?.BarColor || '#409EFF',
                 borderRadius: 4,
               },
             },
@@ -180,6 +195,7 @@ const ChartDisplay = ({
       />
     );
   }
+
   if (
     isLineChart &&
     xAxisData?.length > 0 &&
@@ -193,6 +209,7 @@ const ChartDisplay = ({
             left: 'center',
           },
           tooltip: { trigger: 'axis' },
+          color: colors,
           xAxis: {
             type: 'category',
             data: xAxisData,
@@ -207,7 +224,6 @@ const ChartDisplay = ({
               type: 'line',
               data: seriesData,
               itemStyle: {
-                color: chartData.customizeOptions?.BarColor || '#409EFF',
                 borderRadius: 4,
               },
             },
@@ -217,6 +233,7 @@ const ChartDisplay = ({
       />
     );
   }
+
   return (
     <div className="text-muted-foreground text-sm italic">
       No data available to display.

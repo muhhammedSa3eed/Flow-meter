@@ -203,7 +203,7 @@ export default function CustomizeChart({
     //     />
     //   );
     // }
-    if (key === 'Color') {
+    if (key === "ColorScheme") {
       return (
         <FormField
           key={key}

@@ -105,7 +105,7 @@ export default function EditChartWrapper({
   const [sampleData, setSampleData] = useState<TripsLogEntry[] | null>(null);
   const router = useRouter();
   const [columnOptions, setColumnOptions] = useState<Option[]>([]);
-  // console.log('server xxxxx', chartDetails);
+  const [createdChartId, setCreatedChartId] = useState<number | null>(null);
   console.log('chartData?.data?.[0]', chartData?.data?.[0]);
   console.log('chartDetails?.data?.[0]', chartDetails?.data?.[0]);
   // Initialize form with default values
@@ -173,8 +173,6 @@ export default function EditChartWrapper({
   // : z.infer<typeof ChartSchema>
 
   const onSubmit = async (values: z.infer<typeof ChartSchema>) => {
-    // console.log('SUBMIT TRIGGERED', values);
-    // console.log('customizeOptions', values.customizeOptions);
     try {
       const payload = {
         ...values,
@@ -184,29 +182,31 @@ export default function EditChartWrapper({
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/Charts/${chartId}`,
         {
           method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         }
       );
-      // console.log('form Submit update chart :', values);
-
-      if (!response.ok) {
-        throw new Error(`Failed to update chart: ${response.statusText}`);
-      }
-
+  
+      if (!response.ok) throw new Error('Update failed');
+  
       const updatedChart = await response.json();
-
-      setChartData(updatedChart);
+  
+      // ✅ trigger re-render
+      setChartData({ ...updatedChart }); 
+  
+      // ✅ refresh form
+      form.reset({
+        ...updatedChart,
+        customizeOptions: updatedChart.customizeOptions || {},
+      });
+  
+      setCreatedChartId(chartId);
       toast.success('Chart updated successfully');
-
       await fetchData();
+      
       router.refresh();
-      // window.location.reload();
-    } catch (error) {
-      console.error('Error updating chart:', error);
+    } catch (err) {
+      console.error(err);
       toast.error('Failed to update chart');
     }
   };
@@ -657,7 +657,7 @@ export default function EditChartWrapper({
                           form={form}
                         /> */}
                       <CustomizeChartWrapper
-                        // chartData={chartData}
+                        chartData={chartData}
                         VisualizationTypeData={VisualizationTypeData}
                         form={form}
                       />
@@ -684,7 +684,7 @@ export default function EditChartWrapper({
                       <span className="font-semibold">Display chart</span>
                       <ChartDisplay
                         chartData={chartData}
-                        // createdChartId={createdChartId}
+                        createdChartId={createdChartId}
                       />
                       {/* <div className="flex-1 mt-4 p-4 flex items-center justify-center">
                         {!chartDetails?.data?.[0] ? (
