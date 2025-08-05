@@ -46,9 +46,11 @@ import DatasetSelector from './DatasetSelector';
 export default function ChooseChart({
   VisualizationTypeData,
   dataSet,
+  ProjectId,
 }: {
   VisualizationTypeData: VisualizationTypes[];
   dataSet: Dataset[];
+  ProjectId: number;
 }) {
   console.log({ dataSet });
   const id = useId();
@@ -78,7 +80,7 @@ export default function ChooseChart({
       dynamicFilters: [],
       metrics: [],
       sortBy: [],
-      rowLimit: null,
+      rowLimit: undefined,
       customizeOptions: {},
       xAxis: {},
       xAxisSortBy: '',
@@ -91,7 +93,6 @@ export default function ChooseChart({
     setUpdateTrigger((prev) => !prev);
     setIsAddChart(false);
   };
-  
 
   useEffect(() => {
     if (createdChartId) {
@@ -129,6 +130,7 @@ export default function ChooseChart({
       const payload = {
         ...values,
         id: createdChartId ?? values.id,
+        projectId: ProjectId,
       };
 
       console.log('Payload:', payload);
@@ -165,7 +167,7 @@ export default function ChooseChart({
       } else {
         chartResponse = await response.text();
       }
-
+      console.log({ chartResponse });
       if (!createdChartId) {
         setCreatedChartId(chartResponse.id);
         form.setValue('id', chartResponse.id);
@@ -349,7 +351,6 @@ export default function ChooseChart({
                           />
                         </TabsContent>
                         <TabsContent value="customize">
-                          
                           <CustomizeChartWrapper
                             chartData={chartData}
                             VisualizationTypeData={VisualizationTypeData}

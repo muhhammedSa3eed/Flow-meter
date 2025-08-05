@@ -13,6 +13,7 @@ const ChartDisplay = ({
   chartData: any;
   createdChartId?: number | null;
 }) => {
+  console.log('from chart display', { chartData });
   const isBigNumber = chartData?.visualizationType?.type
     ?.toLowerCase()
     .includes('bignumber');

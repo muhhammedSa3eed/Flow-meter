@@ -6,7 +6,7 @@ import ChartTable from '@/components/Data-Tables/ChartTable';
 import { Chart } from '@/types';
 import { getAllCharts } from '@/lib/projectData';
 import Header from '@/components/header';
-// async function getAllCharts(): Promise<Chart[]> {
+// async function getChartsByProjectId(): Promise<Chart[]> {
 //   const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/Charts`, {
 //     cache: 'no-store',
 //   });

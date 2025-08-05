@@ -37,7 +37,7 @@ export default async function AddChart({
     <>
       <ProjectIdTabs projectId={ProjectId} />
       <Label className="font-bold my-2">Chart</Label>
-      <ChooseChart VisualizationTypeData={VisualizationTypeData} dataSet={dataSet}/>
+      <ChooseChart VisualizationTypeData={VisualizationTypeData} dataSet={dataSet} ProjectId={ProjectId}/>
     </>
   );
 }

@@ -1,5 +1,5 @@
-"use client"
-import React from "react";
+'use client';
+import React from 'react';
 import {
   AlertDialogAction,
   AlertDialogCancel,
@@ -7,19 +7,19 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { CircleAlert } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { toast } from "react-hot-toast";
-import { Chart } from "@/types";
-import { buttonVariants } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+} from '@/components/ui/alert-dialog';
+import { CircleAlert } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { toast } from 'react-hot-toast';
+import { Chart } from '@/types';
+import { buttonVariants } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 export default function DeleteChart({
-    chart,
-  // fetchChart,
-}: {
-  chart:Chart
+  chart,
+}: // fetchChart,
+{
+  chart: Chart;
   // fetchChart: () => Promise<void>;
 }) {
   const router = useRouter();
@@ -29,28 +29,28 @@ export default function DeleteChart({
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/Charts/${chart.id}`,
         {
-          method: "DELETE",
+          method: 'DELETE',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
         }
       );
 
       if (!response.ok) {
         const errorData = await response.json();
-        toast.error(errorData.message || "Failed to delete the chart.");
+        toast.error(errorData.message || 'Failed to delete the chart.');
         return; // Exit early if the response is not OK
       }
 
       // fetchChart();
-      toast.success("The Chart has been deleted successfully.");
-      router.refresh()
+      toast.success('The Chart has been deleted successfully.');
+      router.refresh();
       // window.location.reload()
     } catch (err) {
       if (err instanceof Error) {
         toast.error(`Failed to delete Chart: ${err.message}`);
       } else {
-        toast.error("Failed to delete Chart due to an unknown error.");
+        toast.error('Failed to delete Chart due to an unknown error.');
       }
     }
   };
@@ -63,7 +63,7 @@ export default function DeleteChart({
           Are you sure?
         </AlertDialogTitle>
         <AlertDialogDescription>
-          This action cannot be undone. You will permanently delete the Chart{" "}
+          This action cannot be undone. You will permanently delete the Chart{' '}
           <strong>{chart.name}</strong>.
         </AlertDialogDescription>
       </AlertDialogHeader>
@@ -71,7 +71,7 @@ export default function DeleteChart({
         <AlertDialogCancel>Cancel</AlertDialogCancel>
         <AlertDialogAction
           onClick={handleDeleteDevice}
-          className={cn(buttonVariants({ variant: "destructive" }))}
+          className={cn(buttonVariants({ variant: 'destructive' }))}
         >
           Delete
         </AlertDialogAction>

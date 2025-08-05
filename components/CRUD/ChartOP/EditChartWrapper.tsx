@@ -134,10 +134,13 @@ export default function EditChartWrapper({
           })
         ) || [],
       sortBy: chartData.sortBy || [],
-      rowLimit: chartData.rowLimit || null,
+      rowLimit: chartData.rowLimit || undefined,
       customizeOptions: chartData.customizeOptions || {},
       displayFields: chartData.displayFields || {},
       dimensions: chartData.dimensions || [],
+      xAxis: chartData.xAxis || {},
+      xAxisSortBy: chartData.xAxisSortBy || '',
+      xAxisSortAscending: chartData.xAxisSortAscending || null,
       // name: '',
       // description: '',
       // datasetId: 0,
@@ -177,7 +180,10 @@ export default function EditChartWrapper({
       const payload = {
         ...values,
         id: chartId,
+        projectId: Number(ProjectId),
+        projectName: projectName,
       };
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/Charts/${chartId}`,
         {
@@ -186,21 +192,15 @@ export default function EditChartWrapper({
           body: JSON.stringify(payload),
         }
       );
-  
-      if (!response.ok) throw new Error('Update failed');
-  
+      console.log('form Submit update chart :', values);
+      console.log({ payload });
+      if (!response.ok) {
+        throw new Error(`Failed to update chart: ${response.statusText}`);
+      }
+
       const updatedChart = await response.json();
-  
-      // ✅ trigger re-render
-      setChartData({ ...updatedChart }); 
-  
-      // ✅ refresh form
-      form.reset({
-        ...updatedChart,
-        customizeOptions: updatedChart.customizeOptions || {},
-      });
-  
-      setCreatedChartId(chartId);
+      console.log({ updatedChart });
+      setChartData(updatedChart);
       toast.success('Chart updated successfully');
       await fetchData();
       
@@ -214,17 +214,17 @@ export default function EditChartWrapper({
   const fetchData = async () => {
     try {
       // Fetch chart data
-      // const chartResponse = await fetch(
-      //   `${process.env.NEXT_PUBLIC_API_BASE_URL}/Charts/${chartId}`
-      // );
+      const chartResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/Charts/${chartId}`
+      );
 
-      // if (!chartResponse.ok) {
-      //   throw new Error(`Failed to fetch chart: ${chartResponse.statusText}`);
-      // }
+      if (!chartResponse.ok) {
+        throw new Error(`Failed to fetch chart: ${chartResponse.statusText}`);
+      }
 
-      // const chartData: Chart = await chartResponse.json();
+      const chartData: Chart = await chartResponse.json();
       // console.log('xxxxx', chartData);
-      // setChartData(chartData);
+      setChartData(chartData);
       const connectionId = chartDetails.dataset.dbConnectionId;
       const schemaName = chartDetails.dataset.schemaName;
       const tableName = chartDetails.dataset.tableName;

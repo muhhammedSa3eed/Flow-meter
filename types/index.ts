@@ -213,6 +213,7 @@ export type Chart = {
   visualizationTypeId: number;
   visualizationType?: VisualizationTypes;
   projectName: string;
+  projectId: number;
   data?: Array<Record<string, any>>;
   customizeOptions?: Record<string, string | number | boolean>;
   displayFields?: Record<string, boolean>;
@@ -251,6 +252,9 @@ export type Chart = {
   queryContext?: string;
   useExistingQuery?: boolean;
   dimensions?: string[];
+  xAxis: object;
+  xAxisSortBy: string;
+  xAxisSortAscending: boolean;
 };
 export type Database = {
   id: string;

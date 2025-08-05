@@ -7,22 +7,6 @@ import EditChartWrapper from '@/components/CRUD/ChartOP/EditChartWrapper';
 import { getAllVisualizationTypes } from '@/lib/projectData';
 import Header from '@/components/header';
 
-// async function getAllVisualizationTypes(): Promise<VisualizationTypes[]> {
-//   const res = await fetch(
-//     `${process.env.NEXT_PUBLIC_API_BASE_URL}/VisualizationTypes`,
-//     {
-//       cache: 'no-store',
-//     }
-//   );
-
-//   if (!res.ok) {
-//     throw new Error('Failed to fetch visualization types');
-//   }
-
-//   const response = await res.json();
-//   console.log('VisualizationTypes data:', response);
-//   return response.data;
-// }
 
 async function getChartData(chartId: number): Promise<Chart> {
   const res = await fetch(
