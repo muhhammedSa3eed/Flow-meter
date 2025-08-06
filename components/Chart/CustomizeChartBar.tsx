@@ -40,6 +40,7 @@ import {
   yAxisPositionOptions,
   orientations,
   chartTypes,
+  RotateXaxisLabelOptions,
 } from "@/lib/chart-assets";
 const tooltipFields = [
   "RichTooltip",
@@ -313,6 +314,44 @@ export default function CustomizeChartBar({
           name="StackedStyle"
           options={stackedStyleOptions}
           updateCustomizeOption={updateCustomizeOption}
+        />
+      );
+    }
+
+    if (key === "RotateXaxisLabel") {
+      return (
+        <FormField
+          control={form.control}
+          name={`customizeOptions.${key}`}
+          render={({ field }: any) => (
+            <FormItem>
+              <FormLabel>Rotate X Axis Label</FormLabel>
+              <Select
+                onValueChange={(value) => {
+                  const numericValue = Number(value);
+                  field.onChange(numericValue);
+                  updateCustomizeOption(key, numericValue);
+                }}
+                value={String(field.value)}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue>
+                      {field.value === 0 ? '0' : field.value || 'Select rotation'}
+                    </SelectValue>
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {RotateXaxisLabelOptions.map((opt: number) => (
+                    <SelectItem key={opt} value={String(opt)}>
+                      {opt}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
         />
       );
     }

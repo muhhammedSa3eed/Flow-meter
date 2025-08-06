@@ -243,6 +243,8 @@ export const sortSeriesOptions = [
 
 export const stackedStyleOptions = ["None", "stack", "stream"];
 
+
+export const RotateXaxisLabelOptions = [0, 45, 90];
 export const palettes = [
   {
     name: 'Superset Colors',
