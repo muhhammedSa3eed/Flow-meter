@@ -77,6 +77,7 @@ import { Option } from '@/components/ui/multiselect';
 import CustomizeChartBigNumber from '@/components/Chart/CustomizeChartBigNumber';
 import CustomizeChartWrapper from '@/components/Chart/CustomizeChartWrapper';
 import ChartDisplay from '@/components/Chart/ChartDisplay';
+import { transformChartDataToTable } from '@/lib/chart-assets';
 
 export default function EditChartWrapper({
   ProjectId,
@@ -106,7 +107,7 @@ export default function EditChartWrapper({
   const router = useRouter();
   const [columnOptions, setColumnOptions] = useState<Option[]>([]);
   const [createdChartId, setCreatedChartId] = useState<number | null>(null);
-  console.log('chartData?.data?.[0]', chartData?.data?.[0]);
+  console.log('chartData?.data?.[0]', JSON.stringify(chartData?.data?.[0]));
   console.log('chartDetails?.data?.[0]', chartDetails?.data?.[0]);
   // Initialize form with default values
   const form = useForm<z.infer<typeof ChartSchema>>({
@@ -203,7 +204,6 @@ export default function EditChartWrapper({
       setChartData(updatedChart);
       toast.success('Chart updated successfully');
       await fetchData();
-      
       router.refresh();
     } catch (err) {
       console.error(err);
@@ -254,34 +254,6 @@ export default function EditChartWrapper({
         'chartData.visualizationTypeId',
         chartData.visualizationTypeId
       );
-      // form.reset({
-      //   id: chartData.id,
-      //   name: chartData.name,
-      //   description: chartData.description || '',
-      //   datasetId: chartData.dataset.id,
-      //   // dataset: chartData.dataset,
-      //   visualizationTypeId: chartData.visualizationTypeId,
-      //   metrics: chartData.metrics || [],
-      //   filters:
-      //     chartData.filters?.map(
-      //       (f: {
-      //         columnName: any;
-      //         operator: any;
-      //         values: any;
-      //         customSql: any;
-      //       }) => ({
-      //         columnName: f.columnName,
-      //         operator: f.operator,
-      //         values: f.values,
-      //         customSql: f.customSql ?? '',
-      //       })
-      //     ) || [],
-      //   sortBy: chartData.sortBy || [],
-      //   rowLimit: chartData.rowLimit || null,
-      //   customizeOptions: chartData.customizeOptions || {},
-      //   displayFields: chartData.displayFields || {},
-      //   dimensions: chartData.dimensions || [],
-      // });
 
       // Set the selected dataset and visualization type
       setSelectedDataset(chartDetails.dataset.id);
@@ -407,50 +379,8 @@ export default function EditChartWrapper({
     'chartData.visualizationType?.type',
     chartData.visualizationType?.type
   );
-  // const chartTitle = chartData?.name || 'Chart Title';
-  // const chartSubtitle = chartData?.description || '';
-
-  // const formatData = (value: any) => {
-  //   const numberFormat = chartData?.customizeOptions?.NumberFormat || 'none';
-  //   const dateFormat = chartData?.customizeOptions?.DateFormat || 'YYYY-MM-DD';
-  //   const forceDateFormat = chartData?.customizeOptions?.ForceDateFormat;
-
-  //   if (forceDateFormat && !isNaN(Date.parse(value))) {
-  //     const date = new Date(value);
-  //     switch (dateFormat) {
-  //       case 'YYYY-MM-DD':
-  //         return date.toISOString().split('T')[0];
-  //       case 'DD/MM/YYYY':
-  //         return date.toLocaleDateString('en-GB');
-  //       case 'MM/DD/YYYY':
-  //         return date.toLocaleDateString('en-US');
-  //       case 'DD MMM YYYY':
-  //         return date.toLocaleDateString('en-GB', {
-  //           day: '2-digit',
-  //           month: 'short',
-  //           year: 'numeric',
-  //         });
-  //       default:
-  //         return date.toISOString().split('T')[0];
-  //     }
-  //   }
-
-  //   if (typeof value === 'number') {
-  //     switch (numberFormat) {
-  //       case 'comma':
-  //         return value.toLocaleString('en-US');
-  //       case 'dot':
-  //         return value.toLocaleString('de-DE');
-  //       case 'space':
-  //         return value.toLocaleString('fr-FR').replace(/,/g, ' ');
-  //       default:
-  //         return value;
-  //     }
-  //   }
-
-  //   return value;
-  // };
-
+  const tableData = transformChartDataToTable(chartData?.data?.[0]);
+  console.log("00000000=>123",{ tableData });
   return (
     <>
       <Form {...form}>
@@ -686,128 +616,6 @@ export default function EditChartWrapper({
                         chartData={chartData}
                         createdChartId={createdChartId}
                       />
-                      {/* <div className="flex-1 mt-4 p-4 flex items-center justify-center">
-                        {!chartDetails?.data?.[0] ? (
-                          <div className="flex flex-col items-center justify-center h-full">
-                            <EmtyChart />
-                            <motion.div
-                              className="mt-10 text-center space-y-1"
-                              initial={{ opacity: 0, y: 20 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              transition={{ duration: 0.6, delay: 0.2 }}
-                            >
-                              <p className="text-base text-muted-foreground font-medium">
-                                Welcome to Neuss 👋
-                              </p>
-                              <p className="text-sm text-muted-foreground">
-                                Your chart preview will appear here once
-                                created.
-                              </p>
-                            </motion.div>
-                          </div>
-                        ) : isBigNumber ? (
-                          <div className="text-center space-y-2">
-                            <div
-                              className={`font-bold ${
-                                chartData.customizeOptions?.BigNumberFontSize ||
-                                'text-8xl'
-                              }`}
-                            >
-                              {chartData?.data?.[0]
-                                ? chartData?.customizeOptions?.ForceDateFormat
-                                  ? formatData(
-                                      Object.values(chartData.data[0])[0]
-                                    )
-                                  : `${Object.values(chartData.data[0])[0]}${
-                                      chartData.customizeOptions
-                                        ?.CurrencyFormat === 'Suffix'
-                                        ? ` ${
-                                            chartData.customizeOptions
-                                              ?.Currency || ''
-                                          }`
-                                        : ''
-                                    }`
-                                : 0}
-                            </div>
-                            {chartData?.customizeOptions?.Subtitle && (
-                              <div
-                                className={`text-muted-foreground ${
-                                  chartData?.customizeOptions
-                                    ?.SubheaderFontSize || 'text-sm'
-                                }`}
-                              >
-                                {chartData.customizeOptions.Subtitle}
-                              </div>
-                            )}
-                          </div>
-                        ) : isPieChart && pieChartData ? (
-                          <ReactECharts
-                            option={{
-                              title: {
-                                text: chartData.name || 'Chart',
-                                subtext:
-                                  chartData.visualizationType?.type || 'Pie',
-                                bottom: 'left',
-                              },
-                              tooltip: { trigger: 'item' },
-                              legend: {
-                                orient:
-                                  chartData.customizeOptions?.Orientation ||
-                                  'horizontal',
-                                left: 'center',
-                                top:
-                                  chartData.customizeOptions?.Margin || 'top',
-                                selector: true,
-                                type: 'scroll',
-                                pageIconColor: '#333',
-                                pageIconInactiveColor: '#ccc',
-                                pageIconSize: 16,
-                                pageButtonGap: 5,
-                                pageFormatter: '{current}/{total}',
-                                pageIcons: {
-                                  horizontal: [
-                                    'path://M12 2 L2 12 L12 22',
-                                    'path://M2 2 L12 12 L2 22',
-                                  ],
-                                },
-                              },
-
-                              series: [
-                                {
-                                  name:
-                                    chartData.metrics?.[0]?.columnName ||
-                                    'Value',
-                                  type: 'pie',
-                                  radius: chartData.customizeOptions?.Donut
-                                    ? [
-                                        `${chartData.customizeOptions?.InnerRadius}%`,
-                                        `${chartData.customizeOptions?.OuterRadius}%`,
-                                      ]
-                                    : '50%',
-                                  roseType:
-                                    chartData.customizeOptions?.RoseType ||
-                                    false,
-                                  data: pieChartData,
-                                  emphasis: {
-                                    itemStyle: {
-                                      shadowBlur: 10,
-                                      shadowOffsetX: 0,
-                                      shadowColor: 'rgba(0, 0, 0, 0.5)',
-                                    },
-                                  },
-                                },
-                              ],
-                            }}
-                            style={{ height: 400, width: '100%' }}
-                          />
-                        ) : (
-                          <div className="text-muted-foreground text-sm italic">
-                            
-                            This chart type will be rendered in its respective
-                            preview component.
-                          </div>
-                        )}
-                      </div> */}
                     </div>
                   </ResizablePanel>
 
@@ -837,7 +645,56 @@ export default function EditChartWrapper({
                         value="tab-1"
                         className="h-[calc(100%-40px)] p-4 overflow-auto"
                       >
-                        {chartData?.data &&
+                        {tableData && (
+                          <div className="overflow-x-auto mt-4 border rounded">
+                            <Table className="text-sm border-collapse w-full">
+                              <TableHeader>
+                                <TableRow>
+                                  <TableHead className="w-1/4 p-2 border-b text-red-900">
+                                    {tableData?.xAxis?.name}
+                                  </TableHead>
+                                  {tableData?.series?.map((s: any) => (
+                                    <TableHead
+                                      key={s.name}
+                                      className="w-1/4 p-2 border-b"
+                                    >
+                                      {s.name}
+                                    </TableHead>
+                                  ))}
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody>
+                                {tableData?.xAxis?.categories?.map(
+                                  (category: string, idx: number) => (
+                                    <TableRow key={category}>
+                                      <TableCell className="p-2 border-b">
+                                        {category}
+                                      </TableCell>
+                                      {tableData?.series?.map((s: any) => (
+                                        <TableCell
+                                          key={s.name}
+                                          className="p-2 border-b"
+                                        >
+                                          {s.data[idx] === 0 ? (
+                                            <span className="italic text-muted-foreground">
+                                              N/A
+                                            </span>
+                                          ) : typeof s.data[idx] ===
+                                            'number' ? (
+                                            s.data[idx].toLocaleString()
+                                          ) : (
+                                            String(s.data[idx])
+                                          )}
+                                        </TableCell>
+                                      ))}
+                                    </TableRow>
+                                  )
+                                )}
+                              </TableBody>
+                            </Table>
+                          </div>
+                        )}
+                        {/* {chartData?.data &&
                         Array.isArray(chartData.data) &&
                         chartData.data.length > 0 ? (
                           <div className="overflow-x-auto">
@@ -872,7 +729,7 @@ export default function EditChartWrapper({
                                     ))}
                                   </TableRow>
                                 ))} */}
-                                {chartData.data.map(
+                        {/* {chartData.data.map(
                                   (
                                     row: { [x: string]: any },
                                     i: React.Key | null | undefined
@@ -907,7 +764,7 @@ export default function EditChartWrapper({
                               No valid data available
                             </p>
                           </div>
-                        )}
+                        )} */}
                       </TabsContent>
                       <TabsContent
                         value="tab-2"

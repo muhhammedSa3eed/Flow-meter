@@ -17,8 +17,8 @@ import { useRouter } from 'next/navigation';
 
 export default function DeleteChart({
   chart,
-}: // fetchChart,
-{
+  // fetchChart,
+}: {
   chart: Chart;
   // fetchChart: () => Promise<void>;
 }) {

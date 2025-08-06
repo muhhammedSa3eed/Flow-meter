@@ -341,3 +341,23 @@ export const lableType = [
 
 export const AxisMarginOptions = ["15", "30", "50", "75", "100", "125", "150", "200"];
 export const yAxisPositionOptions = ["Left", "Top"];
+
+export const transformChartDataToTable = (chartData:any) => {
+  const { xAxis, series } = chartData;
+
+  const categories = xAxis.categories; // ["1", "2", ...]
+  const tableRows = categories.map((stationId: any, index:number) => {
+    const row: Record<string, string | number> = {
+      StationBayId: stationId,
+    };
+
+    series.forEach((s: { name: string | number; data: number[]; }) => {
+      row[s.name] = s.data[index] ?? 0;
+    });
+
+    return row;
+  });
+
+  return tableRows;
+};
+

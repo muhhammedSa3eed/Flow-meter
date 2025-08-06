@@ -27,8 +27,8 @@ const ChartDisplay = ({
     ?.toLowerCase()
     .includes('line');
 
-  const selectedPaletteName = chartData.customizeOptions?.ColorScheme;
-  const selectedPalette = palettes.find(p => p.name === selectedPaletteName);
+  const selectedPaletteName = chartData?.customizeOptions?.ColorScheme || '';
+  const selectedPalette = palettes.find((p) => p.name === selectedPaletteName);
   const colors = selectedPalette?.colors || ['#409EFF'];
 
   const pieChartData = chartData?.data?.map((item: any) => {
@@ -52,12 +52,16 @@ const ChartDisplay = ({
       ? chartData.metrics[0].columnName
       : dataKeys.find((k) => k !== xKey);
 
-  const xAxisData = chartData?.data?.map((item: any) => item?.[xKey] ?? 'N/A');
-  const seriesData = chartData?.data?.map((item: any) => {
-    if (!yKey) return 0;
-    const val = item?.[yKey];
-    return typeof val === 'number' ? val : Number(val) || 0;
-  });
+  // const xAxisData = chartData?.data?.map((item: any) => item?.[xKey] ?? 'N/A');
+  const xAxisData = chartData?.data[0].xAxis.categories.map(
+    (item: string) => item ?? 'N/A'
+  );
+
+  const seriesData = chartData?.data[0]?.series;
+
+  console.log({ xAxisData });
+  const legandTitle = chartData?.data[0]?.series.map((item: any) => item.name);
+  console.log({ legandTitle });
 
   if (!chartData?.data?.[0]) {
     return (
@@ -207,29 +211,75 @@ const ChartDisplay = ({
         option={{
           title: {
             text: chartData.name || 'Line Chart',
-            left: 'center',
           },
-          tooltip: { trigger: 'axis' },
-          color: colors,
+          tooltip: {
+            trigger: 'axis',
+          },
+          legend: {
+            data: legandTitle,
+          },
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true,
+          },
+          toolbox: {
+            feature: {
+              saveAsImage: {},
+            },
+          },
           xAxis: {
             type: 'category',
+            boundaryGap: false,
             data: xAxisData,
-            axisLabel: { rotate: 45 },
           },
           yAxis: {
             type: 'value',
           },
-          series: [
-            {
-              name: yKey || 'Value',
-              type: 'line',
-              data: seriesData,
-              itemStyle: {
-                borderRadius: 4,
-              },
-            },
-          ],
+          series: seriesData,
         }}
+        // option={{
+        //   // title: {
+        //   //   text: chartData.name || 'Line Chart',
+        //   //   left: 'center',
+        //   // },
+        //   title: {
+        //     text: 'Stacked Line',
+        //   },
+        //   tooltip: {
+        //     trigger: 'axis',
+        //   },
+        //   legend: {
+        //     data: xAxisData,
+        //   },
+        //   grid: {
+        //     left: '3%',
+        //     right: '4%',
+        //     bottom: '3%',
+        //     containLabel: true,
+        //   },
+
+        //   color: colors,
+        //   xAxis: {
+        //     type: 'category',
+        //     data: xAxisData,
+        //     axisLabel: { rotate: 45 },
+        //   },
+        //   yAxis: {
+        //     type: 'value',
+        //   },
+        //   series: [
+        //     {
+        //       name: yKey || 'Value',
+        //       type: 'line',
+        //       data: seriesData,
+        //       itemStyle: {
+        //         borderRadius: 4,
+        //       },
+        //     },
+        //   ],
+        // }}
         style={{ height: 400, width: '100%' }}
       />
     );

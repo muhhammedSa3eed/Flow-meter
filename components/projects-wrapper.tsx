@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from './ui/card';
 import { Projects } from '@/types';
+import Link from 'next/link';
 
 interface ProjectsProps {
   projects: Projects;
@@ -41,10 +42,15 @@ const ProjectsWrapper = ({ projects }: ProjectsProps) => {
                 </CardContent>
                 <CardFooter>
                   <AddProjectButton
-                    className="flex items-center justify-center w-full gap-2 text-base p-3"
-                    onClick={() => handleViewProject(project.id)}
+                    className="flex items-center justify-center w-full gap-2 text-base "
+                    // onClick={() => handleViewProject(project.id)}
                   >
-                    View {project.name} Details
+                    <Link
+                      href={`/Projects/${project.id}`}
+                      className="p-3 block w-full rounded-md"
+                    >
+                      View {project.name} Details
+                    </Link>
                   </AddProjectButton>
                 </CardFooter>
               </Card>
