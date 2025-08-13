@@ -83,13 +83,12 @@ const fuzzyFilter: FilterFn<Chart> = (row, _columnId, value, addMeta) => {
 };
 export default function ChartTable({
   ProjectId,
-
   chart,
 }: {
   ProjectId: number;
-
   chart: Chart[];
 }) {
+  // console.log({chart})
   const id = useId();
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState({});

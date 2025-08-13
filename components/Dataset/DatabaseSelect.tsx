@@ -176,6 +176,7 @@ export default function DatabaseSelect({
       TableName: selectedTable,
       SchemaName: selectedSchema,
       DbConnectionId: selectedDatabase,
+      projectId: Number(ProjectId),
     };
 
     try {

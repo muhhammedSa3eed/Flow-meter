@@ -1,11 +1,11 @@
-"use client";
-import React, { useState, useEffect, useId, Suspense } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Database, Dataset } from "@/types";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
+'use client';
+import React, { useState, useEffect, useId, Suspense } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Database, Dataset } from '@/types';
+import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
 import {
   Braces,
   CaseUpper,
@@ -13,9 +13,9 @@ import {
   Clock,
   Grid3x3,
   Hash,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Label } from "../ui/label";
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Label } from '../ui/label';
 import {
   Table,
   TableHeader,
@@ -23,16 +23,16 @@ import {
   TableHead,
   TableCell,
   TableBody,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   Form,
   FormField,
   FormItem,
   FormControl,
   FormMessage,
-} from "@/components/ui/form";
-import { DatasetSchema } from "@/schemas";
-import toast from "react-hot-toast";
+} from '@/components/ui/form';
+import { DatasetSchema } from '@/schemas';
+import toast from 'react-hot-toast';
 import {
   Command,
   CommandEmpty,
@@ -40,14 +40,14 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
+} from '@/components/ui/command';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { useRouter } from "next/navigation";
-import Loading from "@/app/loading";
+} from '@/components/ui/popover';
+import { useRouter } from 'next/navigation';
+import Loading from '@/app/loading';
 
 export default function EditDatasetPage({
   ProjectId,
@@ -79,10 +79,10 @@ export default function EditDatasetPage({
   const form = useForm({
     resolver: zodResolver(DatasetSchema),
     defaultValues: {
-      datasetName: "",
-      database: "",
-      schema: "",
-      table: "",
+      datasetName: '',
+      database: '',
+      schema: '',
+      table: '',
     },
   });
 
@@ -99,10 +99,10 @@ export default function EditDatasetPage({
         })
         .then((data: Dataset) => {
           // Populate form with current dataset data
-          form.setValue("datasetName", data.name);
-          form.setValue("database", data.dbConnectionId.toString());
-          form.setValue("schema", data.schemaName);
-          form.setValue("table", data.tableName);
+          form.setValue('datasetName', data.name);
+          form.setValue('database', data.dbConnectionId.toString());
+          form.setValue('schema', data.schemaName);
+          form.setValue('table', data.tableName);
 
           // Set selected values
           setSelectedDatabase(data.dbConnectionId);
@@ -124,12 +124,12 @@ export default function EditDatasetPage({
               setTableColumns(columns);
             })
             .catch((error) => {
-              console.error("Error fetching table metadata:", error);
+              console.error('Error fetching table metadata:', error);
               setError(error.message);
             });
         })
         .catch((error) => {
-          console.error("Error fetching dataset details:", error);
+          console.error('Error fetching dataset details:', error);
           setError(error.message);
         });
     }
@@ -147,7 +147,7 @@ export default function EditDatasetPage({
       })
       .then((data: Database[]) => setDatabases(data))
       .catch((error) => {
-        console.error("Error fetching databases:", error);
+        console.error('Error fetching databases:', error);
         setError(error.message);
       });
   }, []);
@@ -167,7 +167,7 @@ export default function EditDatasetPage({
         })
         .then((data: string[]) => setSchemas(data))
         .catch((error) => {
-          console.error("Error fetching schemas:", error);
+          console.error('Error fetching schemas:', error);
           setError(error.message);
         });
     }
@@ -188,7 +188,7 @@ export default function EditDatasetPage({
         })
         .then((data: string[]) => setTables(data))
         .catch((error) => {
-          console.error("Error fetching tables:", error);
+          console.error('Error fetching tables:', error);
           setError(error.message);
         });
     }
@@ -211,73 +211,75 @@ export default function EditDatasetPage({
           setTableColumns(data);
         })
         .catch((error) => {
-          console.error("Error fetching table metadata:", error);
+          console.error('Error fetching table metadata:', error);
           setError(error.message);
         });
     }
   }, [selectedDatabase, selectedSchema, selectedTable]);
 
   const onSubmit = async (data: z.infer<typeof DatasetSchema>) => {
+    console.log({ data });
     if (!selectedDatabase || !selectedSchema || !selectedTable) {
-      setError("Please select a database, schema, and table.");
+      setError('Please select a database, schema, and table.');
       return;
     }
-  
+
     const payload = {
-      Id :datasetId,
+      Id: datasetId,
       Name: data.datasetName,
       TableName: selectedTable,
       SchemaName: selectedSchema,
       DbConnectionId: selectedDatabase,
+      projectId: Number(ProjectId),
     };
-  
+
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/DS/${datasetId}`,
         {
-          method: "PUT",
+          method: 'PUT',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify(payload),
         }
       );
-  
+
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Server error: ${errorText}`);
       }
-  
+
       const result = await response.json();
-  
-      router.push(`/Projects/${ProjectId}/dataset/${projectName}`);
-  
-      console.log("Dataset updated successfully:", result);
+
+      router.push(`/Projects/${ProjectId}/dataset`);
+
+      console.log('Dataset updated successfully:', result);
       setError(null);
-      toast.success("Dataset updated successfully!");
+      toast.success('Dataset updated successfully!');
     } catch (error) {
-      console.error("Error updating dataset:", error);
-      setError("Failed to update dataset. Please try again.");
+      console.error('Error updating dataset:', error);
+      setError('Failed to update dataset. Please try again.');
     }
   };
 
   const getIconForType = (dataType: string) => {
     if (
-      dataType.includes("integer") ||
-      dataType.includes("real") ||
-      dataType.includes("id") ||
-      dataType.includes("name") ||
-      dataType.includes("text")
+      dataType.includes('integer') ||
+      dataType.includes('real') ||
+      dataType.includes('id') ||
+      dataType.includes('name') ||
+      dataType.includes('text')
     ) {
       return <Hash size={16} className="text-muted-foreground" />;
     } else if (
-      dataType.includes("character varying") ||
-      dataType.includes("string")
+      dataType.includes('character varying') ||
+      dataType.includes('string')
     ) {
       return <CaseUpper size={16} className="text-muted-foreground" />;
-    } else if (dataType.includes("timestamp")) {
+    } else if (dataType.includes('timestamp')) {
       return <Clock size={16} className="text-muted-foreground" />;
-    } else if (dataType.includes("json")) {
+    } else if (dataType.includes('json')) {
       return <Braces size={16} className="text-muted-foreground" />;
     }
 
@@ -588,8 +590,8 @@ export default function EditDatasetPage({
               </div>
             )}
             <div className="flex justify-end">
-              <Button type="submit" variant={"custom"} className="mt-2">
-                Update dataset 
+              <Button type="submit" variant={'custom'} className="mt-2">
+                Update dataset
               </Button>
             </div>
           </div>

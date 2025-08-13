@@ -42,6 +42,7 @@ import SampleTable from '../Data-Tables/SampleTable';
 import CustomizeChartWrapper from './CustomizeChartWrapper';
 import ChartDisplay from './ChartDisplay';
 import DatasetSelector from './DatasetSelector';
+import ResultTable from '../Data-Tables/result-table';
 
 export default function ChooseChart({
   VisualizationTypeData,
@@ -407,7 +408,11 @@ export default function ChooseChart({
                           value="tab-1"
                           className="h-[calc(100%-40px)] p-4 overflow-auto"
                         >
-                          {chartData?.data &&
+                          <ResultTable
+                            chartDetails={chartData}
+                            chartData={chartData}
+                          />
+                          {/* {chartData?.data &&
                           Array.isArray(chartData.data) &&
                           chartData.data.length > 0 ? (
                             <div className="overflow-x-auto">
@@ -452,7 +457,7 @@ export default function ChooseChart({
                                 No valid data available
                               </p>
                             </div>
-                          )}
+                          )} */}
                         </TabsContent>
                         <TabsContent
                           value="tab-2"

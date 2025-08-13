@@ -26,3 +26,14 @@ export const getAllCharts = cache(async () => {
 
   return res.json();
 });
+
+export const getChartsByProjectId = cache(async (projectId: number) => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/Charts/project/${projectId}`,
+    {
+      next: { tags: ['updateCharts'] },
+    }
+  );
+  console.log(res.body);
+  return res.json();
+});

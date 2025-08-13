@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import React from "react";
-import ReactECharts from "echarts-for-react";
-import EmtyChart from "../motion/EmtyChart";
-import { motion } from "framer-motion";
-import { palettes } from "@/lib/chart-assets";
+import React from 'react';
+import ReactECharts from 'echarts-for-react';
+import EmtyChart from '../motion/EmtyChart';
+import { motion } from 'framer-motion';
+import { palettes } from '@/lib/chart-assets';
 
 const ChartDisplay = ({
   chartData,
@@ -16,19 +16,19 @@ const ChartDisplay = ({
   console.log('from chart display', { chartData });
   const isBigNumber = chartData?.visualizationType?.type
     ?.toLowerCase()
-    .includes("bignumber");
+    .includes('bignumber');
   const isPieChart = chartData?.visualizationType?.type
     ?.toLowerCase()
-    .includes("pie");
+    .includes('pie');
   const isBarChart = chartData?.visualizationType?.type
     ?.toLowerCase()
-    .includes("bar");
+    .includes('bar');
   const isLineChart = chartData?.visualizationType?.type
     ?.toLowerCase()
-    .includes("line");
+    .includes('line');
 
-  const selectedPaletteName = chartData.customizeOptions?.ColorScheme;
-  const selectedPalette = palettes.find(p => p.name === selectedPaletteName);
+  const selectedPaletteName = chartData?.customizeOptions?.ColorScheme;
+  const selectedPalette = palettes.find((p) => p.name === selectedPaletteName);
   const colors = selectedPalette?.colors || ['#409EFF'];
 
   const pieChartData = chartData?.data?.map((item: any) => {
@@ -38,7 +38,8 @@ const ChartDisplay = ({
       name: String(item[keys[0]]),
     };
   });
-
+  console.log({ pieChartData });
+  console.log({ isPieChart });
   const dataKeys = chartData?.data?.[0] ? Object.keys(chartData.data[0]) : [];
 
   const xKey =
@@ -51,54 +52,70 @@ const ChartDisplay = ({
     dataKeys.includes(chartData.metrics[0].columnName)
       ? chartData.metrics[0].columnName
       : dataKeys.find((k) => k !== xKey);
+  const xAxisData = chartData?.data[0]?.xAxis?.categories?.map(
+    (item: string) => item ?? 'N/A'
+  );
 
-  const xAxisData = chartData?.data?.map((item: any) => item?.[xKey] ?? 'N/A');
-  const seriesData = chartData?.data?.map((item: any) => {
-    if (!yKey) return 0;
-    const val = item?.[yKey];
-    return typeof val === 'number' ? val : Number(val) || 0;
-  });
-
-  if (!chartData?.data?.[0]) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full">
-        <EmtyChart />
-        <motion.div
-          className="mt-10 text-center space-y-1"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          <p className="text-base text-muted-foreground font-medium">
-            {createdChartId
-              ? "Loading updated chart..."
-              : "Welcome to Neuss 👋"}
-          </p>
-          <p className="text-sm text-muted-foreground">
-            {createdChartId
-              ? "Your chart preview will appear here once updated."
-              : "Your chart preview will appear here once created."}
-          </p>
-        </motion.div>
-      </div>
-    );
-  }
+  const seriesData = chartData?.data[0]?.series;
+  const barSeriesData = seriesData?.map((item: { data: any }) =>
+    Math.max(...item.data)
+  );
+  // console.log({ xAxisData });
+  const legandTitle = chartData?.data[0]?.series?.map((item: any) => item.name);
+  // console.log({ legandTitle });
+  // console.log('chartData?.data', chartData?.data);
+  // console.log({ xAxisData });
+  // console.log({ seriesData });
+  // console.log('JSON.stringify(seriesData)', JSON.stringify(seriesData));
+  // console.log({ barSeriesData });
+  console.log('!chartData?.data?.[0]', chartData?.data?.[0]);
+  // if (!chartData?.data?.[0]) {
+  //   return (
+  //     <div className="flex flex-col items-center justify-center h-full">
+  //       <EmtyChart />
+  //       <motion.div
+  //         className="mt-10 text-center space-y-1"
+  //         initial={{ opacity: 0, y: 20 }}
+  //         animate={{ opacity: 1, y: 0 }}
+  //         transition={{ duration: 0.6, delay: 0.2 }}
+  //       >
+  //         <p className="text-base text-muted-foreground font-medium">
+  //           {createdChartId
+  //             ? 'Loading updated chart...'
+  //             : 'Welcome to Neuss 👋'}
+  //         </p>
+  //         <p className="text-sm text-muted-foreground">
+  //           {createdChartId
+  //             ? 'Your chart preview will appear here once updated.'
+  //             : 'Your chart preview will appear here once created.'}
+  //         </p>
+  //       </motion.div>
+  //     </div>
+  //   );
+  // }
 
   if (isBigNumber) {
+    const getBigNumberValue = () => {
+      const source = chartData?.pieChartData?.[0] ?? chartData?.data?.[0];
+      if (!source || typeof source !== 'object') return '—';
+      const vals = Object.values(source);
+      return vals.length > 0 ? vals[0] : '—';
+    };
     return (
       <div className="text-center space-y-2">
         <div
           className={`font-bold ${
-            chartData.customizeOptions?.BigNumberFontSize || "text-8xl"
+            chartData.customizeOptions?.BigNumberFontSize || 'text-8xl'
           }`}
         >
-          {chartData.customizeOptions?.CurrencyFormat === "Prefix"
-            ? chartData.customizeOptions?.Currency || ""
-            : ""}
-          {Object.values(chartData.data[0])[0]}
-          {chartData.customizeOptions?.CurrencyFormat === "Suffix"
-            ? chartData.customizeOptions?.Currency || ""
-            : ""}
+          {chartData.customizeOptions?.CurrencyFormat === 'Prefix'
+            ? chartData.customizeOptions?.Currency || ''
+            : ''}
+          {getBigNumberValue()}
+          {/* {Object.values(chartData.data[0])[0]} */}
+          {chartData.customizeOptions?.CurrencyFormat === 'Suffix'
+            ? chartData.customizeOptions?.Currency || ''
+            : ''}
         </div>
         {chartData.customizeOptions?.Subtitle && (
           <div className="text-muted-foreground text-sm">
@@ -114,39 +131,39 @@ const ChartDisplay = ({
       <ReactECharts
         option={{
           title: {
-            text: chartData.name || "Chart",
-            subtext: chartData.visualizationType?.type || "Pie",
-            bottom: "left",
+            text: chartData.name || 'Chart',
+            subtext: chartData.visualizationType?.type || 'Pie',
+            bottom: 'left',
           },
-          tooltip: { trigger: "item" },
+          tooltip: { trigger: 'item' },
           color: colors,
           legend: {
-            orient: chartData.customizeOptions?.Orientation || "horizontal",
-            left: "center",
-            top: chartData.customizeOptions?.Margin || "top",
+            orient: chartData.customizeOptions?.Orientation || 'horizontal',
+            left: 'center',
+            top: chartData.customizeOptions?.Margin || 'top',
             selector: true,
             type: chartData.customizeOptions?.type,
           },
           series: [
             {
-              name: chartData.metrics?.[0]?.columnName || "Value",
-              type: "pie",
+              name: chartData.metrics?.[0]?.columnName || 'Value',
+              type: 'pie',
               radius: chartData.customizeOptions?.Donut
-                ? ["40%", "70%"]
-                : "50%",
+                ? ['40%', '70%']
+                : '50%',
               roseType: chartData.customizeOptions?.RoseType || false,
               data: pieChartData,
               emphasis: {
                 itemStyle: {
                   shadowBlur: 10,
                   shadowOffsetX: 0,
-                  shadowColor: "rgba(0, 0, 0, 0.5)",
+                  shadowColor: 'rgba(0, 0, 0, 0.5)',
                 },
               },
             },
           ],
         }}
-        style={{ height: 400, width: "100%" }}
+        style={{ height: 400, width: '100%' }}
       />
     );
   }
@@ -157,7 +174,7 @@ const ChartDisplay = ({
     seriesData?.some((v: any) => v !== undefined)
   ) {
     const selectedPaletteName =
-      chartData.customizeOptions?.ColorScheme || "Superset Colors";
+      chartData.customizeOptions?.ColorScheme || 'Superset Colors';
     const selectedPalette =
       palettes.find((p) => p.name === selectedPaletteName)?.colors ||
       palettes[0].colors;
@@ -166,33 +183,34 @@ const ChartDisplay = ({
       <ReactECharts
         option={{
           title: {
-            text: chartData.name || "Bar Chart",
-            subtext: chartData.visualizationType?.type || "Bar",
-            bottom: "left",
+            text: chartData.name || 'Bar Chart',
+            subtext: chartData.visualizationType?.type || 'Bar',
+            // bottom: 'left',
           },
-          tooltip: { trigger: "axis" },
+          tooltip: { trigger: 'axis' },
           xAxis: {
-            type: "category",
+            type: 'category',
             data: xAxisData,
             axisLabel: {
               rotate: chartData.customizeOptions?.RotateXaxisLabel ?? 0,
             },
           },
-          yAxis: {
-            type: "value",
+          toolbox: {
+            feature: {
+              saveAsImage: {},
+            },
           },
           legend: {
-            orient: chartData.customizeOptions?.Orientation || "horizontal",
-            left: "center",
-            top: chartData.customizeOptions?.Margin || "top",
-            selector: true,
-            type: chartData.customizeOptions?.type,
+            data: legandTitle,
+          },
+
+          yAxis: {
+            type: 'value',
           },
           series: [
             {
-              name: yKey || "Value",
-              type: "bar",
-              data: seriesData,
+              data: barSeriesData,
+              type: 'bar',
               itemStyle: {
                 borderRadius: 4,
                 color: function (params: any) {
@@ -204,7 +222,7 @@ const ChartDisplay = ({
             },
           ],
         }}
-        style={{ height: 400, width: "100%" }}
+        style={{ height: 400, width: '100%' }}
       />
     );
   }
@@ -219,27 +237,33 @@ const ChartDisplay = ({
         option={{
           title: {
             text: chartData.name || 'Line Chart',
-            left: 'center',
           },
-          tooltip: { trigger: 'axis' },
-          color: colors,
+          tooltip: {
+            trigger: 'axis',
+          },
+          legend: {
+            data: legandTitle,
+          },
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true,
+          },
+          toolbox: {
+            feature: {
+              saveAsImage: {},
+            },
+          },
           xAxis: {
             type: 'category',
+            boundaryGap: false,
             data: xAxisData,
           },
           yAxis: {
-            type: "value",
+            type: 'value',
           },
-          series: [
-            {
-              name: yKey || 'Value',
-              type: 'line',
-              data: seriesData,
-              itemStyle: {
-                borderRadius: 4,
-              },
-            },
-          ],
+          series: seriesData,
         }}
         style={{ height: 400, width: '100%' }}
       />

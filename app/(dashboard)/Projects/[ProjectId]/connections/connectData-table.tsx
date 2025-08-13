@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
-import { useState, useEffect, useId, useRef } from "react";
+'use client';
+import { useState, useEffect, useId, useRef } from 'react';
 import {
   ColumnFiltersState,
   SortingState,
@@ -12,7 +12,7 @@ import {
   getSortedRowModel,
   useReactTable,
   FilterFn,
-} from "@tanstack/react-table";
+} from '@tanstack/react-table';
 import {
   Table,
   TableBody,
@@ -20,22 +20,22 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
   CircleXIcon,
   ListFilterIcon,
   Plus,
-} from "lucide-react";
+} from 'lucide-react';
 import {
   DoubleArrowLeftIcon,
   DoubleArrowRightIcon,
-} from "@radix-ui/react-icons";
+} from '@radix-ui/react-icons';
 
-import { RankingInfo, rankItem } from "@tanstack/match-sorter-utils";
+import { RankingInfo, rankItem } from '@tanstack/match-sorter-utils';
 
 import {
   Select,
@@ -43,10 +43,10 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 import {
   Sheet,
   SheetContent,
@@ -54,11 +54,12 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet";
-import AddConnections from "@/components/CRUD/Connections/AddConnections";
-import { SelectPolling, SelectType } from "@/types";
-import { dataPolling, dataType } from "@/lib/ConnectionsData";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from '@/components/ui/sheet';
+import AddConnections from '@/components/CRUD/Connections/AddConnections';
+import { SelectPolling, SelectType } from '@/types';
+
+import { ScrollArea } from '@/components/ui/scroll-area';
+import AddConnectionsWrapper from '@/components/CRUD/Connections/add-connections-wrapper';
 
 interface DataTableProps<TData, TValue> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -69,7 +70,7 @@ interface DataTableProps<TData, TValue> {
   ProjectId: number;
 }
 
-declare module "@tanstack/table-core" {
+declare module '@tanstack/table-core' {
   interface FilterFns {
     fuzzy: FilterFn<unknown>;
     // dateBetweenFilterFn: FilterFn<unknown>;
@@ -99,8 +100,6 @@ export default function ConnectDataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   // console.log({ data });
   const id = useId();
-  const [open, setOpen] = useState(false);
-
   const [globalFilter, setGlobalFilter] = useState<any>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -188,7 +187,8 @@ export default function ConnectDataTable<TData, TValue>({
         </div> */}
 
         <div className="flex items-center gap-3">
-          <Sheet open={open} onOpenChange={setOpen}>
+          <AddConnectionsWrapper ProjectId={ProjectId} />
+          {/* <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <Button variant={"custom"}>
                 {" "}
@@ -213,7 +213,7 @@ export default function ConnectDataTable<TData, TValue>({
                 </ScrollArea>
               </div>
             </SheetContent>
-          </Sheet>{" "}
+          </Sheet>{" "} */}
         </div>
       </div>
       <div className="">
@@ -226,7 +226,7 @@ export default function ConnectDataTable<TData, TValue>({
                     <TableHead
                       key={header.id}
                       className={`whitespace-nowrap font-semibold text-black dark:text-white ${
-                        header.id === "actions" ? "sticky -right-[1px]" : ""
+                        header.id === 'actions' ? 'sticky -right-[1px]' : ''
                       }`}
                     >
                       {header.isPlaceholder
@@ -246,15 +246,15 @@ export default function ConnectDataTable<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
+                  data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
                       className={`whitespace-nowrap ${
-                        cell.column.id === "actions"
-                          ? "sticky -right-[1px]  text-center"
-                          : ""
+                        cell.column.id === 'actions'
+                          ? 'sticky -right-[1px]  text-center'
+                          : ''
                       }`}
                     >
                       {flexRender(
@@ -309,7 +309,7 @@ export default function ConnectDataTable<TData, TValue>({
             </Select>
           </div>
           <div className="flex w-[100px] items-center justify-center text-xs md:text-sm font-medium my-2 md:my-0">
-            Page {table.getState().pagination.pageIndex + 1} of{" "}
+            Page {table.getState().pagination.pageIndex + 1} of{' '}
             {table.getPageCount()}
           </div>
           <div className="flex items-center space-x-2 my-2 justify-center text-xs">

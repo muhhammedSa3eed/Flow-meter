@@ -147,6 +147,7 @@ export type DeviceDB = {
 };
 
 export type ChartItem = {
+  dimensions: any;
   metrics: any;
   customizeOptions: any;
   data: any;

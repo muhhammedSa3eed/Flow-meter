@@ -18,19 +18,23 @@ import { CSS } from '@dnd-kit/utilities';
 import { Trash2, Pencil, Grip } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
-
-interface DashboardItem {
-  metrics: any;
-  customizeOptions: any;
-  chartId: number;
-  backgroundColor: string;
-  textColor:string;
-  name: string;
-  description: string;
-  width: string;
-  type?: string;
-  pieChartData?: any;
-}
+import ChartDisplay from '../Chart/ChartDisplay';
+import { palettes } from '@/lib/chart-assets';
+import { DashboardItem } from './dashboard-wrapper';
+// interface DashboardItem {
+//   data: any;
+//   metrics: any;
+//   customizeOptions: any;
+//   chartId: number;
+//   backgroundColor: string;
+//   textColor: string;
+//   name: string;
+//   description: string;
+//   width: string;
+//   type?: string;
+//   pieChartData?: any;
+//   dimensions?: any;
+// }
 
 interface DashboardGridProps {
   cards: DashboardItem[];
@@ -199,18 +203,45 @@ const SortableCard = ({
     backgroundColor: backgroundColor || '#ffffff',
     textColor: textColor || '#000',
   };
-  const isBigNumber = card.type?.toLowerCase().includes('bignumber');
-  const isPieChart = card.type?.toLowerCase().includes('pie');
+  console.log("12300=>123",{ card });
+  // const isBigNumber = card.type?.toLowerCase().includes('bignumber');
+  // const isPieChart = card.type?.toLowerCase().includes('pie');
+  // const isBarChart = card?.type?.toLowerCase().includes('bar');
+  // const isLineChart = card?.type?.toLowerCase().includes('line');
+  // const selectedPaletteGlobalName = card?.customizeOptions?.ColorScheme;
+  // const selectedGlobalPalette = palettes.find(
+  //   (p) => p.name === selectedPaletteGlobalName
+  // );
+  // const colors = selectedGlobalPalette?.colors || ['#409EFF'];
+  // const dataKeys = card?.data?.[0] ? Object.keys(card.data[0]) : [];
 
-  const pieChartData = card?.pieChartData?.map((item: any) => {
-    const keys = Object.keys(item);
+  // const xKey =
+  //   card?.dimensions?.[0] && dataKeys.includes(card.dimensions[0])
+  //     ? card.dimensions[0]
+  //     : dataKeys[0];
+  // const pieChartData = card?.pieChartData?.map((item: any) => {
+  //   const keys = Object.keys(item);
 
-    return {
-      value: item[keys[1]],
-      name: String(item[keys[0]]),
-    };
-  });
+  //   return {
+  //     value: item[keys[1]],
+  //     name: String(item[keys[0]]),
+  //   };
+  // });
+  // const xAxisData = card?.data[0]?.xAxis?.categories?.map(
+  //   (item: string) => item ?? 'N/A'
+  // );
 
+  // const seriesData = card?.data[0]?.series;
+  // const barSeriesData = seriesData?.map((item: { data: any }) =>
+  //   Math.max(...item.data)
+  // );
+  // // console.log({ xAxisData });
+  // const legandTitle = card?.data[0]?.series?.map((item: any) => item.name);
+  // const selectedPaletteName =
+  //   card.customizeOptions?.ColorScheme || 'Superset Colors';
+  // const selectedPalette =
+  //   palettes.find((p) => p.name === selectedPaletteName)?.colors ||
+  //   palettes[0].colors;
   return (
     <div
       ref={setNodeRef}
@@ -294,7 +325,7 @@ const SortableCard = ({
                 </label>
                 <input
                   type="color"
-                  value={textColor??"#ffff"}
+                  value={textColor ?? '#ffff'}
                   onChange={(e) => setTextColor(e.target.value)}
                   className="w-full h-10 p-1 border rounded cursor-pointer"
                 />
@@ -314,8 +345,12 @@ const SortableCard = ({
           </>
         ) : (
           <>
-            <h3 className="font-medium" style={{color:card.textColor}}>{card.name}</h3>
-            <p className="text-sm" style={{color:card.textColor}}>{card.description}</p>
+            <h3 className="font-medium" style={{ color: card.textColor }}>
+              {card.name}
+            </h3>
+            <p className="text-sm" style={{ color: card.textColor }}>
+              {card.description}
+            </p>
 
             {isEditMode && (
               <button
@@ -328,32 +363,23 @@ const SortableCard = ({
             )}
           </>
         )}
-        {isPieChart && (
+        <ChartDisplay chartData={card} />
+        {/* {isPieChart && (
           <ReactECharts
             option={{
-              // title: {
-              //   text: card.name || 'Chart',
-              //   subtext: card.type || 'Pie',
-              //   bottom: 'left',
-              // },
+              title: {
+                text: card.name || 'Chart',
+                subtext: card.visualizationType?.type || 'Pie',
+                bottom: 'left',
+              },
               tooltip: { trigger: 'item' },
+              color: colors,
               legend: {
                 orient: card.customizeOptions?.Orientation || 'horizontal',
                 left: 'center',
                 top: card.customizeOptions?.Margin || 'top',
                 selector: true,
-                type: 'scroll',
-                pageIconColor: '#333',
-                pageIconInactiveColor: '#ccc',
-                pageIconSize: 16,
-                pageButtonGap: 5,
-                pageFormatter: '{current}/{total}',
-                pageIcons: {
-                  horizontal: [
-                    'path://M12 2 L2 12 L12 22',
-                    'path://M2 2 L12 12 L2 22',
-                  ],
-                },
+                type: card.customizeOptions?.type,
               },
               series: [
                 {
@@ -371,24 +397,8 @@ const SortableCard = ({
                   },
                 },
               ],
-              // series: [
-              //   {
-              //     name: 'Value',
-              //     type: 'pie',
-              //     radius: '50%',
-              //     roseType: false,
-              //     data: pieChartData,
-              //     emphasis: {
-              //       itemStyle: {
-              //         shadowBlur: 10,
-              //         shadowOffsetX: 0,
-              //         shadowColor: 'rgba(0, 0, 0, 0.5)',
-              //       },
-              //     },
-              //   },
-              // ],
             }}
-            style={{ height: 250, width: '100%' }}
+            style={{ height: 400, width: '100%' }}
           />
         )}
         {isBigNumber && (
@@ -398,10 +408,13 @@ const SortableCard = ({
                 card.customizeOptions?.BigNumberFontSize || 'text-8xl'
               }`}
             >
-              {card.customizeOptions?.CurrencyFormat === 'Prefix'
+              {card?.customizeOptions?.CurrencyFormat === 'Prefix'
                 ? card.customizeOptions?.Currency || ''
                 : ''}
-              {Object.values(card.pieChartData[0])[0]}
+              {card?.pieChartData?.length > 0
+                ? Object.values(card.pieChartData[0] || {})[0]
+                : null}
+              
               {card.customizeOptions?.CurrencyFormat === 'Suffix'
                 ? card.customizeOptions?.Currency || ''
                 : ''}
@@ -413,6 +426,86 @@ const SortableCard = ({
             )}
           </div>
         )}
+
+        {isBarChart &&
+          xAxisData?.length > 0 &&
+          seriesData?.some((v: any) => v !== undefined) && (
+            <ReactECharts
+              option={{
+                title: {
+                  text: card.name || 'Bar Chart',
+                  subtext: card.visualizationType?.type || 'Bar',
+                  // bottom: 'left',
+                },
+                tooltip: { trigger: 'axis' },
+                xAxis: {
+                  type: 'category',
+                  data: xAxisData,
+                  axisLabel: {
+                    rotate: card.customizeOptions?.RotateXaxisLabel ?? 0,
+                  },
+                },
+
+                legend: {
+                  data: legandTitle,
+                },
+
+                yAxis: {
+                  type: 'value',
+                },
+                series: [
+                  {
+                    data: barSeriesData,
+                    type: 'bar',
+                    itemStyle: {
+                      borderRadius: 4,
+                      color: function (params: any) {
+                        return selectedPalette[
+                          params.dataIndex % selectedPalette.length
+                        ];
+                      },
+                    },
+                  },
+                ],
+              }}
+              style={{ height: 400, width: '100%' }}
+            />
+          )}
+
+        {isLineChart &&
+          xAxisData?.length > 0 &&
+          seriesData?.some((v: any) => v !== undefined) && (
+            <ReactECharts
+              option={{
+                title: {
+                  text: card.name || 'Line Chart',
+                },
+                tooltip: {
+                  trigger: 'axis',
+                },
+                legend: {
+                  data: legandTitle,
+                },
+                grid: {
+                  left: '3%',
+                  right: '4%',
+                  bottom: '3%',
+                  containLabel: true,
+                },
+
+                xAxis: {
+                  type: 'category',
+                  boundaryGap: false,
+                  data: xAxisData,
+                },
+                yAxis: {
+                  type: 'value',
+                },
+                series: seriesData,
+              }}
+              style={{ height: 400, width: '100%' }}
+            />
+          )} */}
       </div>
     </div>
   );

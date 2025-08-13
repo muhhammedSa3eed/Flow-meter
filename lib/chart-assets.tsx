@@ -345,10 +345,13 @@ export const AxisMarginOptions = ["15", "30", "50", "75", "100", "125", "150", "
 export const yAxisPositionOptions = ["Left", "Top"];
 
 export const transformChartDataToTable = (chartData:any) => {
+  if (!chartData?.xAxis || !Array.isArray(chartData.xAxis.categories)) {
+    return []; // أو ممكن ترجع null لو حابب تتحقق من null في المكان اللي بتستخدم فيه
+  }
   const { xAxis, series } = chartData;
 
-  const categories = xAxis.categories; // ["1", "2", ...]
-  const tableRows = categories.map((stationId: any, index:number) => {
+  const categories = xAxis?.categories; 
+  const tableRows = categories?.map((stationId: any, index:number) => {
     const row: Record<string, string | number> = {
       StationBayId: stationId,
     };

@@ -14,47 +14,59 @@ import { toast } from 'react-hot-toast';
 import { Chart } from '@/types';
 import { buttonVariants } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import { deleteChartAction } from '@/actions/deleteResource';
 
 export default function DeleteChart({
   chart,
-  // fetchChart,
-}: {
+}: // fetchChart,
+{
   chart: Chart;
   // fetchChart: () => Promise<void>;
 }) {
   const router = useRouter();
 
+  // const handleDeleteDevice = async () => {
+  //   await deleteResource({ endpoint: '/Charts', id:chart.id , item: 'Chart' });
+  //   router.refresh();
+  //   // try {
+  //   //   const response = await fetch(
+  //   //     `${process.env.NEXT_PUBLIC_API_BASE_URL}/Charts/${chart.id}`,
+  //   //     {
+  //   //       method: 'DELETE',
+  //   //       headers: {
+  //   //         'Content-Type': 'application/json',
+  //   //       },
+  //   //     }
+  //   //   );
+
+  //   //   if (!response.ok) {
+  //   //     const errorData = await response.json();
+  //   //     toast.error(errorData.message || 'Failed to delete the chart.');
+  //   //     return; // Exit early if the response is not OK
+  //   //   }
+
+  //   //   // fetchChart();
+  //   //   toast.success('The Chart has been deleted successfully.');
+  //   //   router.refresh();
+  //   //   // window.location.reload()
+  //   // } catch (err) {
+  //   //   if (err instanceof Error) {
+  //   //     toast.error(`Failed to delete Chart: ${err.message}`);
+  //   //   } else {
+  //   //     toast.error('Failed to delete Chart due to an unknown error.');
+  //   //   }
+  //   // }
+  // };
   const handleDeleteDevice = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/Charts/${chart.id}`,
-        {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+    const res = await deleteChartAction({ chartId: chart.id });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        toast.error(errorData.message || 'Failed to delete the chart.');
-        return; // Exit early if the response is not OK
-      }
-
-      // fetchChart();
-      toast.success('The Chart has been deleted successfully.');
-      router.refresh();
-      // window.location.reload()
-    } catch (err) {
-      if (err instanceof Error) {
-        toast.error(`Failed to delete Chart: ${err.message}`);
-      } else {
-        toast.error('Failed to delete Chart due to an unknown error.');
-      }
+    if (res.success) {
+      toast.success(res.message);
+      router.refresh(); // تحديث الصفحة
+    } else {
+      toast.error(res.message);
     }
   };
-
   return (
     <>
       <AlertDialogHeader>

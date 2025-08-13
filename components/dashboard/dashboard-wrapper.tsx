@@ -16,7 +16,8 @@ import Loading from '@/app/loading';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 import Cookies from 'js-cookie';
-interface DashboardItem {
+export interface DashboardItem {
+  visualizationType: any;
   type: any;
   // id: string;
   chartId: number;
@@ -29,6 +30,8 @@ interface DashboardItem {
   data?: any;
   customizeOptions: any;
   metrics: any;
+  dimensions: any;
+  pieChartData?: any;
 }
 
 interface DashboardProps {
@@ -58,7 +61,6 @@ export const DashboardWrapper = ({
 
   const usedChartsIds = cards.map((card) => Number(card.chartId));
 
-  
   if (!edit) {
     redirect(`/Projects/${ProjectId}/dashboard/${dashboardId}?edit=false`);
   }
@@ -82,10 +84,15 @@ export const DashboardWrapper = ({
       ChartName: selectedChart.name,
       customizeOptions: selectedChart.customizeOptions,
       metrics: selectedChart.metrics,
+      data: selectedChart.data,
+      visualizationType: selectedChart.visualizationType,
+      dimensions: selectedChart.dimensions,
     };
     console.log({ newChart });
 
     setCards((prev) => [...prev, newChart]);
+    console.log('[...cards, newChart]', [...cards, newChart]);
+    Cookies.set('dashboardState', JSON.stringify([...cards, newChart]));
     setIsChartDialogOpen(false);
   };
 
@@ -138,9 +145,13 @@ export const DashboardWrapper = ({
             pieChartData: item.chart.data,
             customizeOptions: item.chart.customizeOptions,
             metrics: item.chart.metrics[0],
+            xAxis: item.xAxis ?? null,
+            data: item.chart.data,
+            dimensions: item.dimensions,
           }))
         );
         setGlobalBackGround(result.background);
+
         // setData(result);
       } catch (error) {
         setError('Failed to fetch data');
@@ -153,9 +164,10 @@ export const DashboardWrapper = ({
   }, []);
 
   // Save to localStorage
-  useEffect(() => {
-    Cookies.set('dashboardState', JSON.stringify(cards));
-  }, [cards]);
+  // useEffect(() => {
+  //   console.log('12345566');
+  //   Cookies.set('dashboardState', JSON.stringify(cards));
+  // }, [cards]);
   // console.log({ dataChart });
   console.log('xxxx77777', { cards });
   useEffect(() => {
@@ -177,8 +189,8 @@ export const DashboardWrapper = ({
   const handleSaveCard = () => {
     const saved = Cookies.get('dashboardState');
     const parsedData: DashboardItem[] = saved ? JSON.parse(saved) : [];
-    // console.log({ parsedData });
-    const transformedData = parsedData.map((item, index) => ({
+    console.log({ parsedData });
+    const transformedData = cards.map((item, index) => ({
       index,
       chartId: item.chartId,
       name: item.name,
