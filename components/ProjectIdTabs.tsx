@@ -15,6 +15,8 @@ import {
   Database,
   ChartNoAxesCombined,
   Shapes,
+  FlaskRound,
+  FlaskConical,
 } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import Loading from '@/app/loading';
@@ -44,6 +46,7 @@ export default function ProjectIdTabs({
     if (pathname.includes('/assignUser')) return 'assign-users';
     if (pathname.includes('/settings')) return 'settings';
     if (pathname.includes('/VisualizationTypes')) return 'VisualizationTypes';
+    if (pathname.includes('/sqlLab')) return 'sqlLab';
     if (
       pathname.includes('/dataset') ||
       pathname.includes('/addDataset') ||
@@ -166,27 +169,27 @@ export default function ProjectIdTabs({
               </Tooltip>
             </TabsTrigger>
 
-            {/* VisualizationTypes Tab */}
-            {/* <TabsTrigger value="VisualizationTypes">
+            {/* SqlLab Tab  */}
+            <TabsTrigger value="sqlLab">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div
+                  <Link
                     className="flex items-center cursor-pointer"
-                    onClick={() =>
-                      handleNavigation(`/Projects/VisualizationTypes`)
-                    }
+                    href={`/Projects/${projectId}/sqlLab`}
                   >
-                    <Shapes
+
+                    <FlaskConical
                       className="-ms-0.5 me-1.5 opacity-60"
                       size={16}
                       aria-hidden="true"
                     />
-                    Visualization types
-                  </div>
+                    Sql Lab
+                  </Link>
                 </TooltipTrigger>
-                <TooltipContent>Go to VisualizationTypes</TooltipContent>
+                <TooltipContent>Go to Sql Lab</TooltipContent>
               </Tooltip>
-            </TabsTrigger> */}
+            </TabsTrigger>
+
 
             {/* Settings Tab */}
             <TabsTrigger value="settings">

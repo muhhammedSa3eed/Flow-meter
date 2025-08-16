@@ -307,3 +307,17 @@ export type TripsLogResponse = {
   data: TripsLogEntry[];
 };
 export type DistinctValue = Record<string, string | number | boolean | null>;
+
+
+export interface TableDataResponse {
+  fields: string[];
+  data: Record<string, any>[];
+  totalCount?: number;
+}
+
+export type SqlEditorWithAutocompleteProps = {
+  connectionId?: number;
+  schemaName?: string;
+  tables: string[]; 
+  apiBase: string;  
+};

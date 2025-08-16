@@ -3,7 +3,7 @@ import Loading from '@/app/loading';
 import ProjectIdTabs from '@/components/ProjectIdTabs';
 import { Label } from '@radix-ui/react-dropdown-menu';
 import { Chart, VisualizationTypes } from '@/types';
-import EditChartWrapper from '@/components/CRUD/ChartOP/EditChartWrapper';
+// import EditChartWrapper from '@/components/CRUD/ChartOP/EditChartWrapper';
 import { getAllVisualizationTypes } from '@/lib/projectData';
 import Header from '@/components/header';
 
@@ -48,13 +48,13 @@ export default async function EditChart({
 
       <Label className="font-bold  my-2">Update Chart </Label>
 
-      <EditChartWrapper
+      {/* <EditChartWrapper
         VisualizationTypeData={VisualizationTypeData}
         chartId={chartId}
         ProjectId={ProjectId}
         projectName={projectName}
         chartDetails={chartDataDetails}
-      />
+      /> */}
     </>
   );
 }
