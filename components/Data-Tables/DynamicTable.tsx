@@ -66,19 +66,17 @@ export default function DynamicTable({ response }: { response: TableDataResponse
   });
 
   return (
-    <ScrollArea
-      className="w-full h-[500px]" // ارتفاع ثابت للسماح بالسكرول العمودي
-    >
-      <div className="min-w-max overflow-x-auto">
-        <Table className="table-auto text-sm">
+    <div className="h-full w-full">                {/* NEW: يملأ مساحة التاب */}
+    <div className="h-full w-full overflow-auto"> {/* NEW: تمـرير أفقي + عمودي هنا */}
+      <Table className="text-sm border-collapse min-w-max w-full">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="bg-muted/50">
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="whitespace-nowrap relative h-10 select-none"
-                  >
+                    className="whitespace-nowrap p-2 border-b font-medium text-foreground"
+                    >
                     {header.isPlaceholder ? null : (
                       <div
                         className={cn(
@@ -122,7 +120,7 @@ export default function DynamicTable({ response }: { response: TableDataResponse
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
-                      className="max-w-[280px] truncate whitespace-nowrap"
+                      className="whitespace-nowrap p-2 border-b text-muted-foreground"
                       title={String(cell.getValue() ?? "")}
                     >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -143,6 +141,7 @@ export default function DynamicTable({ response }: { response: TableDataResponse
           </TableBody>
         </Table>
       </div>
-    </ScrollArea>
+      </div>
+
   );
 }

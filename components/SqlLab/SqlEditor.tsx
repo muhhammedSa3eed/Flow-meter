@@ -13,7 +13,7 @@ import { autocompletion, CompletionContext } from "@codemirror/autocomplete";
 import { TableDataResponse } from "@/types";
 import { Button } from "../ui/button";
 import toast from "react-hot-toast";
-
+import { placeholder } from "@codemirror/view";
 type SqlEditorProps = {
   tables?: string[];
   value: string;
@@ -145,7 +145,7 @@ export default function SqlEditor({
         <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
           <CodeMirror
             value={value}
-            extensions={[sql(), autocompletion(), tableCompletionLangData]}
+            extensions={[sql(), autocompletion(), placeholder("SELECT * FROM your_table;"), tableCompletionLangData]}
             height="100%"
             theme={isDark ? dracula : githubLight}
             onChange={(val) => onChange(val)}

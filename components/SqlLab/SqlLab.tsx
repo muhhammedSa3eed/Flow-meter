@@ -291,7 +291,9 @@ export default function SqlLab({ ProjectId }: { ProjectId: number }) {
                       render={({ field }) => (
                         <FormItem className="group relative mb-5">
                           <div className="*:not-first:mt-2">
-                            <Label htmlFor={id} className="font-semibold">Database</Label>
+                            <Label htmlFor={id} className="font-semibold">
+                              Database
+                            </Label>
                             <Popover open={open} onOpenChange={setOpen}>
                               <PopoverTrigger asChild>
                                 <Button
@@ -374,7 +376,9 @@ export default function SqlLab({ ProjectId }: { ProjectId: number }) {
                       render={({ field }) => (
                         <FormItem className="group relative mb-5">
                           <div className="*:not-first:mt-2">
-                            <Label htmlFor="schema" className="font-semibold">Schema</Label>
+                            <Label htmlFor="schema" className="font-semibold">
+                              Schema
+                            </Label>
                             <Popover
                               open={openSchema}
                               onOpenChange={setOpenSchema}
@@ -451,7 +455,9 @@ export default function SqlLab({ ProjectId }: { ProjectId: number }) {
                       name="table"
                       render={({ field }) => (
                         <FormItem className="group relative mb-5">
-                          <Label className="mb-2 block font-semibold">Table</Label>
+                          <Label className="mb-2 block font-semibold">
+                            Table
+                          </Label>
                           <FormControl>
                             <MultipleSelector
                               value={arrayToOptions(
@@ -633,68 +639,77 @@ export default function SqlLab({ ProjectId }: { ProjectId: number }) {
 
                     <ResizableHandle withHandle />
 
-                    <ResizablePanel defaultSize={50} minSize={20}>
-                      <div className="flex mt-2 justify-end p-3">
-                        <Button variant="default" type="submit">
-                          Save Dataset
-                        </Button>
-                      </div>
-
-                      <Tabs defaultValue="tab-1" className="h-full">
-                        <TabsList className="h-auto rounded-none border-b bg-transparent p-0">
-                          <TabsTrigger
-                            value="tab-1"
-                            className="data-[state=active]:after:bg-primary relative rounded-none py-2 after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 data-[state=active]:bg-transparent data-[state=active]:shadow-none font-semibold"
-                          >
-                            Result
-                          </TabsTrigger>
-                          {watchedTables.map((table) => (
-                            <TabsTrigger
-                              key={table}
-                              value={`preview:${table}`}
-                              className="font-semibold data-[state=active]:after:bg-primary relative rounded-none py-2 after:absolute after:inset-x-0 after:bottom-0 after:h-0.5"
-                              title={`Preview: ${table}`}
-                            >
-                              Preview:{" "}
-                              <span className="ml-1 truncate max-w-[180px]">{`'${table}'`}</span>
-                            </TabsTrigger>
-                          ))}
-                        </TabsList>
-
-                        {/* 🟩 Result Tab Content */}
-                        <TabsContent
-                          value="tab-1"
-                          className="h-[calc(100%-40px)] p-4 overflow-auto"
+                    <ResizablePanel
+                      defaultSize={50}
+                      minSize={20}
+                      className="min-h-0 min-w-0 overflow-hidden" // 👈 مهم
+                    >
+                      <div className="flex flex-col h-full min-h-0 min-w-0">
+                        {" "}
+                        {/* 👈 مهم */}
+                        <div className="flex mt-2 justify-end p-3 shrink-0">
+                          <Button variant="default" type="submit">
+                            Save Dataset
+                          </Button>
+                        </div>
+                        <Tabs
+                          defaultValue="tab-1"
+                          className="flex-1 min-h-0 min-w-0 flex flex-col"
                         >
-                          {queryResult?.fields && queryResult?.data ? (
-                            <DynamicTable response={queryResult} />
-                          ) : (
-                            <p className=" font-semibold text-muted-foreground text-lg">
-                              No data available.
-                            </p>
-                          )}
-                        </TabsContent>
-
-                        {/* 🟦 Preview Tab Content */}
-                        {watchedTables.map((table) => {
-                          const resp = tableDataByTable[table];
-                          return (
-                            <TabsContent
-                              key={table}
-                              value={`preview:${table}`}
-                              className="h-[calc(100%-40px)] p-4 overflow-auto"
+                          {" "}
+                          <TabsList className="h-auto rounded-none border-b bg-transparent p-0 shrink-0 flex justify-start">
+                            <TabsTrigger
+                              value="tab-1"
+                              className="data-[state=active]:after:bg-primary relative rounded-none py-2 after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 data-[state=active]:bg-transparent data-[state=active]:shadow-none font-semibold"
                             >
-                              {resp?.fields && resp?.data ? (
-                                <DynamicTable response={resp} />
-                              ) : (
-                                <p className="text-muted-foreground text-sm">
-                                  Loading…
-                                </p>
-                              )}
-                            </TabsContent>
-                          );
-                        })}
-                      </Tabs>
+                              Result
+                            </TabsTrigger>
+                            {watchedTables.map((table) => (
+                              <TabsTrigger
+                                key={table}
+                                value={`preview:${table}`}
+                                className="font-semibold data-[state=active]:after:bg-primary relative rounded-none py-2 after:absolute after:inset-x-0 after:bottom-0 after:h-0.5"
+                                title={`Preview: ${table}`}
+                              >
+                                Preview:{" "}
+                                <span className="ml-1 truncate max-w-[180px]">{`'${table}'`}</span>
+                              </TabsTrigger>
+                            ))}
+                          </TabsList>
+                          {/* 🟩 Result Tab Content */}
+                          <TabsContent
+                            value="tab-1"
+                            className="h-[calc(100%-40px)]  p-4  max-w-7xl"
+                          >
+                            {queryResult?.fields && queryResult?.data ? (
+                              <DynamicTable response={queryResult} />
+                            ) : (
+                              <p className=" font-semibold text-muted-foreground text-lg">
+                                No data available.
+                              </p>
+                            )}
+                          </TabsContent>
+                          {/* 🟦 Preview Tab Content */}
+                          {watchedTables.map((table) => {
+                            const resp = tableDataByTable[table];
+                            return (
+                              <TabsContent
+                                key={table}
+                                value={`preview:${table}`}
+                                className="h-[calc(100%-40px)] p-4 max-w-7xl"
+                              >
+                                {resp?.fields && resp?.data ? (
+                                  <DynamicTable response={resp} />
+                                ) : (
+                                  <p className="text-muted-foreground text-sm">
+                                    Loading…
+                                  </p>
+                                )}
+                              </TabsContent>
+                            );
+                          })}
+                        </Tabs>
+                      </div>
                     </ResizablePanel>
                   </ResizablePanelGroup>
                 </div>
