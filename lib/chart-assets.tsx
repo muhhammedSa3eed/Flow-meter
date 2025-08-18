@@ -70,52 +70,67 @@ export const CustomizationOptions: Option[] = [
   { value: 'yAxis', label: 'Y Axis' },
   { value: 'xAxis', label: ' X Axis' },
   { value: 'grid', label: 'Grid' },
-  { value: "BigNumberFontSize", label: "Big Number Font Size" },
-  { value: "SubheaderFontSize", label: "Subheader Font Size" },
-  { value: "NumberFormat", label: "Number format" },
-  { value: "CurrencyFormat", label: "Currency format" },
-  { value: "Currency", label: "Currency" },
-  { value: "DateFormat", label: "Date format" },
-  { value: "ForceDateFormat", label: "Force date format" },
-  { value: "ColorScheme", label: "Color Scheme" },
-  { value: "PercentageThreshold", label: "Percentage threshold" },
-  { value: "RoseType", label: "Rose Type" },
-  { value: "Legend", label: "Legend" },
-  { value: "Type", label: "Type" },
-  { value: "Orientation", label: "Orientation" },
-  { value: "Margin", label: "Margin" },
-  { value: "LabelType", label: "Label Type" },
-  { value: "ShowLabels", label: "Show Labels" },
-  { value: "PutLabelsOutside", label: "Put labels outside" },
-  { value: "LabelLine", label: "Label Line" },
-  { value: "ShowTotal", label: "Show Total" },
-  { value: "OuterRadius", label: "Outer Radius" },
-  { value: "Donut", label: "Donut" },
-  { value: "Subtitle", label: "Subtitle" },
-  { value: "BarOrientation", label: "Bar orientation" },
-  { value: "AxisTitle", label: "Axis Title" },
-  { value: "AXISTITLEMARGIN", label: "AXIS TITLE MARGIN" },
-  { value: "AXISTITLEPOSITION", label: "AXIS TITLE POSITION" },
-  { value: "SortSeriesBy", label: "Sort Series By" },
-  { value: "SortSeriesAscending", label: "Sort Series Ascending" },
-  { value: "ShowValue", label: "Show Value" },
-  { value: "StackedStyle", label: "Stacked Style" },
-  { value: "Minorticks", label: "Minor ticks" },
-  { value: "DataZoom", label: "Data Zoom" },
-  { value: "ShowLegend", label: "Show legend" },
-  { value: "TimeFormat", label: "Time format" },
-  { value: "RotateXaxisLabel", label: "Rotate x axis label" },
-  { value: "TruncateXAxis", label: "Truncate X Axis" },
-  { value: "RichTooltip", label: "Rich tooltip" },
-  { value: "ShowPercentage", label: "Show percentage" },
-  { value: "TooltipSortByMetric", label: "Tooltip sort by metric" },
-  { value: "TooltipTimeFormat", label: "Tooltip time format" },
-  { value: "AxisFormat", label: "Axis Format" },
-  { value: "LogarithmicAxis", label: "Logarithmic axis" },
-  { value: "MinorSplitLine", label: "Minor Split Line" },
-  { value: "TruncateAxis", label: "Truncate Axis" },
-  { value: "XAxisLabelInterval", label: "X Axis Label Interval" },
-  { value: "XAxisBounds", label: "X Axis Bounds" },
+  { value: 'BigNumberFontSize', label: 'Big Number Font Size' },
+  { value: 'SubheaderFontSize', label: 'Subheader Font Size' },
+  { value: 'NumberFormat', label: 'Number format' },
+  { value: 'CurrencyFormat', label: 'Currency format' },
+  { value: 'Currency', label: 'Currency' },
+  { value: 'DateFormat', label: 'Date format' },
+  { value: 'ForceDateFormat', label: 'Force date format' },
+  { value: 'ColorScheme', label: 'Color Scheme' },
+  { value: 'PercentageThreshold', label: 'Percentage threshold' },
+  { value: 'RoseType', label: 'Rose Type' },
+  { value: 'Legend', label: 'Legend' },
+  { value: 'Type', label: 'Type' },
+  { value: 'Orientation', label: 'Orientation' },
+  { value: 'Margin', label: 'Margin' },
+  { value: 'LabelType', label: 'Label Type' },
+  { value: 'ShowLabels', label: 'Show Labels' },
+  { value: 'PutLabelsOutside', label: 'Put labels outside' },
+  { value: 'LabelLine', label: 'Label Line' },
+  { value: 'ShowTotal', label: 'Show Total' },
+  { value: 'OuterRadius', label: 'Outer Radius' },
+  { value: 'Donut', label: 'Donut' },
+  { value: 'Subtitle', label: 'Subtitle' },
+  { value: 'BarOrientation', label: 'Bar orientation' },
+  { value: 'AxisTitle', label: 'Axis Title' },
+  { value: 'AXISTITLEMARGIN', label: 'AXIS TITLE MARGIN' },
+  { value: 'AXISTITLEPOSITION', label: 'AXIS TITLE POSITION' },
+  { value: 'SortSeriesBy', label: 'Sort Series By' },
+  { value: 'SortSeriesAscending', label: 'Sort Series Ascending' },
+  { value: 'ShowValue', label: 'Show Value' },
+  { value: 'StackedStyle', label: 'Stacked Style' },
+  { value: 'Minorticks', label: 'Minor ticks' },
+  { value: 'DataZoom', label: 'Data Zoom' },
+  { value: 'ShowLegend', label: 'Show legend' },
+
+  { value: 'RotateXaxisLabel', label: 'Rotate x axis label' },
+  { value: 'TruncateXAxis', label: 'Truncate X Axis' },
+  { value: 'RichTooltip', label: 'Rich tooltip' },
+  { value: 'ShowPercentage', label: 'Show percentage' },
+  { value: 'TooltipSortByMetric', label: 'Tooltip sort by metric' },
+  { value: 'TooltipTimeFormat', label: 'Tooltip time format' },
+  { value: 'AxisFormat', label: 'Axis Format' },
+  { value: 'LogarithmicAxis', label: 'Logarithmic axis' },
+  { value: 'MinorSplitLine', label: 'Minor Split Line' },
+  { value: 'TruncateAxis', label: 'Truncate Axis' },
+  { value: 'XAxisLabelInterval', label: 'X Axis Label Interval' },
+  { value: 'XAxisBounds', label: 'X Axis Bounds' },
+  { value: 'TimeFormat', label: 'Time format' },
+
+  { value: 'TimestampFormat', label: 'Timestamp format' },
+  { value: 'PageLength', label: 'Page Length' },
+  { value: 'SearchBox', label: 'Search Box' },
+
+  { value: 'AllowColumnsRearranged', label: 'Allow columns to be rearranged' },
+  { value: 'RenderColumnsHTMLFormat', label: 'Render columns in HTML format' },
+  { value: 'ShowCellBar', label: 'Show Cell bars' },
+  { value: 'Align', label: 'Align +/-' },
+  { value: 'ColorsCellBars', label: 'add colors to cell bars for +/-' },
+  {
+    value: 'CustomConditionalFormatting',
+    label: 'Custom Conditional Formatting',
+  },
 ];
 export const IconOptions = [
   { id: 1, value: 'bar', label: 'Bar Chart', icon: <BarChart size={20} /> },
@@ -234,15 +249,14 @@ export const axisTitlePositionOption = ['Left', 'Top'];
 //   { value: 'ShowEmptyColumns', label: 'Show empty columns' },
 // ];
 export const sortSeriesOptions = [
-  "Total value",
-  "Category name",
-  "Minimum value",
-  "Maximum value",
-  "Average value",
+  'Total value',
+  'Category name',
+  'Minimum value',
+  'Maximum value',
+  'Average value',
 ];
 
-export const stackedStyleOptions = ["None", "stack", "stream"];
-
+export const stackedStyleOptions = ['None', 'stack', 'stream'];
 
 export const RotateXaxisLabelOptions = [0, 45, 90];
 export const palettes = [
@@ -315,7 +329,6 @@ export const palettes = [
   },
 ];
 
-
 export const roseTypes = ['area', 'radius', 'none'];
 export const orientations = ['Left', 'Right', 'Top', 'Bottom'];
 export const chartTypes = ['scroll', 'plain'];
@@ -341,22 +354,31 @@ export const lableType = [
   'Template',
 ];
 
-export const AxisMarginOptions = ["15", "30", "50", "75", "100", "125", "150", "200"];
-export const yAxisPositionOptions = ["Left", "Top"];
+export const AxisMarginOptions = [
+  '15',
+  '30',
+  '50',
+  '75',
+  '100',
+  '125',
+  '150',
+  '200',
+];
+export const yAxisPositionOptions = ['Left', 'Top'];
 
-export const transformChartDataToTable = (chartData:any) => {
+export const transformChartDataToTable = (chartData: any) => {
   if (!chartData?.xAxis || !Array.isArray(chartData.xAxis.categories)) {
     return []; // أو ممكن ترجع null لو حابب تتحقق من null في المكان اللي بتستخدم فيه
   }
   const { xAxis, series } = chartData;
 
-  const categories = xAxis?.categories; 
-  const tableRows = categories?.map((stationId: any, index:number) => {
+  const categories = xAxis?.categories;
+  const tableRows = categories?.map((stationId: any, index: number) => {
     const row: Record<string, string | number> = {
       StationBayId: stationId,
     };
 
-    series.forEach((s: { name: string | number; data: number[]; }) => {
+    series.forEach((s: { name: string | number; data: number[] }) => {
       row[s.name] = s.data[index] ?? 0;
     });
 
@@ -366,3 +388,15 @@ export const transformChartDataToTable = (chartData:any) => {
   return tableRows;
 };
 
+export const timeStampForamtOption = [
+  'Adaptive formatting',
+  '%d/%m/%Y | 14/01/2019',
+  '%m/%d/%Y | 01/14/2019',
+  '%d.%m.%Y | 14.01.2019',
+  '%Y-%m-%d | 2019-01-14',
+  '%Y-%m-%d %H:%M:%S | 2019-01-14 01:32:10',
+  '%d-%m-%Y %H:%M:%S | 14-01-2019 01:32:10',
+  '%H:%M:%S | 01:32:10',
+];
+
+export const pageLengthOptions = ['All', '10', '20', '50', '100', '200'];

@@ -302,7 +302,7 @@ export const ChartSchema = z.object({
     )
     .min(1, "At least one metric is required"),
   // Filters
-
+  precentageMetrics: z.any().optional(),
   dynamicFilters: z.any().optional(),
   xAxis: z.any().optional(),
   xAxisSortBy: z.string().optional(),
@@ -311,6 +311,8 @@ export const ChartSchema = z.object({
   rowLimit: z.number().optional(),
   customizeOptions: z.any(),
   displayFields: z.any().optional(),
+  columns: z.any().optional(),
+  ordering: z.any().optional(),
 });
 
 export const VisualizationTypesSchema = z.object({

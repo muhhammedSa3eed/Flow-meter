@@ -8,6 +8,7 @@ import CustomizeChart from './CustomizeChart';
 import CustomizeChartBigNumber from './CustomizeChartBigNumber';
 import CustomizeChartLine from './CustomizeChartLine';
 import CustomizeChartBar from './CustomizeChartBar';
+import CustomizeChartTable from './CustomizeChartTable';
 
 const CustomizeChartWrapper = ({
   form,
@@ -58,7 +59,13 @@ const CustomizeChartWrapper = ({
           form={form}
           activeCustomizeOptions={activecustomizeOptions}
         />
-      ) : null}
+      ) : selectedTypeData?.type == 'table' ? (
+        <CustomizeChartTable
+          VisualizationTypeData={VisualizationTypeData}
+          form={form}
+          activeCustomizeOptions={activecustomizeOptions}
+        />
+      ): null}
     </div>
   );
 };

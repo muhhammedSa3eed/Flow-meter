@@ -5,13 +5,16 @@ import ReactECharts from 'echarts-for-react';
 import EmtyChart from '../motion/EmtyChart';
 import { motion } from 'framer-motion';
 import { palettes } from '@/lib/chart-assets';
+import ChartDataTable from './ChartDataTable';
 
 const ChartDisplay = ({
   chartData,
   createdChartId,
+  isDashboard,
 }: {
   chartData: any;
   createdChartId?: number | null;
+  isDashboard?: boolean;
 }) => {
   console.log('from chart display', { chartData });
   const isBigNumber = chartData?.visualizationType?.type
@@ -26,6 +29,9 @@ const ChartDisplay = ({
   const isLineChart = chartData?.visualizationType?.type
     ?.toLowerCase()
     .includes('line');
+  const isTableChart = chartData?.visualizationType?.type
+    ?.toLowerCase()
+    .includes('table');
 
   const selectedPaletteName = chartData?.customizeOptions?.ColorScheme;
   const selectedPalette = palettes.find((p) => p.name === selectedPaletteName);
@@ -38,6 +44,8 @@ const ChartDisplay = ({
       name: String(item[keys[0]]),
     };
   });
+  const tableData = chartData?.data;
+  console.log(JSON.stringify(tableData));
   console.log({ pieChartData });
   console.log({ isPieChart });
   const dataKeys = chartData?.data?.[0] ? Object.keys(chartData.data[0]) : [];
@@ -131,8 +139,10 @@ const ChartDisplay = ({
       <ReactECharts
         option={{
           title: {
-            text: chartData.name || 'Chart',
-            subtext: chartData.visualizationType?.type || 'Pie',
+            text: isDashboard ? '' : chartData.name || 'Chart',
+            subtext: isDashboard
+              ? ''
+              : chartData.visualizationType?.type || 'Pie',
             bottom: 'left',
           },
           tooltip: { trigger: 'item' },
@@ -183,8 +193,10 @@ const ChartDisplay = ({
       <ReactECharts
         option={{
           title: {
-            text: chartData.name || 'Bar Chart',
-            subtext: chartData.visualizationType?.type || 'Bar',
+            text: isDashboard ? '' : chartData.name || 'Bar Chart',
+            subtext: isDashboard
+              ? ''
+              : chartData.visualizationType?.type || 'Bar',
             // bottom: 'left',
           },
           tooltip: { trigger: 'axis' },
@@ -236,7 +248,7 @@ const ChartDisplay = ({
       <ReactECharts
         option={{
           title: {
-            text: chartData.name || 'Line Chart',
+            text: isDashboard ? '' : chartData.name || 'Line Chart',
           },
           tooltip: {
             trigger: 'axis',
@@ -270,6 +282,13 @@ const ChartDisplay = ({
     );
   }
 
+  if (isTableChart) {
+    return (
+      <>
+        <ChartDataTable dataTable={tableData} options={chartData.customizeOptions} />
+      </>
+    );
+  }
   return (
     <div className="text-muted-foreground text-sm italic">
       No data available to display.

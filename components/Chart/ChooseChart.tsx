@@ -86,15 +86,16 @@ export default function ChooseChart({
       xAxis: {},
       xAxisSortBy: '',
       xAxisSortAscending: null,
+      precentageMetrics: [],
+      columns: [],
+      ordering: '',
     },
   });
   const [updateTrigger, setUpdateTrigger] = useState<boolean>(false);
-
   const handleUpdateTrigger = () => {
     setUpdateTrigger((prev) => !prev);
     setIsAddChart(false);
   };
-
   useEffect(() => {
     if (createdChartId) {
       fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/Charts/${createdChartId}`)
@@ -115,7 +116,6 @@ export default function ChooseChart({
         });
     }
   }, [createdChartId, updateTrigger]);
-
   async function onSubmit(values: z.infer<typeof ChartSchema>) {
     console.log('Form submitted!');
     console.log('Form values:', JSON.stringify(values));

@@ -21,6 +21,7 @@ import ReactECharts from 'echarts-for-react';
 import ChartDisplay from '../Chart/ChartDisplay';
 import { palettes } from '@/lib/chart-assets';
 import { DashboardItem } from './dashboard-wrapper';
+import { useTheme } from 'next-themes';
 // interface DashboardItem {
 //   data: any;
 //   metrics: any;
@@ -194,54 +195,24 @@ const SortableCard = ({
     });
     setIsEditing(false);
   };
+  const { theme } = useTheme(); // "light" | "dark" | "system"
+  console.log({ theme });
+  const defaultBackground =
+    backgroundColor ?? (theme === 'dark' ? '#1e1e1e' : '#ffffff');
 
+  const defaultTextColor =
+    textColor ?? (theme === 'dark' ? '#000000' : '#000000');
   const style = {
     transform: CSS.Transform.toString(transform),
     transition: isDragging ? 'none' : transition,
     zIndex: isDragging ? 100 : 'auto',
     opacity: isDragging ? 0.5 : 1,
-    backgroundColor: backgroundColor || '#ffffff',
-    textColor: textColor || '#000',
+    backgroundColor: defaultBackground,
+    color: defaultTextColor,
   };
-  console.log("12300=>123",{ card });
-  // const isBigNumber = card.type?.toLowerCase().includes('bignumber');
-  // const isPieChart = card.type?.toLowerCase().includes('pie');
-  // const isBarChart = card?.type?.toLowerCase().includes('bar');
-  // const isLineChart = card?.type?.toLowerCase().includes('line');
-  // const selectedPaletteGlobalName = card?.customizeOptions?.ColorScheme;
-  // const selectedGlobalPalette = palettes.find(
-  //   (p) => p.name === selectedPaletteGlobalName
-  // );
-  // const colors = selectedGlobalPalette?.colors || ['#409EFF'];
-  // const dataKeys = card?.data?.[0] ? Object.keys(card.data[0]) : [];
+  console.log({ defaultBackground });
+  console.log({ defaultTextColor });
 
-  // const xKey =
-  //   card?.dimensions?.[0] && dataKeys.includes(card.dimensions[0])
-  //     ? card.dimensions[0]
-  //     : dataKeys[0];
-  // const pieChartData = card?.pieChartData?.map((item: any) => {
-  //   const keys = Object.keys(item);
-
-  //   return {
-  //     value: item[keys[1]],
-  //     name: String(item[keys[0]]),
-  //   };
-  // });
-  // const xAxisData = card?.data[0]?.xAxis?.categories?.map(
-  //   (item: string) => item ?? 'N/A'
-  // );
-
-  // const seriesData = card?.data[0]?.series;
-  // const barSeriesData = seriesData?.map((item: { data: any }) =>
-  //   Math.max(...item.data)
-  // );
-  // // console.log({ xAxisData });
-  // const legandTitle = card?.data[0]?.series?.map((item: any) => item.name);
-  // const selectedPaletteName =
-  //   card.customizeOptions?.ColorScheme || 'Superset Colors';
-  // const selectedPalette =
-  //   palettes.find((p) => p.name === selectedPaletteName)?.colors ||
-  //   palettes[0].colors;
   return (
     <div
       ref={setNodeRef}
@@ -263,7 +234,7 @@ const SortableCard = ({
           onClick={() => onDelete(card.chartId.toString())}
           className="absolute bottom-1.5 right-1.5 p-1 hover:bg-slate-100 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity"
         >
-          <Trash2 className="w-4 h-4 text-red-500" />
+          <Trash2 className="w-4 h-4" />
         </button>
       )}
 
@@ -363,7 +334,7 @@ const SortableCard = ({
             )}
           </>
         )}
-        <ChartDisplay chartData={card} />
+        <ChartDisplay chartData={card} isDashboard={true} />
         {/* {isPieChart && (
           <ReactECharts
             option={{

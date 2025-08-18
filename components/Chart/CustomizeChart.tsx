@@ -359,7 +359,7 @@ export default function CustomizeChart({
         defaultValue={['chart-options']}
       >
         <AccordionItem value="chart-options">
-          <AccordionTrigger className="text-md font-semibold mb-2">
+          <AccordionTrigger className="text-md font-semibold pb-0">
             Chart Options
           </AccordionTrigger>
           <AccordionContent>

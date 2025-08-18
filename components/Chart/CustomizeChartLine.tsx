@@ -97,7 +97,6 @@ export default function CustomizeChartLine({
   const legendFields = ["Type", "Orientation", "Margin"];
 
   const renderField = (key: string) => {
- 
 
     // Axis Groups
     if (key === "xAxis") {
@@ -560,7 +559,7 @@ export default function CustomizeChartLine({
       >
         {/* Main Chart Options */}
         <AccordionItem value="chart-options">
-          <AccordionTrigger className="text-md font-semibold mb-2">
+          <AccordionTrigger className="text-md font-semibold pb-0">
             Chart Options
           </AccordionTrigger>
           <AccordionContent>

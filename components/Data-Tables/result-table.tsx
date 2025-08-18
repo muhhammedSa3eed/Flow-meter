@@ -21,7 +21,7 @@ const ResultTable = ({ chartDetails, chartData }: ChartProps) => {
   const isPieChart = chartType.includes('pie');
   const isLineChart = chartType.includes('line');
   const isBarChart = chartType.includes('bar');
-
+  const isTableChart = chartType.includes("table")
   const tableData = transformChartDataToTable(chartData?.data?.[0]);
   const headers =
     tableData &&
@@ -173,7 +173,7 @@ const ResultTable = ({ chartDetails, chartData }: ChartProps) => {
 
   return (
     <>
-      {(isBigNumber || isPieChart) && renderRawTable()}
+      {(isBigNumber || isPieChart || isTableChart) && renderRawTable()}
       {(isLineChart || isBarChart) && renderFormattedTable()}
     </>
   );

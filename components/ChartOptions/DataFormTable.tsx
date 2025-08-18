@@ -57,86 +57,10 @@ import {
   operators,
   RowLimit,
 } from '@/lib/chart-assets';
-import DataFormTable from './DataFormTable';
-// import { Separator } from "../ui/separator";
-// import { Switch } from "../ui/switch";
-// const aggregate: Option[] = [
-//   { value: "AVG", label: "AVG" },
-//   { value: "COUNT", label: "COUNT" },
-//   { value: "COUNT_DISTINCT", label: "COUNT_DISTINCT", disable: true },
-//   { value: "MAX", label: "MAX" },
-//   { value: "MIN", label: "MIN" },
-//   { value: "SUM", label: "SUM" },
-// ];
-
-// const RowLimit = [
-//   { value: "none", label: "none" },
-//   { value: 10, label: "10" },
-//   { value: 20, label: "20" },
-//   { value: 50, label: "50" },
-//   { value: 100, label: "100" },
-//   { value: 250, label: "250" },
-//   { value: 500, label: "500" },
-//   { value: 1000, label: "1000" },
-//   { value: 5000, label: "5000" },
-//   { value: 10000, label: "10000" },
-// ];
-
-// const operators: Option[] = [
-//   { value: "Equals", label: "Equals to (=)" },
-//   { value: "NotEquals", label: "Not Equals to (≠)" },
-//   { value: "GreaterThan", label: "Greater Than (>)" },
-//   { value: "LessThan", label: "Less Than (<)" },
-//   { value: "GreaterThanOrEqual", label: "Greater  or Equal (>=)" },
-//   { value: "LessThanOrEqual", label: "Less  or Equal (<=)" },
-//   { value: "NotNull", label: "Not null" },
-//   { value: "In", label: "In" },
-//   { value: "NotIn", label: "Not in" },
-// ];
-
-// export const ChartItems = [
-//   {
-//     value: "table",
-//     label: "Table",
-//     icon: Table,
-//   },
-//   {
-//     value: "line chart",
-//     label: "Line chart",
-//     icon: LineChartIcon,
-//   },
-//   {
-//     value: "piechart",
-//     label: "Pie chart",
-//     icon: ChartPie,
-//   },
-//   {
-//     value: "bar chart",
-//     label: "Bar chart",
-//     icon: ChartBarStacked,
-//   },
-//   {
-//     value: "bignumber",
-//     label: "Big number",
-//     icon: Radius,
-//   },
-// ];
-
-// export const IconOptions = [
-//   { id: 1, value: "bar", label: "Bar Chart", icon: <BarChart size={20} /> },
-//   { id: 2, value: "pie", label: "Pie Chart", icon: <PieChart size={20} /> },
-//   { id: 3, value: "line", label: "Line Chart", icon: <LineChart size={20} /> },
-//   { id: 4, value: "area", label: "Area Chart", icon: <AreaChart size={20} /> },
-//   { id: 5, value: "table", label: "Table", icon: <Table size={20} /> },
-//   {
-//     id: 6,
-//     value: "bignumber",
-//     label: "Big number",
-//     icon: <SquareAsterisk size={20} />,
-//   },
-// ];
+import { generateAscDescArray } from '@/lib/generate-order-array';
 
 type ChartFormValues = z.infer<typeof ChartSchema>;
+
 interface DataFormProps {
   form: UseFormReturn<ChartFormValues>;
   selectedDataset: number | null;
@@ -145,7 +69,8 @@ interface DataFormProps {
   isAddChart?: boolean;
   columnOptions: any;
 }
-export default function DataForm({
+
+export default function DataFormTable({
   form,
   selectedDataset,
   VisualizationTypeData,
@@ -153,35 +78,33 @@ export default function DataForm({
   isAddChart,
   columnOptions,
 }: DataFormProps) {
-  console.log({ isAddChart });
   const id = useId();
   const [selectedAggregate, setSelectedAggregate] = useState<Option | null>(
     null
   );
-  const [open, setOpen] = useState<boolean>(false);
+  const [selectedPerAggregate, setSelectedPerAggregate] =
+    useState<Option | null>(null);
   const [filterOptions, setFilterOptions] = useState<Option[]>([]);
   const [selectedFilterColumn, setSelectedFilterColumn] =
     useState<Option | null>(null);
-  const [showXAxis, setShowXAxis] = useState(false);
   const [selectedMetricsColumn, setSelectedMetricsColumn] =
+    useState<Option | null>(null);
+  const [selectedPerMetricsColumn, setSelectedPerMetricsColumn] =
     useState<Option | null>(null);
   const [selectedOperator, setSelectedOperator] = useState<Option | null>(null);
   const [isPopoverDimensionsOpen, setIsPopoverDimensionsOpen] = useState(false);
-  const [isPopoverXaxisOpen, setIsPopoverXaxisOpen] = useState(false);
-  const [showTableColumn, setShowTableColumn] = useState<Boolean | null>(false);
   const [isPopoverMetricsOpen, setIsPopoverMetricsOpen] = useState(false);
-  const [isPopoverXAxisOpen, setIsPopoverXAxisOpen] = useState(false);
+  const [isPopoverPerecentageMetricsOpen, setIsPopoverPerecentageMetricsOpen] =
+    useState(false);
   const [selectedDimensionColumn, setSelectedDimensionColumn] =
     useState<Option | null>(null);
-  const [selectedXAxisColumn, setSelectedXAxisColumn] = useState<Option | null>(
-    null
-  );
   const [isPopoveFiltersOpen, setIsPopoverFiltersOpen] = useState(false);
-
   const [selectedFilterValues, setSelectedFilterValues] = useState<Option[]>(
     []
   );
-
+  const [selectedColumns, setSelectedColumns] = useState<Option | null>(null);
+  const [isPopoverColumnsOpen, setIsPopoverColumnsOpen] = useState(false);
+  const [orderValue, setOrderValue] = useState<Option[]>([]);
   useEffect(() => {
     if (!chartData?.filters || chartData.filters.length === 0) return;
 
@@ -205,24 +128,13 @@ export default function DataForm({
     }));
     setFilterOptions(values);
   }, [chartData, columnOptions]);
-
+  console.log('JSON.stringify(columnOptions)', JSON.stringify(columnOptions));
   const metrics = form.watch('metrics') || [];
+  const perMetrics = form.watch('precentageMetrics') || [];
   const filters = form.watch('dynamicFilters') || [];
   const dimensions = form.watch('dimensions') || [];
-  const xAxis = form.watch('xAxis') || [];
+  const columns = form.watch('columns') || [];
 
-  const handleSaveXAxis = () => {
-    if (selectedXAxisColumn) {
-      const newXAxis = {
-        column: selectedXAxisColumn.value,
-        forceCategorical: false,
-      };
-
-      form.setValue('xAxis', newXAxis);
-      setSelectedXAxisColumn(null);
-    }
-    setIsPopoverXAxisOpen(false);
-  };
   const handleSaveDimensions = () => {
     if (selectedDimensionColumn) {
       form.setValue('dimensions', [
@@ -233,13 +145,14 @@ export default function DataForm({
     }
     setIsPopoverDimensionsOpen(false);
   };
-  // const handleSaveXaxis = () => {
-  //   if (selectedDimensionColumn) {
-  //     form.setValue("xAxis", [...xAxis, selectedXaxisColumn.value]);
-  //     setSelectedXaxisColumn(null);
-  //   }
-  //   setIsPopoverXaxisOpen(false);
-  // };
+
+  const handleSaveColumns = () => {
+    if (selectedColumns) {
+      form.setValue('columns', [...columns, selectedColumns.value]);
+      setSelectedColumns(null);
+    }
+    setIsPopoverColumnsOpen(false);
+  };
 
   const handleSaveMetrics = () => {
     if (selectedAggregate && selectedMetricsColumn) {
@@ -254,6 +167,18 @@ export default function DataForm({
     setIsPopoverMetricsOpen(false);
   };
 
+  const handleSavePerMetrics = () => {
+    if (selectedPerAggregate && selectedPerMetricsColumn) {
+      const newMetric = {
+        columnName: selectedPerMetricsColumn.value,
+        aggregationFunction: selectedPerAggregate.value,
+      };
+      form.setValue('precentageMetrics', [...perMetrics, newMetric]);
+      setSelectedPerAggregate(null);
+      setSelectedFilterColumn(null);
+    }
+    setIsPopoverPerecentageMetricsOpen(false);
+  };
   const handleSaveFilters = () => {
     if (
       !selectedFilterColumn ||
@@ -283,10 +208,6 @@ export default function DataForm({
     setSelectedFilterValues([]);
     setIsPopoverFiltersOpen(false);
   };
-  // console.log(
-  //   "form.watch('filters')=>",
-  //   JSON.stringify(form.watch('dynamicFilters'))
-  // );
   const handleSortByChange = (checked: boolean) => {
     if (checked) {
       const newSortBy = metrics.map((metric) => ({
@@ -298,7 +219,6 @@ export default function DataForm({
       form.setValue('sortBy', []);
     }
   };
-
   const selectedTypeId = form.watch('visualizationTypeId');
   const selectedTypeName =
     VisualizationTypeData.find((type) => type.id === selectedTypeId)?.type ||
@@ -306,15 +226,13 @@ export default function DataForm({
   const selectedTypeData = VisualizationTypeData.find(
     (type) => type.id === selectedTypeId
   );
+
   const displayFields = selectedTypeData?.displayFields || [];
   const showFiltersSection = displayFields.includes('Filters');
   const showDimensionsSection = displayFields.includes('Dimensions');
   const showRowLimitSection = displayFields.includes('RowLimit');
   const showSortBySection = displayFields.includes('SortBy');
-  const showXAxsisSection = displayFields.includes('X-axis');
 
-  const visualizationType = chartData?.visualizationType;
-  console.log({ selectedTypeName });
   useEffect(() => {
     if (!selectedFilterColumn) return;
 
@@ -343,191 +261,19 @@ export default function DataForm({
 
     return () => controller.abort();
   }, [selectedFilterColumn]);
-  const arrayToOptions = (values: string[], optionsList: Option[]) =>
-    values.map(
-      (key) =>
-        optionsList.find((opt) => opt.value === key) || {
-          value: key,
-          label: key,
-        }
-    );
+  console.log({ columnOptions });
+  const ascDescColumnOptions = generateAscDescArray(columnOptions);
 
+  console.log({ ascDescColumnOptions });
   return (
     <>
-      <FormField
-        control={form.control}
-        name="visualizationTypeId"
-        render={({ field }) => (
-          <FormItem className="group relative mb-5">
-            <div className="*:not-first:mt-2">
-              <Label>Types</Label>
-              <Popover open={open} onOpenChange={setOpen}>
-                <PopoverTrigger asChild disabled={!isAddChart}>
-                  <Button
-                    id={id}
-                    variant="outline"
-                    role="combobox"
-                    aria-expanded={open}
-                    className="bg-background hover:bg-background border-input w-full justify-between px-3 font-normal outline-offset-0 outline-none focus-visible:outline-[3px]"
-                  >
-                    {field.value ? (
-                      <span className="flex min-w-0 items-center gap-2">
-                        {(() => {
-                          const selectedItem = VisualizationTypeData.find(
-                            (item) => item.id === field.value
-                          );
-                          const icon = IconOptions.find(
-                            (i) => i.value === selectedItem?.type
-                          )?.icon;
-
-                          return (
-                            <>
-                              {icon}
-                              <span className="truncate capitalize">
-                                {selectedItem?.type}
-                              </span>
-                            </>
-                          );
-                        })()}
-                      </span>
-                    ) : (
-                      <span className="text-muted-foreground">
-                        Select Chart
-                      </span>
-                    )}
-                    <ChevronDownIcon
-                      size={16}
-                      className="text-muted-foreground/80 shrink-0"
-                      aria-hidden="true"
-                    />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent
-                  className="border-input w-full min-w-[var(--radix-popper-anchor-width)] p-0"
-                  align="start"
-                >
-                  <Command>
-                    <CommandInput placeholder="Search Chart..." />
-                    <CommandList>
-                      <CommandEmpty>No Chart found.</CommandEmpty>
-                      <CommandGroup>
-                        {VisualizationTypeData.map((item) => (
-                          <CommandItem
-                            key={item.id}
-                            value={item.id.toString()}
-                            onSelect={(currentValue) => {
-                              const selectedId = Number(currentValue);
-                              field.onChange(selectedId);
-
-                              const selectedItem = VisualizationTypeData.find(
-                                (item) => item.id === selectedId
-                              );
-                              console.log('Selected item:', selectedItem);
-
-                              setShowXAxis(selectedItem?.type === 'line');
-                              setShowTableColumn(
-                                selectedItem?.type === 'table'
-                              );
-                              setOpen(false);
-                            }}
-                            className="flex items-center justify-between"
-                          >
-                            <div className="flex items-center gap-2">
-                              {
-                                IconOptions.find((i) => i.value === item.type)
-                                  ?.icon
-                              }
-                              <span className="truncate capitalize">
-                                {item.type} - {item.name}
-                              </span>
-                            </div>
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-            </div>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      {showTableColumn ? (
-        <>
-          <DataFormTable
-            form={form}
-            selectedDataset={selectedDataset}
-            VisualizationTypeData={VisualizationTypeData}
-            isAddChart={isAddChart}
-            columnOptions={columnOptions}
-          />
-        </>
-      ) : (
-        <>
-          {showXAxsisSection && (
-            <>
-              <FormField
-                control={form.control}
-                name="xAxis.column"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>X-Axis</FormLabel>
-                    <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select X-axis" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {columnOptions.map(
-                            (item: { value: string; label: string }) => (
-                              <SelectItem key={item.value} value={item.value}>
-                                {item.label}
-                              </SelectItem>
-                            )
-                          )}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="xAxis.forceCategorical"
-                render={({ field }) => (
-                  <FormItem className="mt-2 w-full flex-1">
-                    <FormControl>
-                      <div className="flex items-start gap-2">
-                        <Checkbox
-                          id={id}
-                          aria-describedby={`${id}-description`}
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                        <div className="grid grow gap-2">
-                          <FormLabel>Force Categorical</FormLabel>
-                          <p
-                            id={`${id}-description`}
-                            className="text-muted-foreground text-xs"
-                          >
-                            You can use this checkbox with a label and a
-                            description.
-                          </p>
-                        </div>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </>
-          )}
-
+      <p>Query mode</p>
+      <Tabs defaultValue="aggregate">
+        <TabsList>
+          <TabsTrigger value="aggregate">Aggregate</TabsTrigger>
+          {/* <TabsTrigger value="raw-record">Raw Record</TabsTrigger> */}
+        </TabsList>
+        <TabsContent value="aggregate">
           {/* Dimensions Section */}
           {showDimensionsSection && (
             <FormField
@@ -654,7 +400,6 @@ export default function DataForm({
             />
           )}
           {/* Metrics Section */}
-
           <FormField
             control={form.control}
             name="metrics"
@@ -692,18 +437,18 @@ export default function DataForm({
                         }
                         // Only allow one metric if chart type is Pie
                         maxSelected={
-                          selectedTypeName.toLowerCase() === 'pie'
+                          selectedTypeName.toLowerCase() === 'piechart'
                             ? 1
                             : undefined
                         }
                         // Disable adding more metrics if Pie chart and already has one
                         disabled={
-                          selectedTypeName.toLowerCase() === 'pie' &&
+                          selectedTypeName.toLowerCase() === 'piechart' &&
                           metrics.length >= 1
                         }
                       />
                       {metrics.length === 0 ||
-                      selectedTypeName.toLowerCase() !== 'pie' ? (
+                      selectedTypeName.toLowerCase() !== 'piechart' ? (
                         <Popover
                           open={isPopoverMetricsOpen}
                           onOpenChange={setIsPopoverMetricsOpen}
@@ -714,7 +459,7 @@ export default function DataForm({
                               size="icon"
                               className="h-10 w-10"
                               disabled={
-                                selectedTypeName.toLowerCase() === 'pie' &&
+                                selectedTypeName.toLowerCase() === 'piechart' &&
                                 metrics.length >= 1
                               }
                             >
@@ -808,6 +553,184 @@ export default function DataForm({
                                 Cancel
                               </Button>
                               <Button onClick={handleSaveMetrics}>Save</Button>
+                            </div>
+                          </PopoverContent>
+                        </Popover>
+                      ) : null}
+                    </div>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="precentageMetrics"
+            render={({ field }) => (
+              <FormItem className="mt-2 w-full flex-1">
+                <FormLabel>Precentage Metrics</FormLabel>
+                <FormControl>
+                  <div className="*:not-first:mt-2">
+                    <Label>Select Precentage Metrics</Label>
+                    <div className="flex items-center gap-2">
+                      <MultipleSelector
+                        value={perMetrics.map(
+                          (metric: {
+                            aggregationFunction: any;
+                            columnName: any;
+                          }) => ({
+                            value: `${metric.aggregationFunction}(${metric.columnName})`,
+                            label: `${metric.aggregationFunction}(${metric.columnName})`,
+                          })
+                        )}
+                        creatable
+                        onChange={(values) => {
+                          const newMetrics = values.map((value) => {
+                            const [aggregationFunction, columnName] =
+                              value.value.split(/\(|\)/);
+                            return {
+                              columnName,
+                              aggregationFunction,
+                            };
+                          });
+                          field.onChange(newMetrics);
+                        }}
+                        placeholder="Select metrics..."
+                        hideClearAllButton
+                        hidePlaceholderWhenSelected
+                        emptyIndicator={
+                          <p className="text-center text-sm">
+                            No metrics selected
+                          </p>
+                        }
+                        // Only allow one metric if chart type is Pie
+                        maxSelected={
+                          selectedTypeName.toLowerCase() === 'piechart'
+                            ? 1
+                            : undefined
+                        }
+                        // Disable adding more metrics if Pie chart and already has one
+                        disabled={
+                          selectedTypeName.toLowerCase() === 'piechart' &&
+                          perMetrics.length >= 1
+                        }
+                      />
+                      {perMetrics.length === 0 ||
+                      selectedTypeName.toLowerCase() !== 'piechart' ? (
+                        <Popover
+                          open={isPopoverPerecentageMetricsOpen}
+                          onOpenChange={setIsPopoverPerecentageMetricsOpen}
+                        >
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="h-10 w-10"
+                              disabled={
+                                selectedTypeName.toLowerCase() === 'piechart' &&
+                                perMetrics.length >= 1
+                              }
+                            >
+                              <Plus className="h-4 w-4" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-96">
+                            <Tabs defaultValue="simple">
+                              <TabsList className="grid w-full grid-cols-2">
+                                <TabsTrigger value="simple">Simple</TabsTrigger>
+                                <TabsTrigger value="custom">
+                                  Custom SQL
+                                </TabsTrigger>
+                              </TabsList>
+                              <TabsContent value="simple">
+                                <div className="space-y-4">
+                                  <div>
+                                    <Select
+                                      value={
+                                        selectedPerMetricsColumn?.value || ''
+                                      }
+                                      onValueChange={(value) => {
+                                        const selected = columnOptions.find(
+                                          (item: any) => item.value === value
+                                        );
+                                        setSelectedPerMetricsColumn(
+                                          selected || null
+                                        );
+                                      }}
+                                    >
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Select Column(s)" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectGroup>
+                                          {columnOptions.map((item: any) => (
+                                            <SelectItem
+                                              key={item.value}
+                                              value={item.value}
+                                            >
+                                              {item.label}
+                                            </SelectItem>
+                                          ))}
+                                        </SelectGroup>
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+                                  <div>
+                                    <Select
+                                      value={selectedPerAggregate?.value || ''}
+                                      onValueChange={(value) => {
+                                        const selected = aggregate.find(
+                                          (item) => item.value === value
+                                        );
+                                        setSelectedPerAggregate(
+                                          selected || null
+                                        );
+                                      }}
+                                    >
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Select Aggregate" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectGroup>
+                                          {aggregate.map((item) => (
+                                            <SelectItem
+                                              key={item.value}
+                                              value={item.value}
+                                            >
+                                              {item.label}
+                                            </SelectItem>
+                                          ))}
+                                        </SelectGroup>
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+                                </div>
+                              </TabsContent>
+                              <TabsContent value="custom">
+                                <div className="space-y-4">
+                                  <div className="group relative">
+                                    <span className="inline-flex bg-background px-2">
+                                      Enter Custom SQL Query
+                                    </span>
+                                    <Textarea id={id} placeholder="" />
+                                  </div>
+                                </div>
+                              </TabsContent>
+                            </Tabs>
+                            <div className="flex justify-end gap-2 mt-4">
+                              <Button
+                                variant="outline"
+                                onClick={() =>
+                                  setIsPopoverPerecentageMetricsOpen(false)
+                                }
+                              >
+                                Cancel
+                              </Button>
+                              <Button onClick={handleSavePerMetrics}>
+                                Save
+                              </Button>
                             </div>
                           </PopoverContent>
                         </Popover>
@@ -1077,8 +1000,373 @@ export default function DataForm({
               )}
             />
           )}
-        </>
-      )}
+        </TabsContent>
+
+        {/* <TabsContent value="raw-record">
+          <FormField
+            control={form.control}
+            name="columns"
+            render={({ field }) => (
+              <FormItem className="mt-2 w-full flex-1">
+                <FormLabel>Columns</FormLabel>
+                <FormControl>
+                  <div className="*:not-first:mt-2">
+                    <Label>Select Columns</Label>
+                    <div className="flex items-center gap-2">
+                      <MultipleSelector
+                        value={
+                          field.value?.map((column: any) => ({
+                            value: column,
+                            label: column,
+                          })) || []
+                        }
+                        creatable
+                        onChange={(values) => {
+                          const newColumns = values.map((val) => val.value);
+                          field.onChange(newColumns);
+                        }}
+                        placeholder="Select Columns..."
+                        hideClearAllButton
+                        hidePlaceholderWhenSelected
+                        emptyIndicator={
+                          <p className="text-center text-sm">
+                            No Columns selected
+                          </p>
+                        }
+                      />
+                      <Popover
+                        open={isPopoverColumnsOpen}
+                        onOpenChange={setIsPopoverColumnsOpen}
+                      >
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-10 w-10"
+                          >
+                            <Plus className="h-4 w-4" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-96">
+                          <Tabs defaultValue="simple">
+                            <TabsList className="grid w-full grid-cols-2">
+                              <TabsTrigger value="simple">Simple</TabsTrigger>
+                              <TabsTrigger value="custom">
+                                Custom SQL
+                              </TabsTrigger>
+                            </TabsList>
+                            <TabsContent value="simple">
+                              <div className="space-y-4">
+                                <div>
+                                  <Select
+                                    value={selectedColumns?.value || ''}
+                                    onValueChange={(value) => {
+                                      const selected = columnOptions.find(
+                                        (item: any) => item.value === value
+                                      );
+                                      setSelectedColumns(selected || null);
+                                    }}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select Column(s)" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectGroup>
+                                        {columnOptions.map((item: any) => (
+                                          <SelectItem
+                                            key={item.value}
+                                            value={item.value}
+                                          >
+                                            {item.label}
+                                          </SelectItem>
+                                        ))}
+                                      </SelectGroup>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </div>
+                            </TabsContent>
+                            <TabsContent value="custom">
+                              <div className="space-y-4">
+                                <div className="group relative">
+                                  <span className="inline-flex bg-background px-2">
+                                    Enter Custom SQL Query
+                                  </span>
+                                  <Textarea id={id} placeholder="" />
+                                </div>{' '}
+                              </div>
+                            </TabsContent>
+                          </Tabs>
+                          <div className="flex justify-end gap-2 mt-4">
+                            <Button
+                              variant="outline"
+                              onClick={() => setIsPopoverColumnsOpen(false)}
+                            >
+                              Cancel
+                            </Button>
+                            <Button onClick={handleSaveColumns}>Save</Button>
+                          </div>
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {showFiltersSection && (
+            <FormField
+              control={form.control}
+              name="dynamicFilters"
+              render={({ field }) => (
+                <FormItem className="mt-2 w-full flex-1">
+                  <FormLabel>Filters</FormLabel>
+                  <FormControl>
+                    <div className="*:not-first:mt-2">
+                      <Label>Select Filters</Label>
+                      <div className="flex items-center gap-2">
+                        <MultipleSelector
+                          value={filters.map(
+                            (filter: {
+                              columnName: any;
+                              operator: any;
+                              values: any[];
+                            }) => ({
+                              value: JSON.stringify(filter),
+                              label: `${filter.columnName} ${
+                                filter.operator
+                              } ${filter?.values?.join(', ')}`,
+                            })
+                          )}
+                          onChange={(values) => {
+                            const newFilters = values
+                              .map((val) => {
+                                try {
+                                  return JSON.parse(val.value);
+                                } catch (e) {
+                                  return null;
+                                }
+                              })
+                              .filter((f) => f !== null);
+                            field.onChange(newFilters);
+                          }}
+                          placeholder="Select filters..."
+                          hideClearAllButton
+                          hidePlaceholderWhenSelected
+                          emptyIndicator={
+                            <p className="text-center text-sm">
+                              No filters selected
+                            </p>
+                          }
+                        />
+                        <Popover
+                          open={isPopoveFiltersOpen}
+                          onOpenChange={setIsPopoverFiltersOpen}
+                        >
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="h-10 w-10"
+                            >
+                              <Plus className="h-4 w-4" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-96">
+                            <Tabs defaultValue="simple">
+                              <TabsList className="grid w-full grid-cols-2">
+                                <TabsTrigger value="simple">Simple</TabsTrigger>
+                                <TabsTrigger value="custom">
+                                  Custom SQL
+                                </TabsTrigger>
+                              </TabsList>
+                              <TabsContent value="simple">
+                                <div className="space-y-4">
+                                
+                                  <Select
+                                    value={selectedFilterColumn?.value || ''}
+                                    onValueChange={(value) => {
+                                      const selected = columnOptions.find(
+                                        (item: any) => item.value === value
+                                      );
+                                      setSelectedFilterColumn(selected || null);
+                                    }}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select column(s)" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectGroup>
+                                        {columnOptions.map((item: any) => (
+                                          <SelectItem
+                                            key={item.value}
+                                            value={item.value}
+                                          >
+                                            {item.label}
+                                          </SelectItem>
+                                        ))}
+                                      </SelectGroup>
+                                    </SelectContent>
+                                  </Select>
+
+                               
+                                  <Select
+                                    value={selectedOperator?.value || ''}
+                                    onValueChange={(value) => {
+                                      const selected = operators.find(
+                                        (item) => item.value === value
+                                      );
+                                      setSelectedOperator(selected || null);
+                                    }}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select operator(s)" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectGroup>
+                                        {operators.map((item) => (
+                                          <SelectItem
+                                            key={item.value}
+                                            value={item.value}
+                                          >
+                                            {item.label}
+                                          </SelectItem>
+                                        ))}
+                                      </SelectGroup>
+                                    </SelectContent>
+                                  </Select>
+
+                                
+                                  <MultipleSelector
+                                    value={selectedFilterValues}
+                                    onChange={(vals) => {
+                                      setSelectedFilterValues(vals);
+                                    }}
+                                    options={filterOptions}
+                                    creatable
+                                    placeholder="Select or create filter values"
+                                    emptyIndicator={
+                                      <p className="text-center text-sm">
+                                        No results found
+                                      </p>
+                                    }
+                                  />
+                                </div>
+                              </TabsContent>
+                              <TabsContent value="custom">
+                                <div className="space-y-4">
+                                  <div className="group relative">
+                                    <span className="inline-flex bg-background px-2">
+                                      Enter Custom SQL Query
+                                    </span>
+                                    <Textarea id={id} placeholder="" />
+                                  </div>{' '}
+                                </div>
+                              </TabsContent>
+                            </Tabs>
+                            <div className="flex justify-end gap-2 mt-4">
+                              <Button
+                                variant="outline"
+                                onClick={() => setIsPopoverFiltersOpen(false)}
+                              >
+                                Cancel
+                              </Button>
+                              <Button onClick={handleSaveFilters}>Save</Button>
+                            </div>
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+
+          <FormField
+            control={form.control}
+            name="ordering"
+            render={({ field }) => (
+              <FormItem className="mt-2 w-full flex-1">
+                <FormLabel>Ordering</FormLabel>
+                <FormControl>
+                  <div className="*:not-first:mt-2">
+                    <Label>Select Ordering</Label>
+                    <div className="flex items-center gap-2">
+                      <MultipleSelector
+                        value={orderValue}
+                        onChange={setOrderValue}
+                        creatable
+                        placeholder="Select ordering..."
+                        hideClearAllButton
+                        hidePlaceholderWhenSelected
+                        options={ascDescColumnOptions}
+                        emptyIndicator={
+                          <p className="text-center text-sm">
+                            No Order selected
+                          </p>
+                        }
+                      />
+                    </div>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {showRowLimitSection && (
+            <FormField
+              control={form.control}
+              name="rowLimit"
+              render={({ field }) => (
+                <FormItem className="mt-2 w-full flex-1">
+                  <FormLabel>Row Limit</FormLabel>
+                  <FormControl>
+                    <div className="*:not-first:mt-2">
+                      <Select
+                        value={
+                          field.value == null ? 'none' : field.value.toString()
+                        }
+                        onValueChange={(value) => {
+                          field.onChange(
+                            value === 'none' ? null : Number(value)
+                          );
+                        }}
+                      >
+                        <SelectTrigger id={id}>
+                          <SelectValue placeholder="Select row limit" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            {RowLimit.map((item) => (
+                              <SelectItem
+                                key={item.value}
+                                value={item.value?.toString() ?? ''}
+                              >
+                                {item.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      <p
+                        className="text-muted-foreground mt-2 text-xs"
+                        role="region"
+                        aria-live="polite"
+                      >
+                        Select the maximum number of rows to display.
+                      </p>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+        </TabsContent> */}
+      </Tabs>
     </>
   );
 }
