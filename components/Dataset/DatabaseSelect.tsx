@@ -1,11 +1,11 @@
-"use client";
-import React, { useState, useEffect, useId, Suspense } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Database } from "@/types";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
+'use client';
+import React, { useState, useEffect, useId, Suspense } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Database } from '@/types';
+import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
 import {
   Braces,
   CaseUpper,
@@ -13,9 +13,9 @@ import {
   Clock,
   Grid3x3,
   Hash,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Label } from "../ui/label";
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Label } from '../ui/label';
 import {
   Table,
   TableHeader,
@@ -23,16 +23,16 @@ import {
   TableHead,
   TableCell,
   TableBody,
-} from "@/components/ui/table";
+} from '@/components/ui/table';
 import {
   Form,
   FormField,
   FormItem,
   FormControl,
   FormMessage,
-} from "@/components/ui/form";
-import { DatasetSchema } from "@/schemas";
-import toast from "react-hot-toast";
+} from '@/components/ui/form';
+import { DatasetSchema } from '@/schemas';
+import toast from 'react-hot-toast';
 import {
   Command,
   CommandEmpty,
@@ -40,14 +40,14 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
+} from '@/components/ui/command';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { useRouter } from "next/navigation";
-import Loading from "@/app/loading";
+} from '@/components/ui/popover';
+import { useRouter } from 'next/navigation';
+import Loading from '@/app/loading';
 
 export default function DatabaseSelect({
   ProjectId,
@@ -76,16 +76,16 @@ export default function DatabaseSelect({
   const form = useForm({
     resolver: zodResolver(DatasetSchema),
     defaultValues: {
-      datasetName: "",
-      database: "",
-      schema: "",
-      table: "",
+      datasetName: '',
+      database: '',
+      schema: '',
+      table: '',
     },
   });
 
   // Fetch databases on component mount
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/DB`)
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/DB/project/${ProjectId}`)
       .then(async (response) => {
         if (!response.ok) {
           const errorText = await response.text();
@@ -95,7 +95,7 @@ export default function DatabaseSelect({
       })
       .then((data: Database[]) => setDatabases(data))
       .catch((error) => {
-        console.error("Error fetching databases:", error);
+        console.error('Error fetching databases:', error);
         setError(error.message);
       });
   }, []);
@@ -115,7 +115,7 @@ export default function DatabaseSelect({
         })
         .then((data: string[]) => setSchemas(data))
         .catch((error) => {
-          console.error("Error fetching schemas:", error);
+          console.error('Error fetching schemas:', error);
           setError(error.message);
         });
     }
@@ -136,7 +136,7 @@ export default function DatabaseSelect({
         })
         .then((data: string[]) => setTables(data))
         .catch((error) => {
-          console.error("Error fetching tables:", error);
+          console.error('Error fetching tables:', error);
           setError(error.message);
         });
     }
@@ -159,7 +159,7 @@ export default function DatabaseSelect({
           setTableColumns(data);
         })
         .catch((error) => {
-          console.error("Error fetching table metadata:", error);
+          console.error('Error fetching table metadata:', error);
           setError(error.message);
         });
     }
@@ -167,25 +167,26 @@ export default function DatabaseSelect({
 
   const onSubmit = async (data: z.infer<typeof DatasetSchema>) => {
     if (!selectedDatabase || !selectedSchema || !selectedTable) {
-      setError("Please select a database, schema, and table.");
+      setError('Please select a database, schema, and table.');
       return;
     }
-
+    console.log({ data });
     const payload = {
       Name: data.datasetName,
       TableName: selectedTable,
       SchemaName: selectedSchema,
       DbConnectionId: selectedDatabase,
       projectId: Number(ProjectId),
+      projectName:projectName
     };
 
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/DS`,
         {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify(payload),
         }
@@ -199,34 +200,32 @@ export default function DatabaseSelect({
       const result = await response.json();
       const datasetId = result.id;
 
-      router.push(
-        `/Projects/${ProjectId}/addChart/${datasetId}`
-      );
+      router.push(`/Projects/${ProjectId}/addChart/${datasetId}`);
 
-      console.log("Dataset created successfully:", result);
+      console.log('Dataset created successfully:', result);
       setError(null);
-      toast.success("Dataset created successfully!");
+      toast.success('Dataset created successfully!');
     } catch (error) {
-      console.error("Error creating dataset:", error);
+      console.error('Error creating dataset:', error);
     }
   };
   const getIconForType = (dataType: string) => {
     if (
-      dataType.includes("integer") ||
-      dataType.includes("real") ||
-      dataType.includes("id") ||
-      dataType.includes("name") ||
-      dataType.includes("text")
+      dataType.includes('integer') ||
+      dataType.includes('real') ||
+      dataType.includes('id') ||
+      dataType.includes('name') ||
+      dataType.includes('text')
     ) {
       return <Hash size={16} className="text-muted-foreground" />;
     } else if (
-      dataType.includes("character varying") ||
-      dataType.includes("string")
+      dataType.includes('character varying') ||
+      dataType.includes('string')
     ) {
       return <CaseUpper size={16} className="text-muted-foreground" />;
-    } else if (dataType.includes("timestamp")) {
+    } else if (dataType.includes('timestamp')) {
       return <Clock size={16} className="text-muted-foreground" />;
-    } else if (dataType.includes("json")) {
+    } else if (dataType.includes('json')) {
       return <Braces size={16} className="text-muted-foreground" />;
     }
 
@@ -536,7 +535,7 @@ export default function DatabaseSelect({
               </div>
             )}
             <div className="flex justify-end">
-              <Button type="submit" variant={"custom"} className="mt-2">
+              <Button type="submit" variant={'custom'} className="mt-2">
                 Create dataset and create chart
               </Button>
             </div>

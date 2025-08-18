@@ -6,7 +6,7 @@ import { Chart, VisualizationTypes } from '@/types';
 // import EditChartWrapper from '@/components/CRUD/ChartOP/EditChartWrapper';
 import { getAllVisualizationTypes } from '@/lib/projectData';
 import Header from '@/components/header';
-
+import EditChartWrapper from '@/components/CRUD/ChartOP/EditChartWrapper';
 
 async function getChartData(chartId: number): Promise<Chart> {
   const res = await fetch(
@@ -28,10 +28,16 @@ async function getChartData(chartId: number): Promise<Chart> {
 export default async function EditChart({
   params,
 }: {
-  params: { ProjectId: number; projectName: string; chartId: number };
+  params: Promise<{
+    ProjectId: number;
+    projectName: string;
+    chartId: number;
+  }>;
 }) {
-  const { ProjectId, projectName, chartId } = params;
-
+  // const { ProjectId, projectName, chartId } = await params;
+  const ProjectId = (await params).ProjectId;
+  const projectName = (await params).projectName;
+  const chartId = (await params).chartId;
   const [VisualizationTypeData, chartDataDetails] = await Promise.all([
     getAllVisualizationTypes(),
     getChartData(chartId),
@@ -48,13 +54,13 @@ export default async function EditChart({
 
       <Label className="font-bold  my-2">Update Chart </Label>
 
-      {/* <EditChartWrapper
+      <EditChartWrapper
         VisualizationTypeData={VisualizationTypeData}
         chartId={chartId}
         ProjectId={ProjectId}
         projectName={projectName}
         chartDetails={chartDataDetails}
-      /> */}
+      />
     </>
   );
 }

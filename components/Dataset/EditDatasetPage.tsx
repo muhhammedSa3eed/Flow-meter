@@ -137,7 +137,7 @@ export default function EditDatasetPage({
 
   // Fetch databases on component mount
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/DB`)
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/DB/project/${ProjectId}`)
       .then(async (response) => {
         if (!response.ok) {
           const errorText = await response.text();
@@ -231,6 +231,7 @@ export default function EditDatasetPage({
       SchemaName: selectedSchema,
       DbConnectionId: selectedDatabase,
       projectId: Number(ProjectId),
+      projectName:projectName
     };
 
     try {

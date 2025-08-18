@@ -2,7 +2,7 @@
 import React, { useEffect, useId, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Database, TableDataResponse } from "@/types";
-import { DatasetSchema } from "@/schemas";
+import { DatasetSchema, SqlLabDatasetSchema } from "@/schemas";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -62,7 +62,7 @@ import {
 import DynamicTable from "../Data-Tables/DynamicTable";
 import SqlEditor from "./SqlEditor";
 import { cn } from "@/lib/utils";
-type DatasetFormValues = z.infer<typeof DatasetSchema>;
+type DatasetFormValues = z.infer<typeof SqlLabDatasetSchema>;
 
 export default function SqlLab({ ProjectId }: { ProjectId: number }) {
   const arrayToOptions = (values: string[], optionsList: Option[]) =>
@@ -94,7 +94,7 @@ export default function SqlLab({ ProjectId }: { ProjectId: number }) {
   const [openTable, setOpenTable] = useState(false);
   const [open, setOpen] = useState<boolean>(false);
   const form = useForm<DatasetFormValues>({
-    resolver: zodResolver(DatasetSchema),
+    resolver: zodResolver(SqlLabDatasetSchema),
     defaultValues: {
       datasetName: "",
       database: "",
@@ -187,7 +187,7 @@ export default function SqlLab({ ProjectId }: { ProjectId: number }) {
     }
   }, [selectedDatabase, selectedSchema, selectedTable]);
 
-  const onSubmit = async (data: z.infer<typeof DatasetSchema>) => {
+  const onSubmit = async (data: z.infer<typeof SqlLabDatasetSchema>) => {
     if (!selectedDatabase || !selectedSchema || !selectedTable) {
       setError("Please select a database, schema, and table.");
       return;
