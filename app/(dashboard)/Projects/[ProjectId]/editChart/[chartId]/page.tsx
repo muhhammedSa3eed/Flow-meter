@@ -31,13 +31,14 @@ export default async function EditChart({
   params: Promise<{
     ProjectId: number;
     projectName: string;
-    chartId: number;
+    chartId: number
   }>;
 }) {
-  // const { ProjectId, projectName, chartId } = await params;
   const ProjectId = (await params).ProjectId;
   const projectName = (await params).projectName;
   const chartId = (await params).chartId;
+
+
   const [VisualizationTypeData, chartDataDetails] = await Promise.all([
     getAllVisualizationTypes(),
     getChartData(chartId),
