@@ -10,22 +10,92 @@ import "react-resizable/css/styles.css";
 import { useTheme } from "next-themes";
 import { sql } from "@codemirror/lang-sql";
 import { autocompletion, CompletionContext } from "@codemirror/autocomplete";
-import { TableDataResponse } from "@/types";
-import { Button } from "../ui/button";
-import toast from "react-hot-toast";
 import { placeholder } from "@codemirror/view";
+import toast from "react-hot-toast";
+
+import { Button } from "../ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import DynamicTable from "../Data-Tables/DynamicTable";
+
+import type { TableDataResponse } from "@/types";
+import { LabQuerySaveSchema } from "@/schemas";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "../ui/resizable";
+
+/** ====== Helpers ====== */
+
+// قراءة JSON بأمان (يتعامل مع body فاضي أو HTML)
+async function parseJSONSafe(res: Response) {
+  const text = await res.text();
+  if (!text) return null;
+  try {
+    return JSON.parse(text);
+  } catch {
+    const snippet = text.slice(0, 300);
+    throw new Error(`Invalid JSON response: ${snippet}`);
+  }
+}
+async function fetchJSON(url: string, init?: RequestInit) {
+  const res = await fetch(url, init);
+  let data: any = null;
+  try {
+    data = await parseJSONSafe(res);
+  } catch (e) {
+    throw new Error(
+      `Request failed to parse JSON. Status ${res.status}. ${
+        (e as Error).message
+      }`
+    );
+  }
+  if (!res.ok) {
+    const msg =
+      (data && (data.error || data.message)) ||
+      `HTTP ${res.status} ${res.statusText}`;
+    throw new Error(msg);
+  }
+  return data;
+}
+
+// استخراج schema و table من جملة FROM (يدعم quoted / unquoted)
+function extractSchemaTable(sql: string): { schema?: string; table?: string } {
+  const s = sql.replace(/\s+/g, " ");
+  // FROM "schema"."table" | FROM schema.table | FROM "table" | FROM table
+  const re = /from\s+((?:"?([\w]+)"?\.)?"?([\w]+)"?)/i;
+  const m = s.match(re);
+  if (!m) return {};
+  const schema = m[2];
+  const table = m[3];
+  return { schema, table };
+}
+
+// هروب الأسماء المقتبسة
+const qi = (s: string) => `"${String(s).replace(/"/g, '""')}"`;
+
+/** ====== Component ====== */
+
 type SqlEditorProps = {
-  tables?: string[];
-  value: string;
-  onChange: (val: string) => void;
+  tables?: string[]; // كل الجداول المتاحة (للإكمال التلقائي)
+  selectedTables: string[]; // الجداول المختارة لعرض الـ Preview
+  value: string; // نص الاستعلام
+  ProjectId: number;
+  selectedDatabase: number | null;
+  selectedSchema: string | null;
   onRunResult?: (res: TableDataResponse | null) => void;
+  onChange?: (code: string) => void;
 };
 
 export default function SqlEditor({
   tables = [],
+  selectedTables,
+  selectedDatabase,
+  selectedSchema,
   value,
-  onChange,
+  ProjectId,
   onRunResult,
+  onChange,
 }: SqlEditorProps) {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -33,133 +103,379 @@ export default function SqlEditor({
   const isDark = resolvedTheme === "dark";
 
   const [error, setError] = useState<string | null>(null);
-  const [height, setHeight] = useState(200);
+  const [height, setHeight] = useState(240);
+  const [activeTab, setActiveTab] = useState<string>("result");
 
+  // محرر
+  const [code, setCode] = useState<string>(value ?? "");
+  useEffect(() => setCode(value ?? ""), [value]);
+
+  // نتيجة التشغيل
+  const [queryResult, setQueryResult] = useState<TableDataResponse | null>(
+    null
+  );
+
+  // معاينة لكل جدول
+  const [tableDataByTable, setTableDataByTable] = useState<
+    Record<string, TableDataResponse | "loading" | "error" | undefined>
+  >({});
+
+  // بيانات آخر Run (لاستخدامها في Save Dataset)
+  const [lastRunMeta, setLastRunMeta] = useState<{
+    query?: string;
+    columnTypes?: Record<string, string>;
+  } | null>(null);
+
+  // الإكمال التلقائي بأسماء الجداول
   const tableCompletion = (context: CompletionContext) => {
     const word = context.matchBefore(/\w*/);
     if (!word || (word.from === word.to && !context.explicit)) return null;
-
     const options = (tables ?? []).map((t) => ({
       label: t,
       type: "keyword",
       info: "table",
     }));
-
     return { from: word.from, options };
   };
-
   const tableCompletionLangData = EditorState.languageData.of(() => [
     { autocomplete: tableCompletion },
   ]);
 
-  const handleRun = async () => {
-    try {
-      const res = await fetch("/api/query", {
-        method: "POST",
-        body: JSON.stringify({ sql: value }),
-        headers: { "Content-Type": "application/json" },
-      });
+  /** ========= Preview Fetch ========= */
+  useEffect(() => {
+    if (!selectedDatabase || !selectedSchema || selectedTables.length === 0)
+      return;
 
-      const data = await res.json();
+    selectedTables.forEach((table) => {
+      if (tableDataByTable[table] === undefined) {
+        setTableDataByTable((prev) => ({ ...prev, [table]: "loading" }));
 
-      if (!res.ok) {
-        setError(data.error || "Unknown error");
-        onRunResult?.(null);
-      } else {
-        setError(null);
-        onRunResult?.({
-          fields: Object.keys(data.result[0] || {}),
-          data: data.result,
-        });
+        fetchJSON(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/DS/table-data?connectionId=${selectedDatabase}&schemaName=${selectedSchema}&tableName=${table}&limit=100&offset=0`
+        )
+          .then((data) => {
+            const out: TableDataResponse = {
+              fields:
+                data?.fields ??
+                data?.columns ??
+                Object.keys(data?.data?.[0] || {}),
+              data: data?.data ?? [],
+              totalCount:
+                data?.totalRows ?? data?.totalCount ?? data?.data?.length ?? 0,
+              fieldsAndTypes: data?.fieldsAndTypes ?? data?.columnTypes ?? {},
+              query:
+                data?.query ??
+                `SELECT * FROM ${qi(selectedSchema!)}.${qi(table)} LIMIT 100;`,
+            } as any;
+
+            setTableDataByTable((prev) => ({ ...prev, [table]: out }));
+          })
+          .catch((err) => {
+            setTableDataByTable((prev) => ({ ...prev, [table]: "error" }));
+            toast.error(`Failed to load preview for ${table}: ${err.message}`);
+          });
       }
-    } catch {
-      setError("❌ Failed to execute query");
-      toast.error(" Failed to execute query");
+    });
+  }, [selectedDatabase, selectedSchema, JSON.stringify(selectedTables)]);
+
+  /** ========= Run ========= */
+  const handleRun = async () => {
+    if (!code.trim()) return toast.error("Write a SQL query first!");
+    if (!selectedDatabase) return toast.error("Select a database first!");
+
+    const payload = {
+      query: code,
+      dbConnectionId: selectedDatabase,
+      limit: 100,
+    };
+
+    console.log("➡️ Request to API:", {
+      url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/LabQuery/execute`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: payload,
+    });
+
+    try {
+      const data = await fetchJSON(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/LabQuery/execute`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      console.log("⬅️ Response from API:", data);
+
+      const out: TableDataResponse = {
+        fields: data?.columns ?? Object.keys(data?.data?.[0] || {}),
+        data: data?.data ?? [],
+        totalCount: data?.totalRows ?? data?.data?.length ?? 0,
+        fieldsAndTypes: data?.columnTypes ?? {},
+        query: data?.query ?? code,
+      } as any;
+
+      setQueryResult(out);
+      setLastRunMeta({
+        query: data?.query ?? code,
+        columnTypes: data?.columnTypes ?? {},
+      });
+      onRunResult?.(out);
+      toast.success("Query executed!");
+      setActiveTab("result");
+    } catch (err: any) {
+      toast.error(err?.message || "Error running query");
+      setQueryResult(null);
       onRunResult?.(null);
     }
   };
 
-  const beautify = () => {
+  /** ========= Save Dataset ========= */
+  const handleSaveDataset = async () => {
+    if (!selectedDatabase) return toast.error("Select a database first!");
+    if (!selectedSchema) return toast.error("Select a schema first!");
+    if (!lastRunMeta?.query || !lastRunMeta?.columnTypes) {
+      return toast.error("Run a query first to get column types.");
+    }
+
+    const fromQ = extractSchemaTable(lastRunMeta.query);
+    const tableName = fromQ.table || selectedTables?.[0];
+    const schemaName = fromQ.schema || selectedSchema;
+
+    if (!tableName) {
+      return toast.error(
+        "Could not detect table name. Please select a table or include FROM in query."
+      );
+    }
+
+    const payload = {
+      labQueryId: 0,
+      datasetName: String(selectedDatabase),
+      schemaName,
+      tableName,
+      projectId: Number(ProjectId),
+      fieldsAndTypes: lastRunMeta.columnTypes,
+    };
+
+    console.log("📦 SaveDataset payload:", payload);
+
+    const parsed = LabQuerySaveSchema.safeParse(payload);
+    if (!parsed.success) {
+      const firstErr = parsed.error.issues?.[0]?.message ?? "Validation failed";
+      toast.error(firstErr);
+      return;
+    }
+
     try {
-      const formatted = format(value, { language: "sql" });
-      onChange(formatted);
-    } catch {
-      setError("❌ Failed to beautify SQL");
-      toast.error(" Failed to beautify SQL");
+      console.log("➡️ Request to API:", {
+        url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/LabQuery/save-as-dataset`,
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+      });
+
+      const data = await fetchJSON(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/LabQuery/save-as-dataset`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      console.log("✅ Save dataset response:", data);
+      toast.success("Dataset saved successfully!");
+    } catch (e: any) {
+      console.error("❌ Save dataset error:", e);
+      toast.error(e?.message || "Failed to save dataset");
     }
   };
 
+  /** ========= Beautify & Clear ========= */
+  const beautify = () => {
+    try {
+      const formatted = format(code, { language: "sql" });
+      setCode(formatted);
+      onChange?.(formatted);
+    } catch {
+      setError("❌ Failed to beautify SQL");
+      toast.error("Failed to beautify SQL");
+    }
+  };
   const clearEditor = () => {
-    onChange("");
     setError(null);
+    setCode("");
+    onChange?.("");
+    setQueryResult(null);
     onRunResult?.(null);
   };
 
   if (!mounted) return null;
 
   return (
-    <div className="w-full">
-      <div className="mb-2 flex flex-wrap items-center gap-4">
+    <div className="w-full h-full flex flex-col">
+      {/* Controls */}
+      <div className="mb-2 flex flex-wrap items-center gap-3">
         <Button
+          variant={"edit"}
           onClick={handleRun}
-          disabled={!value.trim()}
-          className={`px-4 py-2 rounded text-white transition ${
-            value.trim()
-              ? "bg-blue-600 hover:bg-blue-700"
-              : "bg-gray-400 cursor-not-allowed"
-          }`}
+          disabled={!code.trim() || !selectedDatabase}
         >
           Run
         </Button>
 
-        <Button
-          onClick={beautify}
-          disabled={!value.trim()}
-          className={`px-4 py-2 rounded bg-gray-300 text-gray-900 hover:bg-gray-400 transition ${
-            !value.trim() ? "cursor-not-allowed opacity-50" : ""
-          }`}
-        >
+        <Button onClick={beautify} disabled={!code.trim()} variant="secondary">
           Beautify
         </Button>
 
         <Button
           onClick={clearEditor}
-          disabled={!value.trim()}
-          className={`px-4 py-2 rounded bg-red-500 text-white hover:bg-red-600 transition ${
-            !value.trim() ? "cursor-not-allowed opacity-50" : ""
-          }`}
+          disabled={!code.trim()}
+          variant="destructive"
         >
           Clear
         </Button>
+
+        <Button
+          className="ml-auto bg-custom-green2"
+          onClick={handleSaveDataset}
+          disabled={
+            !selectedDatabase ||
+            !selectedSchema ||
+            !lastRunMeta?.columnTypes ||
+            !lastRunMeta?.query
+          }
+        >
+          Save Dataset
+        </Button>
       </div>
+      <div className="h-full w-full">
+        <ResizablePanelGroup
+          direction="vertical"
+          className="h-full w-full rounded-lg border"
+        >
+          <ResizablePanel defaultSize={50} minSize={20}>
+            <div className="flex flex-col h-full w-full p-2 gap-2">
+              <div className="flex-1">
+                {/* Editor */}
+                <ResizableBox
+                  width={Infinity}
+                  height={height}
+                  minConstraints={[500, 120]}
+                  maxConstraints={[Infinity, 600]}
+                  resizeHandles={["s"]}
+                  onResizeStop={(_, data) => setHeight(data.size.height)}
+                  className="border rounded shadow"
+                >
+                  <div
+                    style={{
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <CodeMirror
+                      value={code}
+                      onChange={(val) => {
+                        setCode(val);
+                        onChange?.(val);
+                      }}
+                      extensions={[
+                        sql(),
+                        autocompletion(),
+                        placeholder("SELECT * FROM your_table;"),
+                        EditorState.languageData.of(() => [
+                          { autocomplete: tableCompletion },
+                        ]),
+                      ]}
+                      height="100%"
+                      theme={isDark ? dracula : githubLight}
+                      basicSetup={{
+                        lineNumbers: true,
+                        highlightActiveLine: true,
+                        highlightSelectionMatches: true,
+                      }}
+                      style={{ flexGrow: 1 }}
+                    />
+                  </div>
+                </ResizableBox>
+              </div>
+            </div>
+          </ResizablePanel>
 
-      <ResizableBox
-        width={Infinity}
-        height={height}
-        minConstraints={[500, 100]}
-        maxConstraints={[Infinity, 600]}
-        resizeHandles={["s"]}
-        onResizeStop={(_, data) => setHeight(data.size.height)}
-        className="border rounded shadow"
-      >
-        <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
-          <CodeMirror
-            value={value}
-            extensions={[sql(), autocompletion(), placeholder("SELECT * FROM your_table;"), tableCompletionLangData]}
-            height="100%"
-            theme={isDark ? dracula : githubLight}
-            onChange={(val) => onChange(val)}
-            basicSetup={{
-              lineNumbers: true,
-              highlightActiveLine: true,
-              highlightSelectionMatches: true,
-            }}
-            style={{ flexGrow: 1 }}
-          />
-        </div>
-      </ResizableBox>
+          <ResizableHandle withHandle />
 
-      {error && <p className="text-red-600 mt-4">{error}</p>}
+          <ResizablePanel
+            defaultSize={50}
+            minSize={20}
+            className="min-h-0 min-w-0 overflow-hidden" // 👈 مهم
+          >
+            <div className="flex flex-col h-full min-h-0 min-w-0">
+              <Tabs
+                defaultValue="tab-1"
+                className="flex-1 min-h-0 min-w-0 flex flex-col"
+              >
+                <TabsList className="h-auto rounded-none border-b bg-transparent p-0 justify-start">
+                  <TabsTrigger
+                    value="result"
+                    className="data-[state=active]:after:bg-primary relative rounded-none py-2 after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 data-[state=active]:bg-transparent data-[state=active]:shadow-none font-semibold"
+                  >
+                    Result
+                  </TabsTrigger>
+                  {selectedTables.map((table) => (
+                    <TabsTrigger
+                      key={table}
+                      value={`preview:${table}`}
+                      className="data-[state=active]:after:bg-primary relative rounded-none py-2 after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 data-[state=active]:bg-transparent data-[state=active]:shadow-none font-semibold"
+                      title={`Preview: ${table}`}
+                    >
+                      Preview:&nbsp;
+                      <span className="truncate max-w-[180px]">{`'${table}'`}</span>
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+
+                {/* Result tab */}
+                <TabsContent
+                  value="result"
+                  className="flex-1 overflow-auto max-w-7xl p-3"
+                >
+                  {queryResult?.fields && queryResult?.data ? (
+                    <DynamicTable response={queryResult} />
+                  ) : (
+                    <p className="text-muted-foreground font-semibold">
+                      No data available.
+                    </p>
+                  )}
+                </TabsContent>
+
+                {/* Preview tabs */}
+                {selectedTables.map((table) => {
+                  const resp = tableDataByTable[table];
+                  return (
+                    <TabsContent
+                      key={table}
+                      value={`preview:${table}`}
+                      className="flex-1 overflow-auto p-3 max-w-7xl"
+                    >
+                      {resp === "loading" && (
+                        <p className="text-muted-foreground">Loading…</p>
+                      )}
+                      {resp === "error" && (
+                        <p className="text-red-500">Failed to load preview.</p>
+                      )}
+                      {resp && resp !== "loading" && resp !== "error" ? (
+                        <DynamicTable response={resp as TableDataResponse} />
+                      ) : null}
+                    </TabsContent>
+                  );
+                })}
+              </Tabs>
+            </div>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </div>
     </div>
   );
 }

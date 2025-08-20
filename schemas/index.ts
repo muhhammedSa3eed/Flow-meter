@@ -270,21 +270,10 @@ export const InviteSchema = z.object({
 });
 
 export const DatasetSchema = z.object({
-  datasetName: z.string().min(1, { message: 'dataset name is required' }),
-  query: z.string().optional(),
-  table: z.string().min(1, { message: 'At least one table is required' }),
-  schema: z.string().min(1, { message: 'schema is required' }),
-  database: z.string().min(1, { message: 'database is required' }),
-});
-export const SqlLabDatasetSchema = z.object({
-  datasetName: z.string().min(1, { message: 'dataset name is required' }),
-  query: z.string().optional(),
-
-  table: z
-    .array(z.string())
-    .min(1, { message: 'At least one table is required' }),
-  schema: z.string().min(1, { message: 'schema is required' }),
-  database: z.string().min(1, { message: 'database is required' }),
+  datasetName: z.string().min(1, { message: "dataset name is required" }),
+  table:z.string().min(1, { message: "table is required" }),
+  schema: z.string().min(1, { message: "schema is required" }),
+  database: z.string().min(1, { message: "database is required" }),
 });
 
 export const ChartSchema = z.object({
@@ -336,17 +325,17 @@ export const VisualizationTypesSchema = z.object({
     .min(1, 'At least one options field is required'),
 });
 
-// sortBy: z
-// .array(
-//   z.object({
-//     columnName: z.string().optional(),
-//     sortDirection: z.string().optional(),
-//   })
-// )
-// .optional(),
-// // Row limit
-// rowLimit: z.number().optional(),
 
-// // Timestamps
-// createdAt: z.string().optional(),
-// updatedAt: z.string().optional(),
+export const LabQuerySchema = z.object({
+  query: z.string().min(1, "Query is required"),
+  dbConnectionId: z.number().int().positive("dbConnectionId must be positive"),
+  limit: z.number().optional(),
+});
+
+export const LabQuerySaveSchema = z.object({
+  datasetName: z.string().min(1, "datasetName is required"),
+  schemaName: z.string().min(1, "schemaName is required"),
+  tableName: z.string().min(1, "schemaName is required"),
+  projectId: z.number().int().nonnegative(),
+  fieldsAndTypes: z.record(z.string()), 
+});
