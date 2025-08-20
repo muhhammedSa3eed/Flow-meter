@@ -21,12 +21,65 @@ const ResultTable = ({ chartDetails, chartData }: ChartProps) => {
   const isPieChart = chartType.includes('pie');
   const isLineChart = chartType.includes('line');
   const isBarChart = chartType.includes('bar');
-  const isTableChart = chartType.includes("table")
+  const isTableChart = chartType.includes('table');
   const tableData = transformChartDataToTable(chartData?.data?.[0]);
   const headers =
     tableData &&
     Array.from(new Set(tableData.flatMap((obj: {}) => Object.keys(obj))));
 
+  console.log('chartData.data', chartData?.data);
+
+  const renderTableChart = () => {
+    const { columns, rows } = chartData?.data?.[0] || {};
+
+    return columns && rows && rows.length > 0 ? (
+      <div className="overflow-x-auto">
+        <Table className="text-sm border-collapse w-full">
+          <TableHeader>
+            <TableRow>
+              {columns.map((col: string, i: number) => (
+                <TableHead
+                  key={i}
+                  className="whitespace-nowrap p-2 border-b font-medium text-foreground"
+                >
+                  {col}
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {rows.map(
+              (
+                row: (string | number | null | undefined)[],
+                rowIndex: number
+              ) => (
+                <TableRow key={rowIndex}>
+                  {row.map((cell, cellIndex) => (
+                    <TableCell
+                      key={cellIndex}
+                      className="whitespace-nowrap p-2 border-b text-muted-foreground"
+                    >
+                      {cell !== null && cell !== undefined && cell !== ''
+                        ? typeof cell === 'number'
+                          ? cell.toLocaleString()
+                          : String(cell)
+                        : '-'}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              )
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    ) : (
+      <div className="flex items-center justify-center h-full">
+        <p className="text-muted-foreground text-center text-xs">
+          No valid data available
+        </p>
+      </div>
+    );
+  };
   const renderRawTable = () => {
     return chartData?.data &&
       Array.isArray(chartData.data) &&
@@ -46,7 +99,7 @@ const ResultTable = ({ chartDetails, chartData }: ChartProps) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {chartData.data.map((row:any, i:any) => (
+            {chartData.data.map((row: any, i: any) => (
               <TableRow key={i}>
                 {Object.values(row).map((val, j) => (
                   <TableCell
@@ -173,8 +226,9 @@ const ResultTable = ({ chartDetails, chartData }: ChartProps) => {
 
   return (
     <>
-      {(isBigNumber || isPieChart || isTableChart) && renderRawTable()}
+      {(isBigNumber || isPieChart) && renderRawTable()}
       {(isLineChart || isBarChart) && renderFormattedTable()}
+      {isTableChart && renderTableChart()}
     </>
   );
 };

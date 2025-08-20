@@ -85,7 +85,7 @@ export default function ChartWithDSId({
       queryContext: '',
       useExistingQuery: true,
       dimensions: [],
-      dynamicFilters: [],
+    filters: [],
       metrics: [],
       sortBy: [],
       rowLimit: -1,

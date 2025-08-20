@@ -131,7 +131,7 @@ export default function DataFormTable({
   console.log('JSON.stringify(columnOptions)', JSON.stringify(columnOptions));
   const metrics = form.watch('metrics') || [];
   const perMetrics = form.watch('precentageMetrics') || [];
-  const filters = form.watch('dynamicFilters') || [];
+  const filters = form.watch('filters') || [];
   const dimensions = form.watch('dimensions') || [];
   const columns = form.watch('columns') || [];
 
@@ -195,13 +195,13 @@ export default function DataFormTable({
       customSql: '',
     };
 
-    const updatedFilters = (form.watch('dynamicFilters') || []).filter(
+    const updatedFilters = (form.watch('filters') || []).filter(
       (f: { columnName: string }) => f.columnName !== selectedFilterColumn.value
     );
 
     updatedFilters.push(newFilter);
 
-    form.setValue('dynamicFilters', updatedFilters);
+    form.setValue('filters', updatedFilters);
     setSelectedFilterColumn(null);
     setSelectedOperator(null);
     setFilterOptions([]);
@@ -746,7 +746,7 @@ export default function DataFormTable({
           {showFiltersSection && (
             <FormField
               control={form.control}
-              name="dynamicFilters"
+              name="filters"
               render={({ field }) => (
                 <FormItem className="mt-2 w-full flex-1">
                   <FormLabel>Filters</FormLabel>

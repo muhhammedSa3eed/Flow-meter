@@ -139,8 +139,8 @@ export default function CustomizeChartBar({
               X Axis
             </AccordionTrigger>
             <AccordionContent>
-              <div className="space-y-4">
-                <div className="space-y-1">
+              <div className="space-y-2">
+                {/* <div className="space-y-1">
                   <Label htmlFor="y-axis-title">X Axis Title</Label>
                   <Input
                     id="x-axis-title"
@@ -150,29 +150,85 @@ export default function CustomizeChartBar({
                     }
                     type="text"
                   />
-                </div>
+                </div> */}
+                <FormField
+                  control={form.control}
+                  name={`customizeOptions.X-AxisTitle`}
+                  render={({ field }) => (
+                    <div className="space-y-1">
+                      <Label htmlFor="x-axis-title">X Axis Title</Label>
+                      <Input
+                        id="x-axis-title"
+                        type="text"
+                        placeholder="Enter X Axis Title"
+                        value={field.value ?? ''}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          updateCustomizeOption('X-AxisTitle', e.target.value);
+                        }}
+                      />
+                    </div>
+                  )}
+                />
 
-                {/* Y AXIS TITL EMARGIN */}
-                <div className="space-y-1">
-                  <Label htmlFor="x-axis-emargin">Y Axis Title margin</Label>
-                  <Select
-                    value={activeCustomizeOptions?.['XAXISTITLEMARGIN'] || ''}
-                    onValueChange={(val) =>
-                      updateCustomizeOption('XAXISTITLEMARGIN', val)
-                    }
-                  >
-                    <SelectTrigger id="x-axis-emargin">
-                      <SelectValue placeholder="Select margin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {AxisMarginOptions.map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {option}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                <FormField
+                  control={form.control}
+                  name={`customizeOptions.X-AxisTitleMargin`}
+                  render={({ field }) => (
+                    <div className="space-y-1">
+                      <Label htmlFor="x-axis-emargin">
+                        X Axis Title margin
+                      </Label>
+                      <Select
+                        value={field.value}
+                        onValueChange={(val) =>
+                          updateCustomizeOption('X-AxisTitleMargin', val)
+                        }
+                      >
+                        <SelectTrigger id="x-axis-emargin">
+                          <SelectValue placeholder="Select margin" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {AxisMarginOptions.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name={`customizeOptions.X-AxisTitlePosition`}
+                  render={({ field }) => (
+                    <div className="space-y-1">
+                      <Label htmlFor="x-axis-position">
+                        X Axis Title Position
+                      </Label>
+
+                      <Select
+                        value={field.value}
+                        onValueChange={(val) =>
+                          updateCustomizeOption('X-AxisTitlePosition', val)
+                        }
+                      >
+                        <SelectTrigger id="x-axis-position">
+                          <SelectValue placeholder="Select position" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {yAxisPositionOptions.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                />
               </div>
             </AccordionContent>
           </AccordionItem>
@@ -193,65 +249,87 @@ export default function CustomizeChartBar({
               Y Axis
             </AccordionTrigger>
             <AccordionContent>
-              <div className="space-y-4">
+              <div className="space-y-2">
                 {/* Y AXIS TITL */}
-                <div className="space-y-1">
-                  <Label htmlFor="y-axis-title">Y Axis Title</Label>
-                  <Input
-                    id="y-axis-title"
-                    value={activeCustomizeOptions?.['YAXISTITL'] || ''}
-                    onChange={(e) =>
-                      updateCustomizeOption('YAXISTITL', e.target.value)
-                    }
-                    type="text"
-                  />
-                </div>
-
+                <FormField
+                  control={form.control}
+                  name={`customizeOptions.Y-AxisTitle`}
+                  render={({ field }) => (
+                    <div className="space-y-1">
+                      <Label htmlFor="y-axis-title">Y Axis Title</Label>
+                      <Input
+                        id="y-axis-title"
+                        type="text"
+                        placeholder="Enter Y Axis Title"
+                        value={field.value ?? ''}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          updateCustomizeOption('Y-AxisTitle', e.target.value);
+                        }}
+                      />
+                    </div>
+                  )}
+                />
                 {/* Y AXIS TITL EMARGIN */}
-                <div className="space-y-1">
-                  <Label htmlFor="y-axis-emargin">Y Axis Title margin</Label>
-                  <Select
-                    value={activeCustomizeOptions?.['YAXISTITLEMARGIN'] || ''}
-                    onValueChange={(val) =>
-                      updateCustomizeOption('YAXISTITL EMARGIN', val)
-                    }
-                  >
-                    <SelectTrigger id="y-axis-emargin">
-                      <SelectValue placeholder="Select margin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {AxisMarginOptions.map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {option}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                <FormField
+                  control={form.control}
+                  name={`customizeOptions.Y-AxisTitleMargin`}
+                  render={({ field }) => (
+                    <div className="space-y-1">
+                      <Label htmlFor="y-axis-emargin">
+                        Y Axis Title margin
+                      </Label>
 
+                      <Select
+                        value={field.value}
+                        onValueChange={(val) =>
+                          updateCustomizeOption('Y-AxisTitleMargin', val)
+                        }
+                      >
+                        <SelectTrigger id="y-axis-emargin">
+                          <SelectValue placeholder="Select margin" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {AxisMarginOptions.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                />
                 {/* Y AXIS TITLE POSITION */}
-                <div className="space-y-1">
-                  <Label htmlFor="y-axis-title-position">
-                    Y Axis Title Position
-                  </Label>
-                  <Select
-                    value={activeCustomizeOptions?.['YAXISTITLEPOSITION'] || ''}
-                    onValueChange={(val) =>
-                      updateCustomizeOption('YAXISTITLEPOSITION', val)
-                    }
-                  >
-                    <SelectTrigger id="y-axis-title-position">
-                      <SelectValue placeholder="Select position" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {yAxisPositionOptions.map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {option}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                <FormField
+                  control={form.control}
+                  name={`customizeOptions.Y-AxisTitlePosition`}
+                  render={({ field }) => (
+                    <div className="space-y-1">
+                      <Label htmlFor="y-axis-title">
+                        Y Axis Title position
+                      </Label>
+
+                      <Select
+                        value={field.value}
+                        onValueChange={(val) =>
+                          updateCustomizeOption('Y-AxisTitlePosition', val)
+                        }
+                      >
+                        <SelectTrigger id="y-axis-position">
+                          <SelectValue placeholder="Select position" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {yAxisPositionOptions.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                />
               </div>
             </AccordionContent>
           </AccordionItem>
@@ -356,7 +434,45 @@ export default function CustomizeChartBar({
         />
       );
     }
-
+    if (key === 'RotateYaxisLabel') {
+      return (
+        <FormField
+          control={form.control}
+          name={`customizeOptions.${key}`}
+          render={({ field }: any) => (
+            <FormItem>
+              <FormLabel>Rotate Y Axis Label</FormLabel>
+              <Select
+                onValueChange={(value) => {
+                  const numericValue = Number(value);
+                  field.onChange(numericValue);
+                  updateCustomizeOption(key, numericValue);
+                }}
+                value={String(field.value)}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue>
+                      {field.value === 0
+                        ? '0'
+                        : field.value || 'Select rotation'}
+                    </SelectValue>
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {RotateXaxisLabelOptions.map((opt: number) => (
+                    <SelectItem key={opt} value={String(opt)}>
+                      {opt}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      );
+    }
     if (key === 'ColorScheme') {
       return (
         <FormField

@@ -78,7 +78,7 @@ export default function ChooseChart({
       queryContext: '',
       useExistingQuery: true,
       dimensions: [],
-      dynamicFilters: [],
+      filters: [],
       metrics: [],
       sortBy: [],
       rowLimit: undefined,

@@ -105,12 +105,12 @@ export async function login(values: { email: string; password: string }) {
     }
 
     // Backward compatibility
-    cookieStore.set('token', data.token, {
-      expires: expiresDate,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-    });
+    // cookieStore.set('token', data.token, {
+    //   expires: expiresDate,
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === 'production',
+    //   sameSite: 'strict',
+    // });
 
     const redirectUrl = data.roles.includes('User')
       ? process.env.DEFAULT_LOGIN_REDIRECT_USER
@@ -171,7 +171,7 @@ export async function logout() {
   try {
     const cookieStore = await cookies();
     const accessToken =
-      cookieStore.get('access_token')?.value || cookieStore.get('token')?.value;
+      cookieStore.get('access_token')?.value;
     const refreshToken = cookieStore.get('refresh_token')?.value;
 
     if (!accessToken) {
@@ -210,12 +210,12 @@ export async function logout() {
     });
 
     // Backward compatibility
-    cookieStore.set('token', '', {
-      expires: new Date(0),
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-    });
+    // cookieStore.set('token', '', {
+    //   expires: new Date(0),
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === 'production',
+    //   sameSite: 'strict',
+    // });
 
     if (response.ok) {
       const data = await response.json();
@@ -230,7 +230,7 @@ export async function logout() {
     const cookieStore = await cookies();
     cookieStore.set('access_token', '', { expires: new Date(0) });
     cookieStore.set('refresh_token', '', { expires: new Date(0) });
-    cookieStore.set('token', '', { expires: new Date(0) });
+    // cookieStore.set('token', '', { expires: new Date(0) });
 
     return { success: true, message: 'Logout completed (cookies cleared)' };
   }
@@ -291,7 +291,7 @@ export async function refreshToken() {
       // Clear invalid cookies
       cookieStore.set('access_token', '', { expires: new Date(0) });
       cookieStore.set('refresh_token', '', { expires: new Date(0) });
-      cookieStore.set('token', '', { expires: new Date(0) });
+      // cookieStore.set('token', '', { expires: new Date(0) });
 
       return {
         success: false,
@@ -322,12 +322,12 @@ export async function refreshToken() {
     }
 
     // Backward compatibility
-    cookieStore.set('token', data.token, {
-      expires: expiresDate,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-    });
+    // cookieStore.set('token', data.token, {
+    //   expires: expiresDate,
+    //   httpOnly: true,
+    //   secure: process.env.NODE_ENV === 'production',
+    //   sameSite: 'strict',
+    // });
 
     return {
       success: true,

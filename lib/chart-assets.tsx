@@ -117,7 +117,7 @@ export const CustomizationOptions: Option[] = [
   { value: 'XAxisLabelInterval', label: 'X Axis Label Interval' },
   { value: 'XAxisBounds', label: 'X Axis Bounds' },
   { value: 'TimeFormat', label: 'Time format' },
-
+  { value: 'RotateYaxisLabel', label: 'Rotate y axis label' },
   { value: 'TimestampFormat', label: 'Timestamp format' },
   { value: 'PageLength', label: 'Page Length' },
   { value: 'SearchBox', label: 'Search Box' },
@@ -364,7 +364,7 @@ export const AxisMarginOptions = [
   '150',
   '200',
 ];
-export const yAxisPositionOptions = ['Left', 'Top'];
+export const yAxisPositionOptions = ['start', 'center', 'end'];
 
 export const transformChartDataToTable = (chartData: any) => {
   if (!chartData?.xAxis || !Array.isArray(chartData.xAxis.categories)) {

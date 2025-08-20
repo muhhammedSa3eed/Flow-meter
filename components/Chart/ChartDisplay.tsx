@@ -188,37 +188,91 @@ const ChartDisplay = ({
     const selectedPalette =
       palettes.find((p) => p.name === selectedPaletteName)?.colors ||
       palettes[0].colors;
-
+    const isHorizontal =
+      chartData.customizeOptions?.BarOrientation == 'horizontal' || false;
+    console.log({ isHorizontal });
+    console.log(
+      "parseInt(chartData.customizeOptions?.['X-AxisTitleMargin'])",
+      parseInt(chartData.customizeOptions?.['X-AxisTitleMargin'])
+    );
     return (
       <ReactECharts
         option={{
           title: {
             text: isDashboard ? '' : chartData.name || 'Bar Chart',
-            subtext: isDashboard
-              ? ''
-              : chartData.visualizationType?.type || 'Bar',
+            subtext: '',
             // bottom: 'left',
           },
           tooltip: { trigger: 'axis' },
-          xAxis: {
-            type: 'category',
-            data: xAxisData,
-            axisLabel: {
-              rotate: chartData.customizeOptions?.RotateXaxisLabel ?? 0,
-            },
+          legend: {
+            data: legandTitle,
+            orient: 'horizontal',
           },
+
+          // 👇 orientation toggle logic
+          xAxis: isHorizontal
+            ? {
+                type: 'value',
+                axisLabel: {
+                  rotate: chartData.customizeOptions?.RotateXaxisLabel ?? 0,
+                },
+                name: chartData.customizeOptions?.['X-AxisTitle'] ?? '',
+                nameLocation:
+                  chartData.customizeOptions?.['X-AxisTitlePosition'] ??
+                  'center',
+                nameGap:
+                  parseInt(chartData.customizeOptions?.['X-AxisTitleMargin']) ??
+                  15,
+              }
+            : {
+                type: 'category',
+                data: xAxisData,
+                axisLabel: {
+                  rotate: chartData.customizeOptions?.RotateXaxisLabel ?? 0,
+                },
+                name: chartData.customizeOptions?.['X-AxisTitle'] ?? '',
+                nameLocation:
+                  chartData.customizeOptions?.['X-AxisTitlePosition'] ??
+                  'center',
+                nameGap:
+                  parseInt(chartData.customizeOptions?.['X-AxisTitleMargin']) ??
+                  15,
+              },
+          yAxis: isHorizontal
+            ? {
+                type: 'category',
+                data: xAxisData,
+                axisLabel: {
+                  rotate: chartData.customizeOptions?.RotateYaxisLabel ?? 0,
+                },
+                name: chartData.customizeOptions?.['Y-AxisTitle'] ?? '',
+                nameLocation:
+                  chartData.customizeOptions?.['Y-AxisTitlePosition'] ??
+                  'center',
+                nameGap:
+                  parseInt(chartData.customizeOptions?.['Y-AxisTitleMargin']) ??
+                  15,
+              }
+            : {
+                type: 'value',
+                axisLabel: {
+                  rotate: chartData.customizeOptions?.RotateYaxisLabel ?? 0,
+                },
+                name: chartData.customizeOptions?.['Y-AxisTitle'] ?? '',
+                nameLocation:
+                  chartData.customizeOptions?.['Y-AxisTitlePosition'] ??
+                  'center',
+                nameGap:
+                  parseInt(chartData.customizeOptions?.['Y-AxisTitleMargin']) ??
+                  15,
+              },
+
           toolbox: {
             feature: {
               saveAsImage: {},
             },
           },
-          legend: {
-            data: legandTitle,
-          },
 
-          yAxis: {
-            type: 'value',
-          },
           series: [
             {
               data: barSeriesData,
@@ -250,9 +304,19 @@ const ChartDisplay = ({
           title: {
             text: isDashboard ? '' : chartData.name || 'Line Chart',
           },
-          tooltip: {
-            trigger: 'axis',
-          },
+    //       tooltip: {
+    //         trigger: 'axis',
+    // //         axisPointer: { type: 'shadow' },
+    // //         formatter: (params: any[]) => {
+    // //           let total = 0;
+    // //           params.forEach((p: { value: number; }) => (total += p.value));
+    // //           return `
+    // //   <strong>${params[0].name}</strong><br/>
+    // //   ${params.map((p: { seriesName: any; value: any; }) => `${p.seriesName}: ${p.value}`).join('<br/>')}
+    // //   <br/><strong>Total: ${total}</strong>
+    // // `;
+    // //         },
+    //       },
           legend: {
             data: legandTitle,
           },
@@ -271,9 +335,21 @@ const ChartDisplay = ({
             type: 'category',
             boundaryGap: false,
             data: xAxisData,
+            name: chartData.customizeOptions?.['X-AxisTitle'] ?? '',
+            nameLocation:
+              chartData.customizeOptions?.['X-AxisTitlePosition'] ?? 'center',
+            axisLabel: {
+              rotate: chartData.customizeOptions?.RotateXaxisLabel ?? 0,
+            },
           },
           yAxis: {
             type: 'value',
+            name: chartData.customizeOptions?.['Y-AxisTitle'] ?? '',
+            nameLocation:
+              chartData.customizeOptions?.['Y-AxisTitlePosition'] ?? 'center',
+            axisLabel: {
+              rotate: chartData.customizeOptions?.RotateYaxisLabel ?? 0,
+            },
           },
           series: seriesData,
         }}
@@ -285,7 +361,10 @@ const ChartDisplay = ({
   if (isTableChart) {
     return (
       <>
-        <ChartDataTable dataTable={tableData} options={chartData.customizeOptions} />
+        <ChartDataTable
+          dataTable={tableData}
+          options={chartData.customizeOptions}
+        />
       </>
     );
   }

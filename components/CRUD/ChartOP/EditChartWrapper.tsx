@@ -117,8 +117,8 @@ export default function EditChartWrapper({
       datasetId: chartData?.dataset.id,
       visualizationTypeId: chartData?.visualizationTypeId,
       metrics: chartData?.metrics || [],
-      dynamicFilters:
-        chartData.dynamicFilters?.map(
+      filters:
+        chartData.filters?.map(
           (f: {
             columnName: any;
             operator: any;
@@ -264,7 +264,7 @@ export default function EditChartWrapper({
         })
       );
 
-      form.setValue('dynamicFilters', newFilters);
+      form.setValue('filters', newFilters);
     };
 
     if (Array.isArray(chartData?.filters) && chartData.filters.length > 0) {

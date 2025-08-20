@@ -1,34 +1,34 @@
-"use client";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ChartSchema } from "@/schemas";
-import { UseFormReturn, useWatch } from "react-hook-form";
-import { z } from "zod";
+'use client';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ChartSchema } from '@/schemas';
+import { UseFormReturn, useWatch } from 'react-hook-form';
+import { z } from 'zod';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
+} from '@/components/ui/accordion';
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Label } from "@/components/ui/label";
+} from '@/components/ui/form';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Slider } from "@/components/ui/slider";
-import { useId, useEffect } from "react";
-import { Chart, VisualizationTypes } from "@/types";
-import { Input } from "../ui/input";
+} from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Slider } from '@/components/ui/slider';
+import { useId, useEffect } from 'react';
+import { Chart, VisualizationTypes } from '@/types';
+import { Input } from '../ui/input';
 import {
   Currency,
   CurrencyFormat,
@@ -41,12 +41,12 @@ import {
   orientations,
   chartTypes,
   RotateXaxisLabelOptions,
-} from "@/lib/chart-assets";
+} from '@/lib/chart-assets';
 const tooltipFields = [
-  "RichTooltip",
-  "ShowTotal",
-  "ShowPercentage",
-  "TooltipSortByMetric",
+  'RichTooltip',
+  'ShowTotal',
+  'ShowPercentage',
+  'TooltipSortByMetric',
 ];
 export default function CustomizeChartLine({
   form,
@@ -58,48 +58,48 @@ export default function CustomizeChartLine({
   VisualizationTypeData: VisualizationTypes[];
   activeCustomizeOptions: any;
 }) {
+  console.log({ activeCustomizeOptions });
   const id = useId();
   const showLegendValue = useWatch({
     control: form.control,
-    name: "customizeOptions.ShowLegend",
+    name: 'customizeOptions.ShowLegend',
   });
   const ShowLabelsValue = useWatch({
     control: form.control,
-    name: "customizeOptions.ShowLabels",
+    name: 'customizeOptions.ShowLabels',
   });
   const updateCustomizeOption = (key: string, value: any) => {
-    const currentOptions = form.getValues("customizeOptions") || {};
+    const currentOptions = form.getValues('customizeOptions') || {};
     const updatedOptions = { ...currentOptions, [key]: value };
-    form.setValue("customizeOptions", updatedOptions);
+    form.setValue('customizeOptions', updatedOptions);
   };
 
   if (ShowLabelsValue) {
-    activeCustomizeOptions["PutLabelsOutside"] = true;
-    activeCustomizeOptions["LabelLine"] = true;
+    activeCustomizeOptions['PutLabelsOutside'] = true;
+    activeCustomizeOptions['LabelLine'] = true;
   } else {
-    delete activeCustomizeOptions["PutLabelsOutside"];
-    delete activeCustomizeOptions["LabelLine"];
+    delete activeCustomizeOptions['PutLabelsOutside'];
+    delete activeCustomizeOptions['LabelLine'];
   }
   useEffect(() => {
     if (showLegendValue) {
-      const current = form.getValues("customizeOptions") || {};
-      if (!current.Type) updateCustomizeOption("Type", "plain");
-      if (!current.Orientation) updateCustomizeOption("Orientation", "Top");
-      if (!("Margin" in current)) updateCustomizeOption("Margin", "");
+      const current = form.getValues('customizeOptions') || {};
+      if (!current.Type) updateCustomizeOption('Type', 'plain');
+      if (!current.Orientation) updateCustomizeOption('Orientation', 'Top');
+      if (!('Margin' in current)) updateCustomizeOption('Margin', '');
     } else {
-      const updated = { ...form.getValues("customizeOptions") };
+      const updated = { ...form.getValues('customizeOptions') };
       delete updated.Type;
       delete updated.Orientation;
       delete updated.Margin;
-      form.setValue("customizeOptions", updated);
+      form.setValue('customizeOptions', updated);
     }
   }, [showLegendValue]);
-  const legendFields = ["Type", "Orientation", "Margin"];
+  const legendFields = ['Type', 'Orientation', 'Margin'];
 
   const renderField = (key: string) => {
-
     // Axis Groups
-    if (key === "xAxis") {
+    if (key === 'xAxis') {
       return (
         <Accordion
           type="single"
@@ -112,40 +112,85 @@ export default function CustomizeChartLine({
               X Axis
             </AccordionTrigger>
             <AccordionContent>
-              <div className="space-y-4">
-                <div className="space-y-1">
-                  <Label htmlFor="y-axis-title">X Axis Title</Label>
-                  <Input
-                    id="x-axis-title"
-                    value={activeCustomizeOptions?.["XAXISTITL"] || ""}
-                    onChange={(e) =>
-                      updateCustomizeOption("XAXISTITL", e.target.value)
-                    }
-                    type="text"
-                  />
-                </div>
+              <div className="space-y-2">
+                <FormField
+                  control={form.control}
+                  name={`customizeOptions.X-AxisTitle`}
+                  render={({ field }) => (
+                    <div className="space-y-1">
+                      <Label htmlFor="x-axis-title">X Axis Title</Label>
+                      <Input
+                        id="x-axis-title"
+                        type="text"
+                        placeholder="Enter X Axis Title"
+                        value={field.value ?? ''}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          updateCustomizeOption('X-AxisTitle', e.target.value);
+                        }}
+                      />
+                    </div>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`customizeOptions.X-AxisTitleMargin`}
+                  render={({ field }) => (
+                    <div className="space-y-1">
+                      <Label htmlFor="x-axis-tmargin">
+                        X Axis Title margin
+                      </Label>
 
-                {/* Y AXIS TITL EMARGIN */}
-                <div className="space-y-1">
-                  <Label htmlFor="x-axis-emargin">Y Axis Title margin</Label>
-                  <Select
-                    value={activeCustomizeOptions?.["XAXISTITLEMARGIN"] || ""}
-                    onValueChange={(val) =>
-                      updateCustomizeOption("XAXISTITLEMARGIN", val)
-                    }
-                  >
-                    <SelectTrigger id="x-axis-emargin">
-                      <SelectValue placeholder="Select margin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {AxisMarginOptions.map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {option}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                      <Select
+                        value={field.value}
+                        onValueChange={(val) =>
+                          updateCustomizeOption('X-AxisTitleMargin', val)
+                        }
+                      >
+                        <SelectTrigger id="x-axis-tmargin">
+                          <SelectValue placeholder="Select margin" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {AxisMarginOptions.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`customizeOptions.X-AxisTitlePosition`}
+                  render={({ field }) => (
+                    <div className="space-y-1">
+                      <Label htmlFor="x-axis-position">
+                        X Axis Title Position
+                      </Label>
+
+                      <Select
+                        value={field.value}
+                        onValueChange={(val) =>
+                          updateCustomizeOption('X-AxisTitlePosition', val)
+                        }
+                      >
+                        <SelectTrigger id="x-axis-position">
+                          <SelectValue placeholder="Select position" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {yAxisPositionOptions.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                />
+                
               </div>
             </AccordionContent>
           </AccordionItem>
@@ -153,7 +198,7 @@ export default function CustomizeChartLine({
       );
     }
 
-    if (key === "yAxis") {
+    if (key === 'yAxis') {
       return (
         <Accordion
           type="single"
@@ -166,65 +211,87 @@ export default function CustomizeChartLine({
               Y Axis
             </AccordionTrigger>
             <AccordionContent>
-              <div className="space-y-4">
+              <div className="space-y-2">
                 {/* Y AXIS TITL */}
-                <div className="space-y-1">
-                  <Label htmlFor="y-axis-title">Y Axis Title</Label>
-                  <Input
-                    id="y-axis-title"
-                    value={activeCustomizeOptions?.["YAXISTITL"] || ""}
-                    onChange={(e) =>
-                      updateCustomizeOption("YAXISTITL", e.target.value)
-                    }
-                    type="text"
-                  />
-                </div>
-
+                <FormField
+                  control={form.control}
+                  name={`customizeOptions.Y-AxisTitle`}
+                  render={({ field }) => (
+                    <div className="space-y-1">
+                      <Label htmlFor="y-axis-title">Y Axis Title</Label>
+                      <Input
+                        id="y-axis-title"
+                        type="text"
+                        placeholder="Enter Y Axis Title"
+                        value={field.value ?? ''}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          updateCustomizeOption('Y-AxisTitle', e.target.value);
+                        }}
+                      />
+                    </div>
+                  )}
+                />
                 {/* Y AXIS TITL EMARGIN */}
-                <div className="space-y-1">
-                  <Label htmlFor="y-axis-emargin">Y Axis Title margin</Label>
-                  <Select
-                    value={activeCustomizeOptions?.["YAXISTITLEMARGIN"] || ""}
-                    onValueChange={(val) =>
-                      updateCustomizeOption("YAXISTITL EMARGIN", val)
-                    }
-                  >
-                    <SelectTrigger id="y-axis-emargin">
-                      <SelectValue placeholder="Select margin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {AxisMarginOptions.map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {option}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                <FormField
+                  control={form.control}
+                  name={`customizeOptions.Y-AxisTitleMargin`}
+                  render={({ field }) => (
+                    <div className="space-y-1">
+                      <Label htmlFor="y-axis-emargin">
+                        Y Axis Title margin
+                      </Label>
 
+                      <Select
+                        value={field.value}
+                        onValueChange={(val) =>
+                          updateCustomizeOption('Y-AxisTitleMargin', val)
+                        }
+                      >
+                        <SelectTrigger id="y-axis-emargin">
+                          <SelectValue placeholder="Select margin" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {AxisMarginOptions.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                />
                 {/* Y AXIS TITLE POSITION */}
-                <div className="space-y-1">
-                  <Label htmlFor="y-axis-title-position">
-                    Y Axis Title Position
-                  </Label>
-                  <Select
-                    value={activeCustomizeOptions?.["YAXISTITLEPOSITION"] || ""}
-                    onValueChange={(val) =>
-                      updateCustomizeOption("YAXISTITLEPOSITION", val)
-                    }
-                  >
-                    <SelectTrigger id="y-axis-title-position">
-                      <SelectValue placeholder="Select position" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {yAxisPositionOptions.map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {option}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                <FormField
+                  control={form.control}
+                  name={`customizeOptions.Y-AxisTitlePosition`}
+                  render={({ field }) => (
+                    <div className="space-y-1">
+                      <Label htmlFor="y-axis-title">
+                        Y Axis Title position
+                      </Label>
+
+                      <Select
+                        value={field.value}
+                        onValueChange={(val) =>
+                          updateCustomizeOption('Y-AxisTitlePosition', val)
+                        }
+                      >
+                        <SelectTrigger id="y-axis-position">
+                          <SelectValue placeholder="Select position" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {yAxisPositionOptions.map((option) => (
+                            <SelectItem key={option} value={option}>
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                />
               </div>
             </AccordionContent>
           </AccordionItem>
@@ -236,7 +303,7 @@ export default function CustomizeChartLine({
       /* Sort Series By */
     }
 
-    if (key === "SortSeriesBy") {
+    if (key === 'SortSeriesBy') {
       return (
         <SelectField
           form={form}
@@ -250,7 +317,7 @@ export default function CustomizeChartLine({
       /* Sort Series Ascending */
     }
 
-    if (key === "SortSeriesAscending") {
+    if (key === 'SortSeriesAscending') {
       return (
         <FormField
           control={form.control}
@@ -279,7 +346,7 @@ export default function CustomizeChartLine({
     {
       /* Stacked Style */
     }
-    if (key === "StackedStyle") {
+    if (key === 'StackedStyle') {
       return (
         <SelectField
           form={form}
@@ -290,7 +357,7 @@ export default function CustomizeChartLine({
       );
     }
 
-    if (key === "RotateXaxisLabel") {
+    if (key === 'RotateXaxisLabel') {
       return (
         <FormField
           control={form.control}
@@ -309,7 +376,9 @@ export default function CustomizeChartLine({
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue>
-                      {field.value === 0 ? '0' : field.value || 'Select rotation'}
+                      {field.value === 0
+                        ? '0'
+                        : field.value || 'Select rotation'}
                     </SelectValue>
                   </SelectTrigger>
                 </FormControl>
@@ -328,7 +397,47 @@ export default function CustomizeChartLine({
       );
     }
 
-    if (key === "ColorScheme") {
+    if (key === 'RotateYaxisLabel') {
+      return (
+        <FormField
+          control={form.control}
+          name={`customizeOptions.${key}`}
+          render={({ field }: any) => (
+            <FormItem>
+              <FormLabel>Rotate Y Axis Label</FormLabel>
+              <Select
+                onValueChange={(value) => {
+                  const numericValue = Number(value);
+                  field.onChange(numericValue);
+                  updateCustomizeOption(key, numericValue);
+                }}
+                value={String(field.value)}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue>
+                      {field.value === 0
+                        ? '0'
+                        : field.value || 'Select rotation'}
+                    </SelectValue>
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {RotateXaxisLabelOptions.map((opt: number) => (
+                    <SelectItem key={opt} value={String(opt)}>
+                      {opt}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      );
+    }
+
+    if (key === 'ColorScheme') {
       return (
         <FormField
           key={key}
@@ -387,7 +496,7 @@ export default function CustomizeChartLine({
         />
       );
     }
-    if (key === "ShowValue") {
+    if (key === 'ShowValue') {
       return (
         <FormField
           control={form.control}
@@ -412,7 +521,7 @@ export default function CustomizeChartLine({
         />
       );
     }
-    if (key === "CurrencyFormat") {
+    if (key === 'CurrencyFormat') {
       return (
         <div
           key="currency-group"
@@ -438,7 +547,7 @@ export default function CustomizeChartLine({
       );
     }
 
-    if (key === "ShowLegend") {
+    if (key === 'ShowLegend') {
       return (
         <>
           <FormField
@@ -469,9 +578,9 @@ export default function CustomizeChartLine({
                   Legend
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4">
-                  {renderField("Type")}
-                  {renderField("Orientation")}
-                  {renderField("Margin")}
+                  {renderField('Type')}
+                  {renderField('Orientation')}
+                  {renderField('Margin')}
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
@@ -480,7 +589,7 @@ export default function CustomizeChartLine({
       );
     }
 
-    if (key === "Orientation") {
+    if (key === 'Orientation') {
       return (
         <SelectField
           form={form}
@@ -491,7 +600,7 @@ export default function CustomizeChartLine({
       );
     }
 
-    if (key === "Type") {
+    if (key === 'Type') {
       return (
         <SelectField
           form={form}
@@ -502,7 +611,7 @@ export default function CustomizeChartLine({
       );
     }
 
-    if (key === "Margin") {
+    if (key === 'Margin') {
       return (
         <FormField
           control={form.control}
@@ -512,10 +621,10 @@ export default function CustomizeChartLine({
               <FormLabel>Legend Margin</FormLabel>
               <Input
                 type="text"
-                value={field.value || ""}
+                value={field.value || ''}
                 onChange={(e) => {
                   field.onChange(e.target.value);
-                  updateCustomizeOption("Margin", e.target.value);
+                  updateCustomizeOption('Margin', e.target.value);
                 }}
               />
               <FormMessage />
@@ -527,17 +636,17 @@ export default function CustomizeChartLine({
 
     if (
       [
-        "SortSeriesAscending",
-        "Minorticks",
-        "DataZoom",
-        "ShowValue",
-        "RichTooltip",
-        "ShowTotal",
-        "ShowPercentage",
-        "TooltipSortByMetric",
-        "LogarithmicAxis",
-        "MinorSplitLine",
-        "TruncateAxis",
+        'SortSeriesAscending',
+        'Minorticks',
+        'DataZoom',
+        'ShowValue',
+        'RichTooltip',
+        'ShowTotal',
+        'ShowPercentage',
+        'TooltipSortByMetric',
+        'LogarithmicAxis',
+        'MinorSplitLine',
+        'TruncateAxis',
       ].includes(key)
     ) {
       return (
@@ -555,7 +664,7 @@ export default function CustomizeChartLine({
       <Accordion
         type="multiple"
         className="w-full"
-        defaultValue={["chart-options", "legend-options", "tooltip-options"]}
+        defaultValue={['chart-options', 'legend-options', 'tooltip-options']}
       >
         {/* Main Chart Options */}
         <AccordionItem value="chart-options">
@@ -686,7 +795,7 @@ const CurrencySelectField = ({
             <SelectTrigger>
               <SelectValue placeholder={`Select ${formatLabel(name)}`}>
                 {options.find((opt: any) => opt.value === field.value)?.label ||
-                  "Select Currency"}
+                  'Select Currency'}
               </SelectValue>
             </SelectTrigger>
           </FormControl>

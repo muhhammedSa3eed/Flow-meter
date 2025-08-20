@@ -207,7 +207,7 @@ export default function DataForm({
   }, [chartData, columnOptions]);
 
   const metrics = form.watch('metrics') || [];
-  const filters = form.watch('dynamicFilters') || [];
+  const filters = form.watch('filters') || [];
   const dimensions = form.watch('dimensions') || [];
   const xAxis = form.watch('xAxis') || [];
 
@@ -268,25 +268,24 @@ export default function DataForm({
       operator: selectedOperator.value,
       values: filterValues,
       customSql: '',
+      isHavingFilter: false,
+      timeRangeType: 'NoFilter',
     };
 
-    const updatedFilters = (form.watch('dynamicFilters') || []).filter(
+    const updatedFilters = (form.watch('filters') || []).filter(
       (f: { columnName: string }) => f.columnName !== selectedFilterColumn.value
     );
 
     updatedFilters.push(newFilter);
 
-    form.setValue('dynamicFilters', updatedFilters);
+    form.setValue('filters', updatedFilters);
     setSelectedFilterColumn(null);
     setSelectedOperator(null);
     setFilterOptions([]);
     setSelectedFilterValues([]);
     setIsPopoverFiltersOpen(false);
   };
-  // console.log(
-  //   "form.watch('filters')=>",
-  //   JSON.stringify(form.watch('dynamicFilters'))
-  // );
+  console.log("form.watch('filters')=>", form.watch('filters'));
   const handleSortByChange = (checked: boolean) => {
     if (checked) {
       const newSortBy = metrics.map((metric) => ({
@@ -823,7 +822,7 @@ export default function DataForm({
           {showFiltersSection && (
             <FormField
               control={form.control}
-              name="dynamicFilters"
+              name="filters"
               render={({ field }) => (
                 <FormItem className="mt-2 w-full flex-1">
                   <FormLabel>Filters</FormLabel>

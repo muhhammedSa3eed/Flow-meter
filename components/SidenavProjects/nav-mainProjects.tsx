@@ -53,10 +53,10 @@ export function NavMainProjects({
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-        <Accordion type="single" collapsible className="w-full">
+        <Accordion type="single" defaultValue={'projects'} collapsible className="w-full">
           <AccordionItem value="projects">
             <AccordionTrigger className="text-base px-3 py-2">
-              <Link href={'/Projects'} >Projects</Link>
+              <Link href={'/Projects'}>Projects</Link>
             </AccordionTrigger>
             <AccordionContent>
               <SidebarMenu className="pt-2">

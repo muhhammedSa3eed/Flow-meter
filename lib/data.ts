@@ -1,11 +1,11 @@
 import { SelectType } from "@/types";
 
 export const dataType: SelectType[] = [
-    {
-      id: 0,
-      title: 'WebAPI',
-      value: 'WebAPI',
-    },
+    // {
+    //   id: 0,
+    //   title: 'WebAPI',
+    //   value: 'WebAPI',
+    // },
     // {
     //   id: 1,
     //   title: "S7",

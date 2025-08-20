@@ -254,7 +254,7 @@ export default function AddConnections({
             />
           </div>
 
-          {selectedType === 'WebAPI' && <WebAPIForm form={form} />}
+          {/* {selectedType === 'WebAPI' && <WebAPIForm form={form} />} */}
           {selectedType === 'Database' && <DbForm form={form} />}
         </>
 

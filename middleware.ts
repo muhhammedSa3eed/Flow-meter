@@ -28,7 +28,7 @@ import { getUserByToken } from './actions/auth';
 export default async function middlware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
   // let token = req.cookies.get('token')?.value ?? '';
-  const token = (await cookies()).get('token')?.value;
+  const token = (await cookies()).get('access_token')?.value;
   if (!token && protectedRoutes.includes(pathname)) {
     const absoluteUrl = new URL(`/`, req.nextUrl.origin);
     return NextResponse.redirect(absoluteUrl.toString());

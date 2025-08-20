@@ -35,7 +35,7 @@ const fuzzyFilter: FilterFn<unknown> = (row, columnId, value, addMeta) => {
 
 export default function SampleTable({ sampleData }: Props) {
   const [sorting, setSorting] = useState<SortingState>([]);
-  
+
   const columns: ColumnDef<any>[] =
     sampleData.length > 0
       ? Object.keys(sampleData[0]).map((key) => ({
@@ -82,7 +82,7 @@ export default function SampleTable({ sampleData }: Props) {
                   {headerGroup.headers.map((header) => (
                     <TableHead
                       key={header.id}
-                      className="relative h-10 border-t select-none last:[&>.cursor-col-resize]:opacity-0"
+                      className=" h-10 border-t select-none last:[&>.cursor-col-resize]:opacity-0 sticky top-0 z-20 bg-gray-50 dark:bg-gray-800"
                       aria-sort={
                         header.column.getIsSorted() === 'asc'
                           ? 'ascending'

@@ -6,8 +6,8 @@ import ChooseChart from '@/components/Chart/ChooseChart';
 import { Dataset } from '@/types';
 import { getAllVisualizationTypes } from '@/lib/projectData';
 
-async function getDataSet(): Promise<Dataset[]> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/DS`, {
+async function getDataSet(projectId:number): Promise<Dataset[]> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/DS/datasets/${projectId}`, {
     cache: 'no-store',
   });
 
@@ -32,7 +32,7 @@ export default async function AddChart({
   const ProjectId = (await params).ProjectId;
   // console.log('dataset :', datasetId);
   const VisualizationTypeData = await getAllVisualizationTypes();
-  const dataSet = await getDataSet();
+  const dataSet = await getDataSet(ProjectId);
   return (
     <>
       <ProjectIdTabs projectId={ProjectId} />
