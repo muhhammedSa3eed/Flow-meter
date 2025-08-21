@@ -9,6 +9,7 @@ import CustomizeChartBigNumber from './CustomizeChartBigNumber';
 import CustomizeChartLine from './CustomizeChartLine';
 import CustomizeChartBar from './CustomizeChartBar';
 import CustomizeChartTable from './CustomizeChartTable';
+import CustomizeChartArea from './CustomizeChartArea';
 
 const CustomizeChartWrapper = ({
   form,
@@ -55,6 +56,12 @@ const CustomizeChartWrapper = ({
         />
       ) : selectedTypeData?.type == 'bar' ? (
         <CustomizeChartBar
+          VisualizationTypeData={VisualizationTypeData}
+          form={form}
+          activeCustomizeOptions={activecustomizeOptions}
+        />
+      ) : selectedTypeData?.type == 'area' ? (
+        <CustomizeChartArea
           VisualizationTypeData={VisualizationTypeData}
           form={form}
           activeCustomizeOptions={activecustomizeOptions}

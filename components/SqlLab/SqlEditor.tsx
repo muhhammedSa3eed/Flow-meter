@@ -27,7 +27,6 @@ import {
 
 /** ====== Helpers ====== */
 
-// قراءة JSON بأمان (يتعامل مع body فاضي أو HTML)
 async function parseJSONSafe(res: Response) {
   const text = await res.text();
   if (!text) return null;
@@ -59,7 +58,6 @@ async function fetchJSON(url: string, init?: RequestInit) {
   return data;
 }
 
-// استخراج schema و table من جملة FROM (يدعم quoted / unquoted)
 function extractSchemaTable(sql: string): { schema?: string; table?: string } {
   const s = sql.replace(/\s+/g, " ");
   // FROM "schema"."table" | FROM schema.table | FROM "table" | FROM table
@@ -77,9 +75,9 @@ const qi = (s: string) => `"${String(s).replace(/"/g, '""')}"`;
 /** ====== Component ====== */
 
 type SqlEditorProps = {
-  tables?: string[]; // كل الجداول المتاحة (للإكمال التلقائي)
-  selectedTables: string[]; // الجداول المختارة لعرض الـ Preview
-  value: string; // نص الاستعلام
+  tables?: string[]; 
+  selectedTables: string[]; 
+  value: string; 
   ProjectId: number;
   selectedDatabase: number | null;
   selectedSchema: string | null;
@@ -106,27 +104,22 @@ export default function SqlEditor({
   const [height, setHeight] = useState(240);
   const [activeTab, setActiveTab] = useState<string>("result");
 
-  // محرر
   const [code, setCode] = useState<string>(value ?? "");
   useEffect(() => setCode(value ?? ""), [value]);
 
-  // نتيجة التشغيل
   const [queryResult, setQueryResult] = useState<TableDataResponse | null>(
     null
   );
 
-  // معاينة لكل جدول
   const [tableDataByTable, setTableDataByTable] = useState<
     Record<string, TableDataResponse | "loading" | "error" | undefined>
   >({});
 
-  // بيانات آخر Run (لاستخدامها في Save Dataset)
   const [lastRunMeta, setLastRunMeta] = useState<{
     query?: string;
     columnTypes?: Record<string, string>;
   } | null>(null);
 
-  // الإكمال التلقائي بأسماء الجداول
   const tableCompletion = (context: CompletionContext) => {
     const word = context.matchBefore(/\w*/);
     if (!word || (word.from === word.to && !context.explicit)) return null;
@@ -238,17 +231,17 @@ export default function SqlEditor({
     if (!lastRunMeta?.query || !lastRunMeta?.columnTypes) {
       return toast.error("Run a query first to get column types.");
     }
-
+  
     const fromQ = extractSchemaTable(lastRunMeta.query);
     const tableName = fromQ.table || selectedTables?.[0];
     const schemaName = fromQ.schema || selectedSchema;
-
+  
     if (!tableName) {
       return toast.error(
         "Could not detect table name. Please select a table or include FROM in query."
       );
     }
-
+  
     const payload = {
       labQueryId: 0,
       datasetName: String(selectedDatabase),
@@ -257,37 +250,28 @@ export default function SqlEditor({
       projectId: Number(ProjectId),
       fieldsAndTypes: lastRunMeta.columnTypes,
     };
-
-    console.log("📦 SaveDataset payload:", payload);
-
+  
+    const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/LabQuery/save-as-dataset`;
+    console.log("➡️ SaveDataset Request:", { apiUrl, payload });
+  
     const parsed = LabQuerySaveSchema.safeParse(payload);
     if (!parsed.success) {
       const firstErr = parsed.error.issues?.[0]?.message ?? "Validation failed";
       toast.error(firstErr);
       return;
     }
-
+  
     try {
-      console.log("➡️ Request to API:", {
-        url: `${process.env.NEXT_PUBLIC_API_BASE_URL}/LabQuery/save-as-dataset`,
+      const data = await fetchJSON(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: payload,
+        body: JSON.stringify(payload),
       });
-
-      const data = await fetchJSON(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/LabQuery/save-as-dataset`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }
-      );
-
-      console.log("✅ Save dataset response:", data);
+  
+      console.log("✅ SaveDataset Response:", data);
       toast.success("Dataset saved successfully!");
     } catch (e: any) {
-      console.error("❌ Save dataset error:", e);
+      console.error("❌ SaveDataset Error:", e);
       toast.error(e?.message || "Failed to save dataset");
     }
   };

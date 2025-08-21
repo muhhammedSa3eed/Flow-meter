@@ -29,6 +29,9 @@ const ChartDisplay = ({
   const isLineChart = chartData?.visualizationType?.type
     ?.toLowerCase()
     .includes('line');
+    const isAreaChart = chartData?.visualizationType?.type
+    ?.toLowerCase()
+    .includes('area');
   const isTableChart = chartData?.visualizationType?.type
     ?.toLowerCase()
     .includes('table');
@@ -352,6 +355,62 @@ const ChartDisplay = ({
             },
           },
           series: seriesData,
+        }}
+        style={{ height: 400, width: '100%' }}
+      />
+    );
+  }
+  if (
+    isAreaChart &&
+    xAxisData?.length > 0 &&
+    seriesData?.some((v: any) => v !== undefined)
+  ) {
+    return (
+      <ReactECharts
+        option={{
+          title: {
+            text: isDashboard ? '' : chartData.name || 'Area Chart',
+          },
+          legend: {
+            data: legandTitle,
+          },
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true,
+          },
+          toolbox: {
+            feature: {
+              saveAsImage: {},
+            },
+          },
+          xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: xAxisData,
+            name: chartData.customizeOptions?.['X-AxisTitle'] ?? '',
+            nameLocation:
+              chartData.customizeOptions?.['X-AxisTitlePosition'] ?? 'center',
+            axisLabel: {
+              rotate: chartData.customizeOptions?.RotateXaxisLabel ?? 0,
+            },
+          },
+          yAxis: {
+            type: 'value',
+            name: chartData.customizeOptions?.['Y-AxisTitle'] ?? '',
+            nameLocation:
+              chartData.customizeOptions?.['Y-AxisTitlePosition'] ?? 'center',
+            axisLabel: {
+              rotate: chartData.customizeOptions?.RotateYaxisLabel ?? 0,
+            },
+          },
+          series: seriesData.map((s: any) => ({
+            ...s,
+            type: 'line',
+            areaStyle: {},
+            smooth: true,
+          })),
         }}
         style={{ height: 400, width: '100%' }}
       />

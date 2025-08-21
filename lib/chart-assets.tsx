@@ -83,6 +83,7 @@ export const CustomizationOptions: Option[] = [
   { value: 'Legend', label: 'Legend' },
   { value: 'Type', label: 'Type' },
   { value: 'Orientation', label: 'Orientation' },
+  { value: 'AreaChartOpacity', label: 'Area Chart Opacity' },
   { value: 'Margin', label: 'Margin' },
   { value: 'LabelType', label: 'Label Type' },
   { value: 'ShowLabels', label: 'Show Labels' },
