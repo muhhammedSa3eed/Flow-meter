@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useTheme } from 'next-themes';
 
 export default function EditDashboard({
   projectId,
@@ -39,7 +40,8 @@ export default function EditDashboard({
 }) {
   const id = useId();
   const router = useRouter();
-  console.log('xxxxxx=>', { dashboard });
+  const { theme } = useTheme();
+  console.log({ theme });
   const form = useForm<z.infer<typeof DashboardSchema>>({
     resolver: zodResolver(DashboardSchema),
     defaultValues: {
@@ -180,6 +182,8 @@ export default function EditDashboard({
                       id="textColor"
                       type="color"
                       {...field}
+                      
+                      // {...field}
                       className="w-12 h-8 p-0 border-none"
                     />
                   </div>

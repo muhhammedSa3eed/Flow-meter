@@ -37,6 +37,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
+import { useTheme } from 'next-themes';
 //Fixed:A grid with predefined rows/columns and sizes. No resizing.
 //Responsive:Adjusts based on screen size using breakpoints (like Bootstrap/Gridstack responsive modes)
 //Fluid:Columns and rows expand or contract to fill available space (percent-based widths)
@@ -55,15 +56,17 @@ export default function AddDashboard({
 
   const router = useRouter();
   const [isDialogOpen, setDialogOpen] = useState(false);
-
+  const { theme } = useTheme();
+  console.log({ theme });
   const form = useForm<z.infer<typeof DashboardSchema>>({
     resolver: zodResolver(DashboardSchema),
     defaultValues: {
       name: '',
       description: '',
-      background: '#ffffff',
+      background: theme === 'dark' ? '#000000' : '#ffffff',
       gridType: 'Fixed',
-      textColor: '#ffffff',
+
+      textColor: theme === 'dark' ? '#ffffff' : '#000000',
     },
   });
 
@@ -124,9 +127,8 @@ export default function AddDashboard({
       >
         <div className="flex flex-1 flex-col ">
           <div className="w-full h-7 flex items-center ">
-          <Plus size={20} />
+            <Plus size={20} />
             <span className="text-sm ml-1">Add New Dashboard</span>
-            
           </div>
         </div>
       </DialogTrigger>
@@ -215,6 +217,11 @@ export default function AddDashboard({
                           id="textColor"
                           type="color"
                           {...field}
+                          // value={
+                          //   field.value ||
+                          //   (theme === 'dark' ? '#ffffff' : '#000000')
+                          // }
+                          // onChange={(e) => field.onChange(e.target.value)}
                           className="w-12 h-8 p-0 border-none"
                         />
                       </div>

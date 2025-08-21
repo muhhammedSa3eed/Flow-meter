@@ -196,9 +196,9 @@ const SortableCard = ({
     setIsEditing(false);
   };
   const { theme } = useTheme(); // "light" | "dark" | "system"
-  console.log({ theme });
+
   const defaultBackground =
-    backgroundColor ?? (theme === 'dark' ? '#1e1e1e' : '#ffffff');
+    backgroundColor ?? (theme === 'dark' ? '#000000' : '#ffffff');
 
   const defaultTextColor =
     textColor ?? (theme === 'dark' ? '#000000' : '#000000');
@@ -210,8 +210,7 @@ const SortableCard = ({
     backgroundColor: defaultBackground,
     color: defaultTextColor,
   };
-  console.log({ defaultBackground });
-  console.log({ defaultTextColor });
+  console.log({ card });
 
   return (
     <div

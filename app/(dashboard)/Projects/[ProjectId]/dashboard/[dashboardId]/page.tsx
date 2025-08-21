@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { DashboardWrapper } from '@/components/dashboard/dashboard-wrapper';
-import { getAllCharts } from '@/lib/projectData';
+import { getAllCharts, getChartsByProjectId } from '@/lib/projectData';
 import { ChartItem, Dashboard } from '@/types';
 
 async function getDashboardsById(
@@ -39,7 +39,7 @@ const EditScreenPage = async ({
 }) => {
   const { ProjectId, dashboardId } = await params;
   const dashboard = await getDashboardsById(ProjectId, dashboardId);
-  const chartData = await getAllCharts();
+  const chartData = await getChartsByProjectId(ProjectId);
   // console.log({ dashboard });
   return (
     <div>

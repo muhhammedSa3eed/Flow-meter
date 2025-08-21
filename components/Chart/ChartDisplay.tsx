@@ -29,7 +29,7 @@ const ChartDisplay = ({
   const isLineChart = chartData?.visualizationType?.type
     ?.toLowerCase()
     .includes('line');
-    const isAreaChart = chartData?.visualizationType?.type
+  const isAreaChart = chartData?.visualizationType?.type
     ?.toLowerCase()
     .includes('area');
   const isTableChart = chartData?.visualizationType?.type
@@ -72,14 +72,16 @@ const ChartDisplay = ({
     Math.max(...item.data)
   );
   // console.log({ xAxisData });
+  console.log({ chartData });
   const legandTitle = chartData?.data[0]?.series?.map((item: any) => item.name);
   // console.log({ legandTitle });
   // console.log('chartData?.data', chartData?.data);
-  // console.log({ xAxisData });
-  // console.log({ seriesData });
+  console.log({ xAxisData });
+  console.log({ seriesData });
   // console.log('JSON.stringify(seriesData)', JSON.stringify(seriesData));
   // console.log({ barSeriesData });
   console.log('!chartData?.data?.[0]', chartData?.data?.[0]);
+  console.log({ isLineChart });
   // if (!chartData?.data?.[0]) {
   //   return (
   //     <div className="flex flex-col items-center justify-center h-full">
@@ -202,7 +204,7 @@ const ChartDisplay = ({
       <ReactECharts
         option={{
           title: {
-            text: isDashboard ? '' : chartData.name || 'Bar Chart',
+            text: chartData.name || 'Bar Chart',
             subtext: '',
             // bottom: 'left',
           },
@@ -272,7 +274,9 @@ const ChartDisplay = ({
 
           toolbox: {
             feature: {
-              saveAsImage: {},
+              saveAsImage: {
+                name: chartData.name || 'Chart',
+              },
             },
           },
 
@@ -307,19 +311,7 @@ const ChartDisplay = ({
           title: {
             text: isDashboard ? '' : chartData.name || 'Line Chart',
           },
-    //       tooltip: {
-    //         trigger: 'axis',
-    // //         axisPointer: { type: 'shadow' },
-    // //         formatter: (params: any[]) => {
-    // //           let total = 0;
-    // //           params.forEach((p: { value: number; }) => (total += p.value));
-    // //           return `
-    // //   <strong>${params[0].name}</strong><br/>
-    // //   ${params.map((p: { seriesName: any; value: any; }) => `${p.seriesName}: ${p.value}`).join('<br/>')}
-    // //   <br/><strong>Total: ${total}</strong>
-    // // `;
-    // //         },
-    //       },
+
           legend: {
             data: legandTitle,
           },
@@ -331,28 +323,30 @@ const ChartDisplay = ({
           },
           toolbox: {
             feature: {
-              saveAsImage: {},
+              saveAsImage: {
+                name: chartData.name || 'Chart',
+              },
             },
           },
           xAxis: {
             type: 'category',
             boundaryGap: false,
             data: xAxisData,
-            name: chartData.customizeOptions?.['X-AxisTitle'] ?? '',
-            nameLocation:
-              chartData.customizeOptions?.['X-AxisTitlePosition'] ?? 'center',
-            axisLabel: {
-              rotate: chartData.customizeOptions?.RotateXaxisLabel ?? 0,
-            },
+            // name: chartData.customizeOptions?.['X-AxisTitle'] ?? '',
+            // nameLocation:
+            //   chartData.customizeOptions?.['X-AxisTitlePosition'] ?? 'center',
+            // axisLabel: {
+            //   rotate: chartData.customizeOptions?.RotateXaxisLabel ?? 0,
+            // },
           },
           yAxis: {
             type: 'value',
-            name: chartData.customizeOptions?.['Y-AxisTitle'] ?? '',
-            nameLocation:
-              chartData.customizeOptions?.['Y-AxisTitlePosition'] ?? 'center',
-            axisLabel: {
-              rotate: chartData.customizeOptions?.RotateYaxisLabel ?? 0,
-            },
+            // name: chartData.customizeOptions?.['Y-AxisTitle'] ?? '',
+            // nameLocation:
+            //   chartData.customizeOptions?.['Y-AxisTitlePosition'] ?? 'center',
+            // axisLabel: {
+            //   rotate: chartData.customizeOptions?.RotateYaxisLabel ?? 0,
+            // },
           },
           series: seriesData,
         }}
@@ -382,7 +376,9 @@ const ChartDisplay = ({
           },
           toolbox: {
             feature: {
-              saveAsImage: {},
+              saveAsImage: {
+                name: chartData.name || 'Chart',
+              },
             },
           },
           xAxis: {

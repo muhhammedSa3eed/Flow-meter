@@ -10,12 +10,13 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Pencil, Save } from 'lucide-react';
-import { redirect, useSearchParams } from 'next/navigation';
+import { redirect, useRouter, useSearchParams } from 'next/navigation';
 import { Chart, ChartItem, VisualizationTypes } from '@/types';
 import Loading from '@/app/loading';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 import Cookies from 'js-cookie';
+import { useTheme } from 'next-themes';
 export interface DashboardItem {
   visualizationType: any;
   type: any;
@@ -58,9 +59,9 @@ export const DashboardWrapper = ({
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
-
+  const { theme } = useTheme();
   const usedChartsIds = cards.map((card) => Number(card.chartId));
-
+  const router = useRouter();
   if (!edit) {
     redirect(`/Projects/${ProjectId}/dashboard/${dashboardId}?edit=false`);
   }
@@ -77,8 +78,12 @@ export const DashboardWrapper = ({
       name: selectedChart.name,
       description: selectedChart.description ?? 'description',
       width: selectedChart.width ?? 'col-span-2',
-      backgroundColor: selectedChart.backgroundColor ?? '#ffffff',
-      textColor: selectedChart.textColor ?? '#ffffff',
+      backgroundColor:
+        selectedChart.backgroundColor ?? theme == 'dark'
+          ? '#000000'
+          : '#ffffff',
+      textColor:
+        selectedChart.textColor ?? theme == 'dark' ? '#ffffff' : '#000000',
       type: selectedChart.visualizationType?.type ?? 'test',
       pieChartData: selectedChart.data,
       ChartName: selectedChart.name,
@@ -88,10 +93,10 @@ export const DashboardWrapper = ({
       visualizationType: selectedChart.visualizationType,
       dimensions: selectedChart.dimensions,
     };
-    console.log({ newChart });
+    // console.log({ newChart });
 
     setCards((prev) => [...prev, newChart]);
-    console.log('[...cards, newChart]', [...cards, newChart]);
+    // console.log('[...cards, newChart]', [...cards, newChart]);
     Cookies.set('dashboardState', JSON.stringify([...cards, newChart]));
     setIsChartDialogOpen(false);
   };
@@ -231,6 +236,7 @@ export const DashboardWrapper = ({
         }
         const result = await response.json();
         toast.success('The dashboard has been updated successfully.');
+        window.location.reload();
         console.log({ result });
       } catch (error) {
         console.error(error);
@@ -262,10 +268,10 @@ export const DashboardWrapper = ({
   if (loading) return <Loading />;
   // if (error) return <p>{error}</p>;
   return (
-    <section className="p-4 bg-slate-100 min-h-screen">
+    <section className="p-4 bg-slate-100 dark:bg-slate-800 min-h-screen">
       <div className="max-w-7xl mx-auto">
         <header className="mb-8 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-slate-800">
+          <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">
             Analytics Dashboard
           </h1>
           <div className="flex gap-2">
@@ -305,15 +311,21 @@ export const DashboardWrapper = ({
             <DialogTitle className="">Select a Chart</DialogTitle>
             <DialogDescription className={cn('mb-0 pb-0')}></DialogDescription>
             <div className="space-y-2.5 h-[550px] overflow-y-auto">
-              {availableCharts.map((chart) => (
-                <Button
-                  key={chart.id}
-                  onClick={() => addChart(chart.id)}
-                  className="w-full bg-gray-100 rounded py-6 text-lg text-gray-800 hover:bg-gray-700 hover:text-white duration-200 transition-colors"
-                >
-                  {chart.name}
-                </Button>
-              ))}
+              {availableCharts && availableCharts.length > 0 ? (
+                availableCharts.map((chart) => (
+                  <Button
+                    key={chart.id}
+                    onClick={() => {
+                      addChart(chart.id);
+                    }}
+                    className="w-full bg-gray-100 dark:bg-gray-800 rounded py-6 text-lg text-gray-800 dark:text-gray-100 hover:bg-gray-700 hover:text-white duration-200 transition-colors"
+                  >
+                    {chart.name}
+                  </Button>
+                ))
+              ) : (
+                <p>No chart available for project {ProjectId}</p>
+              )}
             </div>
             <DialogClose asChild>
               <div className="flex items-center justify-center">
