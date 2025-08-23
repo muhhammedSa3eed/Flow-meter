@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import ProjectActionsDropdown from './CRUD/projects/ProjectActionsDropdown';
-import AddProjectButton from './motion/AddProject';
+import { useRouter } from "next/navigation";
+import ProjectActionsDropdown from "./CRUD/projects/ProjectActionsDropdown";
+import AddProjectButton from "./motion/AddProject";
 import {
   Card,
   CardContent,
@@ -10,9 +10,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from './ui/card';
-import { Projects } from '@/types';
-import Link from 'next/link';
+} from "./ui/card";
+import { Projects } from "@/types";
+import Link from "next/link";
 
 interface ProjectsProps {
   projects: Projects;
@@ -23,15 +23,15 @@ const ProjectsWrapper = ({ projects }: ProjectsProps) => {
     router.push(`/Projects/${projectId}`);
   };
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+    <div className="flex flex-1 flex-col gap-4 p-1 md:p-4 pt-0">
       {projects && Array.isArray(projects) && projects.length > 0 ? (
-        <div className="grid auto-rows-min gap-4 md:grid-cols-3 p-3">
+        <div className="grid auto-rows-min gap-4 md:grid-cols-2 p-3 lg:grid-cols-3">
           {projects.map((project) => (
             <div key={project.id}>
               <Card className="relative rounded-xl border-custom-green shadow-lg">
                 <CardHeader className="relative">
                   <CardTitle className="ml-1">{project.name}</CardTitle>
-                  <div className="absolute top-0 right-0 p-2 mr-3">
+                  <div className="absolute top-0 right-0 p-2 mr-0">
                     <ProjectActionsDropdown projects={project} />
                   </div>
                 </CardHeader>
@@ -42,14 +42,14 @@ const ProjectsWrapper = ({ projects }: ProjectsProps) => {
                 </CardContent>
                 <CardFooter>
                   <AddProjectButton
-                    className="flex items-center justify-center w-full gap-2 text-base "
+                    className="flex items-center justify-center w-48 gap-x-2 text-base mx-auto  "
                     // onClick={() => handleViewProject(project.id)}
                   >
                     <Link
                       href={`/Projects/${project.id}`}
-                      className="p-3 block w-full rounded-md"
+                      className="p-1 py-2 block w-full rounded-md"
                     >
-                      View {project.name} Details
+                      View Details
                     </Link>
                   </AddProjectButton>
                 </CardFooter>

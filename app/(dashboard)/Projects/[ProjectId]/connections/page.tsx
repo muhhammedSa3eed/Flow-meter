@@ -1,16 +1,16 @@
 // import TestComponents from './testComponent';
 
-import { Share2 } from 'lucide-react';
-import { columns } from './columns';
-import ConnectDataTable from './connectData-table';
-import { getDevices } from '@/lib/getDevice';
-import { Suspense } from 'react';
-import Loading from '@/app/loading';
-import ProjectIdTabs from '@/components/ProjectIdTabs';
-import { dataPolling, dataType } from '@/lib/ConnectionsData';
-import Header from '@/components/header';
-import Link from 'next/link';
-import AddConnectionsWrapper from '@/components/CRUD/Connections/add-connections-wrapper';
+import { Share2 } from "lucide-react";
+import { columns } from "./columns";
+import ConnectDataTable from "./connectData-table";
+import { getDevices } from "@/lib/getDevice";
+import { Suspense } from "react";
+import Loading from "@/app/loading";
+import ProjectIdTabs from "@/components/ProjectIdTabs";
+import { dataPolling, dataType } from "@/lib/ConnectionsData";
+import Header from "@/components/header";
+import Link from "next/link";
+import AddConnectionsWrapper from "@/components/CRUD/Connections/add-connections-wrapper";
 
 export default async function Page({
   params,
@@ -28,7 +28,7 @@ export default async function Page({
       {devices && devices.length > 0 ? (
         <>
           <Header
-            title={devices[0].projectName ?? ''}
+            title={devices[0].projectName ?? ""}
             projectId={ProjectId}
             // description={project.description ?? ''}
           />

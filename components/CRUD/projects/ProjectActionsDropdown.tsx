@@ -1,31 +1,31 @@
-'use client';
-import { useState } from 'react';
+"use client";
+import { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-} from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, Pencil, Trash2, Save } from 'lucide-react';
+} from "@/components/ui/dropdown-menu";
+import { MoreHorizontal, Pencil, Trash2, Save } from "lucide-react";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { AlertDialog, AlertDialogContent } from '@/components/ui/alert-dialog';
-import EditProject from './EditProject';
-import { Projects } from '@/types';
-import DeleteProject from './Deleteproject';
+} from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog";
+import EditProject from "./EditProject";
+import { Projects } from "@/types";
+import DeleteProject from "./Deleteproject";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { cn } from '@/lib/utils';
+} from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 const ProjectActionsDropdown = ({ projects }: { projects: Projects }) => {
   const [isEditProjectOpen, setIsEditProjectOpen] = useState(false);
   const [isDeleteProjectOpen, setIsDeleteProjectOpen] = useState(false);
@@ -86,7 +86,7 @@ const ProjectActionsDropdown = ({ projects }: { projects: Projects }) => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit Project</DialogTitle>
-            <DialogDescription className={cn('mb-0 pb-0')}></DialogDescription>
+            <DialogDescription className={cn("mb-0 pb-0")}></DialogDescription>
           </DialogHeader>
           {/* Pass the full project object */}
           <EditProject project={projects} onClose={handleCloseEditDialog} />

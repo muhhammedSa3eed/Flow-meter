@@ -177,3 +177,12 @@ body {
     box-shadow: 0.2em -0.2em 0 0 currentcolor;
   }
 }
+/* this class for Add New Project on sidebar */
+.sidebar-label::after {
+  content: "Add \ New \ Project";
+  position: absolute;
+  top: 5px;
+  left: 25px;
+  width: 100%;
+  height: 100%;
+}

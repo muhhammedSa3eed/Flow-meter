@@ -63,6 +63,7 @@ import { User } from "@/types";
 import { RankingInfo, rankItem } from "@tanstack/match-sorter-utils";
 import AddUser from "../CRUD/Users/AddUser";
 import { columns } from "@/app/(dashboard)/Projects/user/columns";
+
 declare module "@tanstack/table-core" {
   interface FilterFns {
     fuzzy: FilterFn<unknown>;
@@ -85,11 +86,8 @@ const fuzzyFilter: FilterFn<User> = (row, columnId, value, addMeta) => {
   // Return if the item should be filtered in/out
   return itemRank.passed;
 };
-export default function UsersTable({
-  UsersData,
-}: {
-  UsersData: User[];
-}) {
+
+export default function UsersTable({ UsersData }: { UsersData: User[] }) {
   const id = useId();
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -102,8 +100,6 @@ export default function UsersTable({
 
   const [sorting, setSorting] = useState([{ id: "name", desc: false }]);
   const [open, setOpen] = useState(false);
-
-
 
   const data = UsersData;
 
@@ -143,7 +139,7 @@ export default function UsersTable({
 
   return (
     <div className="space-y-4">
-      {/* Filters */}
+      {/* Search Filter and Actions Section */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="relative">
@@ -160,7 +156,7 @@ export default function UsersTable({
               onChange={(e) =>
                 table.getColumn("name")?.setFilterValue(e.target.value)
               }
-              placeholder="Search Users "
+              placeholder="Search Users"
               type="text"
               aria-label="Search Users"
             />
@@ -182,19 +178,16 @@ export default function UsersTable({
           </div>
         </div>
         <div className="flex items-center gap-3">
-        
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <Button variant={"custom"}>
-                {" "}
                 <Plus style={{ height: 20, width: 20 }} /> Add New User
               </Button>
             </SheetTrigger>
             <SheetContent>
-              {/* Wrap children in a single parent element */}
               <div>
                 <SheetHeader>
-                  <SheetTitle> User Information</SheetTitle>
+                  <SheetTitle>User Information</SheetTitle>
                   <SheetDescription
                     className={cn("mb-0 pb-0")}
                   ></SheetDescription>
@@ -202,115 +195,183 @@ export default function UsersTable({
                 <AddUser />
               </div>
             </SheetContent>
-          </Sheet>{" "}
+          </Sheet>
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-background overflow-hidden rounded-md border">
-        <Table className="table-fixed">
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="hover:bg-transparent">
-                {headerGroup.headers.map((header) => (
-                  <TableHead
-                    key={header.id}
-                    style={{ width: `${header.getSize()}px` }}
-                    className={`whitespace-nowrap font-semibold text-black dark:text-white ${
-                      header.id === 'actions' ? 'sticky -right-[1px]' : ''
-                    }`}                  >
-                    {header.isPlaceholder ? null : header.column.getCanSort() ? (
-                      <div
-                        className={cn(
-                          header.column.getCanSort() &&
-                            "flex h-full cursor-pointer items-center justify-between gap-2 select-none"
-                        )}
-                        onClick={header.column.getToggleSortingHandler()}
-                        onKeyDown={(e) => {
-                          if (
+      {/* Table for Large Screens */}
+      <div className="hidden lg:block">
+        <div className="bg-background overflow-hidden rounded-md border">
+          <Table className="table-fixed">
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id} className="hover:bg-transparent">
+                  {headerGroup.headers.map((header) => (
+                    <TableHead
+                      key={header.id}
+                      style={{ width: `${header.getSize()}px` }}
+                      className={`whitespace-nowrap font-semibold text-black dark:text-white ${
+                        header.id === "actions" ? "sticky -right-[1px]" : ""
+                      }`}
+                    >
+                      {header.isPlaceholder ? null : header.column.getCanSort() ? (
+                        <div
+                          className={cn(
                             header.column.getCanSort() &&
-                            (e.key === "Enter" || e.key === " ")
-                          ) {
-                            e.preventDefault();
-                            header.column.getToggleSortingHandler()?.(e);
-                          }
-                        }}
-                        tabIndex={header.column.getCanSort() ? 0 : undefined}
-                      >
-                        {flexRender(
+                              "flex h-full cursor-pointer items-center justify-between gap-2 select-none"
+                          )}
+                          onClick={header.column.getToggleSortingHandler()}
+                          onKeyDown={(e) => {
+                            if (
+                              header.column.getCanSort() &&
+                              (e.key === "Enter" || e.key === " ")
+                            ) {
+                              e.preventDefault();
+                              header.column.getToggleSortingHandler()?.(e);
+                            }
+                          }}
+                          tabIndex={header.column.getCanSort() ? 0 : undefined}
+                        >
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                          {{
+                            asc: (
+                              <ChevronUpIcon
+                                className="shrink-0 opacity-60"
+                                size={16}
+                                aria-hidden="true"
+                              />
+                            ),
+                            desc: (
+                              <ChevronDownIcon
+                                className="shrink-0 opacity-60"
+                                size={16}
+                                aria-hidden="true"
+                              />
+                            ),
+                          }[header.column.getIsSorted() as string] ?? null}
+                        </div>
+                      ) : (
+                        flexRender(
                           header.column.columnDef.header,
                           header.getContext()
-                        )}
-                        {{
-                          asc: (
-                            <ChevronUpIcon
-                              className="shrink-0 opacity-60"
-                              size={16}
-                              aria-hidden="true"
-                            />
-                          ),
-                          desc: (
-                            <ChevronDownIcon
-                              className="shrink-0 opacity-60"
-                              size={16}
-                              aria-hidden="true"
-                            />
-                          ),
-                        }[header.column.getIsSorted() as string] ?? null}
-                      </div>
-                    ) : (
-                      flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )
-                    )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="last:py-0">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
+                        )
                       )}
-                    </TableCell>
+                    </TableHead>
                   ))}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id} className="last:py-0">
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+
+      {/* Cards Grid for Small & Medium Screens */}
+      <div className="lg:hidden">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => {
+              const actionCell = row
+                .getVisibleCells()
+                .find((cell) => cell.column.id === "actions");
+
+              return (
+                <div
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                  className={`relative bg-background border rounded-lg px-3 pb-[10px] duration-300 ${
+                    row.getIsSelected() ? "border-green-400" : "shadow-sm"
+                  }`}
                 >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+                  {actionCell && (
+                    <div className="absolute top-[5px] right-2">
+                      {flexRender(
+                        actionCell.column.columnDef.cell,
+                        actionCell.getContext()
+                      )}
+                    </div>
+                  )}
+
+                  <div className="space-y-2 mt-3">
+                    {row
+                      .getVisibleCells()
+                      .filter((cell) => cell.column.id !== "actions")
+                      .map((cell) => {
+                        const header = cell.column.columnDef.header;
+                        const headerText =
+                          typeof header === "string" ? header : cell.column.id;
+
+                        return (
+                          <div key={cell.id} className="flex gap-1">
+                            <div className="text-sm font-semibold text-muted-foreground">
+                              {headerText === "select" ? "" : `${headerText}:`}
+                            </div>
+                            <div className="text-sm font-normal truncate">
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <div className="bg-background border rounded-lg p-8 text-center col-span-full">
+              <p className="text-muted-foreground">No results found.</p>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-between gap-8">
+      <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4">
+        {/* Left side: Rows per page */}
         <div className="flex items-center gap-3">
-          <Label htmlFor={id} className="max-sm:sr-only">
+          <Label htmlFor={`${id}-rows`} className="max-sm:sr-only">
             Rows per page
           </Label>
           <Select
             value={table.getState().pagination.pageSize.toString()}
             onValueChange={(value) => table.setPageSize(Number(value))}
           >
-            <SelectTrigger id={id} className="w-fit whitespace-nowrap">
+            <SelectTrigger
+              id={`${id}-rows`}
+              className="w-fit whitespace-nowrap"
+            >
               <SelectValue placeholder="Select number of results" />
             </SelectTrigger>
             <SelectContent className="[&_*[role=option]]:ps-2 [&_*[role=option]]:pe-8 [&_*[role=option]>span]:start-auto [&_*[role=option]>span]:end-2">
@@ -322,7 +383,9 @@ export default function UsersTable({
             </SelectContent>
           </Select>
         </div>
-        <div className="text-muted-foreground flex grow justify-end text-sm whitespace-nowrap">
+
+        {/* Middle: Results count */}
+        <div className="text-muted-foreground flex grow justify-center text-sm whitespace-nowrap order-last sm:order-none w-full sm:w-auto text-center">
           <p
             className="text-muted-foreground text-sm whitespace-nowrap"
             aria-live="polite"
@@ -348,7 +411,9 @@ export default function UsersTable({
             </span>
           </p>
         </div>
-        <div>
+
+        {/* Right side: Pagination controls */}
+        <div className="flex items-center justify-center sm:justify-end">
           <Pagination>
             <PaginationContent>
               {/* Previous page button */}
@@ -374,7 +439,7 @@ export default function UsersTable({
               {pages.map((page) => (
                 <PaginationItem key={page}>
                   <PaginationLink
-                    onClick={() => table.setPageIndex(page - 1)} // -1 because pageIndex is zero-based
+                    onClick={() => table.setPageIndex(page - 1)}
                     isActive={page === currentPage}
                   >
                     {page}

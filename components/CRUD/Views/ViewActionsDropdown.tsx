@@ -1,30 +1,30 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-} from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+} from "@/components/ui/dropdown-menu";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { AlertDialog, AlertDialogContent } from '@/components/ui/alert-dialog';
-import EditDashboard from '@/components/CRUD/Views/EditDashboard';
-import DeleteDashboard from '@/components/CRUD/Views/DeleteDashboard';
-import { Dashboard } from '@/types';
+} from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog";
+import EditDashboard from "@/components/CRUD/Views/EditDashboard";
+import DeleteDashboard from "@/components/CRUD/Views/DeleteDashboard";
+import { Dashboard } from "@/types";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from "@/components/ui/tooltip";
 interface ViewActionsDropdownProps {
   projectId: number | null;
   views: Dashboard;

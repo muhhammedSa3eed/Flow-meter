@@ -1,9 +1,9 @@
-'use client';
-import React, { useId } from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { Button } from '@/components/ui/button';
+"use client";
+import React, { useId } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -11,23 +11,22 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { toast } from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
-import { DialogClose, DialogFooter } from '../../ui/dialog';
-import { Label } from '../../ui/label';
-import { DashboardSchema } from '@/schemas';
-import { Textarea } from '../../ui/textarea';
-import { Dashboard } from '@/types';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { DialogClose, DialogFooter } from "../../ui/dialog";
+import { Label } from "../../ui/label";
+import { DashboardSchema } from "@/schemas";
+import { Textarea } from "../../ui/textarea";
+import { Dashboard } from "@/types";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { useTheme } from 'next-themes';
+} from "@/components/ui/select";
 
 export default function EditDashboard({
   projectId,
@@ -40,15 +39,14 @@ export default function EditDashboard({
 }) {
   const id = useId();
   const router = useRouter();
-  const { theme } = useTheme();
-  console.log({ theme });
+  console.log("xxxxxx=>", { dashboard });
   const form = useForm<z.infer<typeof DashboardSchema>>({
     resolver: zodResolver(DashboardSchema),
     defaultValues: {
       name: dashboard.name,
-      description: dashboard.description || '',
-      background: dashboard.background || '#ffffff',
-      textColor: dashboard.textColor || '#ffff',
+      description: dashboard.description || "",
+      background: dashboard.background || "#ffffff",
+      textColor: dashboard.textColor || "#ffff",
       gridType: dashboard.gridType,
     },
   });
@@ -64,26 +62,26 @@ export default function EditDashboard({
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/projects/${projectId}/dashboards/${dashboard.id}/simple`,
         {
-          method: 'PUT',
+          method: "PUT",
           headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
+            "Content-Type": "application/json",
+            Accept: "application/json",
           },
           body: JSON.stringify(parsedValues),
         }
       );
       if (!response.ok) {
         const errorData = await response.json();
-        if (errorData.error === 'conflict_error') {
+        if (errorData.error === "conflict_error") {
           toast.error(
             errorData.message ||
-              'A dashboard with this name already exists for the user.'
+              "A dashboard with this name already exists for the user."
           );
         } else {
-          toast.error(errorData.message || 'An error occurred.');
+          toast.error(errorData.message || "An error occurred.");
         }
       }
-      toast.success('Your dashboard has been edited successfully.');
+      toast.success("Your dashboard has been edited successfully.");
       onClose();
       router.refresh();
       // window.location.reload();
@@ -91,7 +89,7 @@ export default function EditDashboard({
       if (err instanceof Error) {
         toast.error(`Failed to edited dashboard: ${err.message}`);
       } else {
-        toast.error('Failed to edited dashboard due to an unknown error.');
+        toast.error("Failed to edited dashboard due to an unknown error.");
       }
     }
   }
@@ -100,9 +98,9 @@ export default function EditDashboard({
   //Responsive:Adjusts based on screen size using breakpoints (like Bootstrap/Gridstack responsive modes)
   //Fluid:Columns and rows expand or contract to fill available space (percent-based widths)
   const GridOptions = [
-    { id: 1, value: 'Fixed', label: 'Fixed' },
-    { id: 2, value: 'Responsive', label: 'Responsive' },
-    { id: 3, value: 'Fluid', label: 'Fluid' },
+    { id: 1, value: "Fixed", label: "Fixed" },
+    { id: 2, value: "Responsive", label: "Responsive" },
+    { id: 3, value: "Fluid", label: "Fluid" },
   ];
 
   return (
@@ -241,12 +239,12 @@ export default function EditDashboard({
           )}
         />
 
-        <DialogFooter className="col-span-2 flex justify-between">
+        <DialogFooter className="col-span-2 flex justify-between ">
           <DialogClose asChild>
             <Button
               type="button"
-              variant={'destructive'}
-              size={'custom'}
+              variant={"destructive"}
+              size={"custom"}
               className="mr-auto"
             >
               Cancel
@@ -254,8 +252,8 @@ export default function EditDashboard({
           </DialogClose>
           <Button
             type="submit"
-            variant={'Accepted'}
-            size={'custom'}
+            variant={"Accepted"}
+            size={"custom"}
             className="ml-auto"
           >
             Add

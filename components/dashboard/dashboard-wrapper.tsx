@@ -1,22 +1,23 @@
-'use client';
-import { useState, useEffect, useTransition } from 'react';
-import { DashboardGridComponent } from './dashboard-grid';
-import { Button } from '@/components/ui/button';
+"use client";
+import { useState, useEffect, useTransition } from "react";
+import { DashboardGridComponent } from "./dashboard-grid";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
   DialogContent,
   DialogDescription,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Pencil, Save } from 'lucide-react';
-import { redirect, useRouter, useSearchParams } from 'next/navigation';
-import { Chart, ChartItem, VisualizationTypes } from '@/types';
-import Loading from '@/app/loading';
-import { cn } from '@/lib/utils';
-import toast from 'react-hot-toast';
-import Cookies from 'js-cookie';
-import { useTheme } from 'next-themes';
+} from "@/components/ui/dialog";
+import { Pencil, Save } from "lucide-react";
+import { redirect, useSearchParams } from "next/navigation";
+import { Chart, ChartItem, VisualizationTypes } from "@/types";
+import Loading from "@/app/loading";
+import { cn } from "@/lib/utils";
+import toast from "react-hot-toast";
+import Cookies from "js-cookie";
+import { useTheme } from "next-themes";
+import { useRouter } from "next/router";
 export interface DashboardItem {
   visualizationType: any;
   type: any;
@@ -51,13 +52,13 @@ export const DashboardWrapper = ({
   console.log({ charts });
   const [dataChart, setDataCharts] = useState<ChartItem[]>([]);
   const [cards, setCards] = useState<DashboardItem[]>([]);
-  const [globalBackground, setGlobalBackGround] = useState('');
+  const [globalBackground, setGlobalBackGround] = useState("");
   const [isEditMode, setIsEditMode] = useState(true);
   const [isChartDialogOpen, setIsChartDialogOpen] = useState(false);
   const searchParams = useSearchParams();
-  const edit = searchParams.get('edit');
+  const edit = searchParams.get("edit");
   const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const { theme } = useTheme();
   const usedChartsIds = cards.map((card) => Number(card.chartId));
@@ -70,21 +71,17 @@ export const DashboardWrapper = ({
   );
   const addChart = (chartId: number) => {
     const selectedChart = dataChart.find((chart) => chart?.id === chartId);
-    console.log('xxxx=>', { selectedChart });
+    console.log("xxxx=>", { selectedChart });
     if (!selectedChart) return;
 
     const newChart = {
       chartId: selectedChart.id,
       name: selectedChart.name,
-      description: selectedChart.description ?? 'description',
-      width: selectedChart.width ?? 'col-span-2',
-      backgroundColor:
-        selectedChart.backgroundColor ?? theme == 'dark'
-          ? '#000000'
-          : '#ffffff',
-      textColor:
-        selectedChart.textColor ?? theme == 'dark' ? '#ffffff' : '#000000',
-      type: selectedChart.visualizationType?.type ?? 'test',
+      description: selectedChart.description ?? "description",
+      width: selectedChart.width ?? "col-span-2",
+      backgroundColor: selectedChart.backgroundColor ?? "#ffffff",
+      textColor: selectedChart.textColor ?? "#ffffff",
+      type: selectedChart.visualizationType?.type ?? "test",
       pieChartData: selectedChart.data,
       ChartName: selectedChart.name,
       customizeOptions: selectedChart.customizeOptions,
@@ -96,8 +93,8 @@ export const DashboardWrapper = ({
     // console.log({ newChart });
 
     setCards((prev) => [...prev, newChart]);
-    // console.log('[...cards, newChart]', [...cards, newChart]);
-    Cookies.set('dashboardState', JSON.stringify([...cards, newChart]));
+    console.log("[...cards, newChart]", [...cards, newChart]);
+    Cookies.set("dashboardState", JSON.stringify([...cards, newChart]));
     setIsChartDialogOpen(false);
   };
 
@@ -130,7 +127,7 @@ export const DashboardWrapper = ({
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/projects/${ProjectId}/dashboards/${dashboardId}`
         );
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
         const result = await response.json();
         // console.log('xxxx=>', { result });
@@ -159,7 +156,7 @@ export const DashboardWrapper = ({
 
         // setData(result);
       } catch (error) {
-        setError('Failed to fetch data');
+        setError("Failed to fetch data");
       } finally {
         setLoading(false);
       }
@@ -174,13 +171,13 @@ export const DashboardWrapper = ({
   //   Cookies.set('dashboardState', JSON.stringify(cards));
   // }, [cards]);
   // console.log({ dataChart });
-  console.log('xxxx77777', { cards });
+  console.log("xxxx77777", { cards });
   useEffect(() => {
     setDataCharts(charts);
   }, [charts]);
 
   useEffect(() => {
-    if (edit == 'true') {
+    if (edit == "true") {
       setIsEditMode(true);
     } else {
       setIsEditMode(false);
@@ -192,7 +189,7 @@ export const DashboardWrapper = ({
     setCards(newCards);
   };
   const handleSaveCard = () => {
-    const saved = Cookies.get('dashboardState');
+    const saved = Cookies.get("dashboardState");
     const parsedData: DashboardItem[] = saved ? JSON.parse(saved) : [];
     console.log({ parsedData });
     const transformedData = cards.map((item, index) => ({
@@ -223,25 +220,24 @@ export const DashboardWrapper = ({
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/projects/${ProjectId}/dashboards/${dashboardId}`,
           {
-            method: 'PUT',
+            method: "PUT",
             headers: {
-              'Content-Type': 'application/json',
-              Accept: 'application/json',
+              "Content-Type": "application/json",
+              Accept: "application/json",
             },
             body: JSON.stringify(parsedValues),
           }
         );
         if (!response.ok) {
-          toast.error('An error occurred while saving the data.');
+          toast.error("An error occurred while saving the data.");
         }
         const result = await response.json();
-        toast.success('The dashboard has been updated successfully.');
-        window.location.reload();
+        toast.success("The dashboard has been updated successfully.");
         console.log({ result });
       } catch (error) {
         console.error(error);
         toast.error(
-          'An error occurred while saving the data. Please try again.'
+          "An error occurred while saving the data. Please try again."
         );
       }
     });
@@ -270,8 +266,8 @@ export const DashboardWrapper = ({
   return (
     <section className="p-4 bg-slate-100 dark:bg-slate-800 min-h-screen">
       <div className="max-w-7xl mx-auto">
-        <header className="mb-8 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+        <header className="mb-8 flex justify-between items-center flex-wrap md:flex-nowrap">
+          <h1 className="text-lg py-2 font-bold text-slate-800 w-screen md:text-xl lg:text-2xl md:py-0 ">
             Analytics Dashboard
           </h1>
           <div className="flex gap-2">
@@ -281,7 +277,7 @@ export const DashboardWrapper = ({
                   onClick={getAllCharts}
                   disabled={isAddChartDisabled}
                   className={`bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-sm transition-colors flex items-center ${
-                    isAddChartDisabled ? 'opacity-50 cursor-not-allowed' : ''
+                    isAddChartDisabled ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                 >
                   <span>Choose Chart</span> <Pencil className="!w-4 !h-4" />
@@ -309,7 +305,7 @@ export const DashboardWrapper = ({
         <Dialog open={isChartDialogOpen} onOpenChange={setIsChartDialogOpen}>
           <DialogContent>
             <DialogTitle className="">Select a Chart</DialogTitle>
-            <DialogDescription className={cn('mb-0 pb-0')}></DialogDescription>
+            <DialogDescription className={cn("mb-0 pb-0")}></DialogDescription>
             <div className="space-y-2.5 h-[550px] overflow-y-auto">
               {availableCharts && availableCharts.length > 0 ? (
                 availableCharts.map((chart) => (

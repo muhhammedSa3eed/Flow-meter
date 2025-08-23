@@ -1,6 +1,6 @@
-'use client';
-import React, { useState } from 'react';
-import AddProjectButton from '@/components/motion/AddProject';
+"use client";
+import React, { useState } from "react";
+import AddProjectButton from "@/components/motion/AddProject";
 import {
   Dialog,
   DialogClose,
@@ -9,13 +9,13 @@ import {
   DialogFooter,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { AddProjectSchema } from '@/schemas';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Plus } from 'lucide-react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { Button } from '@/components/ui/button';
+} from "@/components/ui/dialog";
+import { AddProjectSchema } from "@/schemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Plus } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -23,20 +23,20 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { toast } from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
-import { createProject } from '@/actions/ProjectApi';
-import { Textarea } from '../../ui/textarea';
-import { cn } from '@/lib/utils';
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { createProject } from "@/actions/ProjectApi";
+import { Textarea } from "../../ui/textarea";
+import { cn } from "@/lib/utils";
 
 export default function AddProject() {
   const form = useForm<z.infer<typeof AddProjectSchema>>({
     resolver: zodResolver(AddProjectSchema),
     defaultValues: {
-      name: '',
-      description: '',
+      name: "",
+      description: "",
     },
   });
 
@@ -48,10 +48,10 @@ export default function AddProject() {
         // `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/register`,
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/Projects`,
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
+            "Content-Type": "application/json",
+            Accept: "application/json",
           },
 
           // credentials: 'include',
@@ -61,7 +61,7 @@ export default function AddProject() {
       const data = await response.json();
       console.log({ data });
       // await createProject(values);
-      toast.success('Project created successfully!');
+      toast.success("Project created successfully!");
       form.reset();
       setIsDialogOpen(false);
       router.refresh();
@@ -69,7 +69,7 @@ export default function AddProject() {
       if (err instanceof Error) {
         toast.error(`Failed to create project: ${err.message}`);
       } else {
-        toast.error('Failed to create project due to an unknown error.');
+        toast.error("Failed to create project due to an unknown error.");
       }
     }
   };
@@ -81,17 +81,18 @@ export default function AddProject() {
         className="h-10 flex-1 rounded-xl md:min-h-min flex items-center justify-center"
         onClick={() => setIsDialogOpen(true)}
       >
-        <div className="flex flex-1 flex-col ">
-          <div className="w-full h-7 flex items-center ">
-            <Plus />
-            <span className="text-sm ml-1">Add New Project</span>
+        <div className="flex flex-1 flex-col  ">
+          <div
+            className={`h-7 w-full flex items-center relative sidebar-label -ml-[3px]`}
+          >
+            <Plus size={20} className="text-primary  " />
           </div>
         </div>
       </DialogTrigger>
 
       <DialogContent>
         <DialogTitle>Add new project</DialogTitle>
-        <DialogDescription className={cn('mb-0 p-0')}></DialogDescription>
+        <DialogDescription className={cn("mb-0 p-0")}></DialogDescription>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
@@ -137,8 +138,8 @@ export default function AddProject() {
               <DialogClose asChild>
                 <Button
                   type="button"
-                  variant={'destructive'}
-                  size={'custom'}
+                  variant={"destructive"}
+                  size={"custom"}
                   className="mr-auto"
                 >
                   Cancel
@@ -146,8 +147,8 @@ export default function AddProject() {
               </DialogClose>
               <Button
                 type="submit"
-                variant={'Accepted'}
-                size={'custom'}
+                variant={"Accepted"}
+                size={"custom"}
                 className="ml-auto"
               >
                 Add

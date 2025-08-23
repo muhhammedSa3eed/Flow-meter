@@ -1,13 +1,13 @@
-import { Suspense } from 'react';
-import Loading from '@/app/loading';
-import { ChartNoAxesCombined } from 'lucide-react';
-import ProjectIdTabs from '@/components/ProjectIdTabs';
-import ChartTable from '@/components/Data-Tables/ChartTable';
-import { Chart } from '@/types';
-import { getAllCharts, getChartsByProjectId } from '@/lib/projectData';
-import Header from '@/components/header';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+import { Suspense } from "react";
+import Loading from "@/app/loading";
+import { ChartNoAxesCombined } from "lucide-react";
+import ProjectIdTabs from "@/components/ProjectIdTabs";
+import ChartTable from "@/components/Data-Tables/ChartTable";
+import { Chart } from "@/types";
+import { getAllCharts, getChartsByProjectId } from "@/lib/projectData";
+import Header from "@/components/header";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 // async function getChartsByProjectId(): Promise<Chart[]> {
 //   const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/Charts`, {
 //     cache: 'no-store',
@@ -35,14 +35,14 @@ export default async function Page({
       {chart && chart.length > 0 ? (
         <>
           <Header
-            title={chart[0].dataset.projectName ?? ''}
+            title={chart[0].dataset.projectName ?? ""}
             projectId={ProjectId}
             // description={project.description ?? ''}
           />
           {/* <ProjectIdTabs projectId={ProjectId} /> */}
 
-          <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-            <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min mt-5 p-10">
+          <div className="flex flex-1 flex-col gap-4 p-1 lg:p-4 pt-0">
+            <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min mt-5 p-2 lg:p-10">
               <div className="flex flex-row gap-4 text-custom-green2 mb-3">
                 <ChartNoAxesCombined />
                 <div className="text-xl font-bold">

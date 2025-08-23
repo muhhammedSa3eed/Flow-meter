@@ -16,8 +16,12 @@ import { containerCampaignForm as container } from "@/constants/framer-motion";
 import InviteUser from "@/components/CRUD/Users/InviteUser";
 import AssignUser from "@/components/AssignUser/AssignUsers";
 
-
-export function UserDialog({ProjectId ,projectName}:{ProjectId:number ,projectName :string,
+export function UserDialog({
+  ProjectId,
+  projectName,
+}: {
+  ProjectId: number;
+  projectName: string;
 }) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedFormType, setSelectedFormType] = useState<"assign" | "add">(
@@ -32,10 +36,10 @@ export function UserDialog({ProjectId ,projectName}:{ProjectId:number ,projectNa
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
-        <Button variant={'custom'}>Assign/Invite User for {projectName}</Button>
+        <Button variant={"custom"}>Assign/Invite User for {projectName}</Button>
       </DialogTrigger>
 
-      <DialogContent className="p-10 w-2/5 max-w-full overflow-auto">
+      <DialogContent className="p-4 md:p-10 w-full md:w-2/5 md:max-w-full overflow-auto">
         <DialogTitle className="text-center uppercase">
           Assign or Invite Users for {projectName}
         </DialogTitle>
@@ -70,26 +74,25 @@ export function UserDialog({ProjectId ,projectName}:{ProjectId:number ,projectNa
 
         {/* Conditional Rendering of Forms */}
         {selectedFormType === "assign" ? (
-            <motion.div
+          <motion.div
             variants={container}
             className="flex flex-col"
             initial="hidden"
             animate="visible"
             exit="exit"
           >
-          <AssignUser  ProjectId={ProjectId}  projectName={projectName} />
+            <AssignUser ProjectId={ProjectId} projectName={projectName} />
           </motion.div>
         ) : (
           <motion.div
-          variants={container}
-          className="flex flex-col"
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-        >
-          <InviteUser ProjectId={ProjectId}   />
+            variants={container}
+            className="flex flex-col"
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          >
+            <InviteUser ProjectId={ProjectId} />
           </motion.div>
-
         )}
       </DialogContent>
     </Dialog>
