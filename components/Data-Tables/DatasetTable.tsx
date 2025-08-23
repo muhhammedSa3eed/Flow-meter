@@ -359,16 +359,16 @@ export default function DatasetTable({
 
         {/* Pagination */}
         <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4">
-          <div>
-            <p className="text-xs md:text-sm font-medium rtl:ml-2 ltr:mr-2">
+          <div className="hidden sm:flex">
+            <p className="text-xs md:text-sm  text-muted-foreground w-full font-semibold">
               Total Records : {table.getFilteredRowModel().rows.length}
             </p>
           </div>
           {/* Combined: Rows per page and Pagination Controls */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between gap-4 w-full sm:w-auto ">
             {/* Rows per page */}
-            <div className="flex items-center gap-3">
-              <Label htmlFor={`${id}-rows`} className="max-sm:sr-only">
+            <div className="flex items-center gap-3 ">
+              <Label htmlFor={`${id}-rows`} className="md:max-sm:sr-only">
                 Rows per page
               </Label>
               <Select

@@ -39,8 +39,8 @@ export function UserDialog({
         <Button variant={"custom"}>Assign/Invite User for {projectName}</Button>
       </DialogTrigger>
 
-      <DialogContent className="p-4 md:p-10 w-full md:w-2/5 md:max-w-full overflow-auto">
-        <DialogTitle className="text-center uppercase">
+      <DialogContent className="p-4 md:p-8 w-[95%] h-auto lg:h-auto  md:w-auto mx-auto overflow-auto ">
+        <DialogTitle className="text-center uppercase text-xs md:text-md lg:text-2xl">
           Assign or Invite Users for {projectName}
         </DialogTitle>
 
@@ -62,7 +62,7 @@ export function UserDialog({
               Assign User
             </span>
           </span>
-          <span className="pointer-events-none relative me-0.5 flex min-w-8 items-center justify-center text-center peer-data-[state=unchecked]:text-muted-foreground/70">
+          <span className="pointer-events-none relative me-0.5 flex w-full items-center justify-center text-center peer-data-[state=unchecked]:text-muted-foreground/70">
             <span className="text-[15px] font-medium  font-mono">
               Invite User
             </span>

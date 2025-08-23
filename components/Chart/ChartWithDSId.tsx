@@ -1,16 +1,16 @@
-'use client';
-import React, { useEffect, useId, useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Label } from '../ui/label';
-import ReactECharts from 'echarts-for-react';
+"use client";
+import React, { useEffect, useId, useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Label } from "../ui/label";
+import ReactECharts from "echarts-for-react";
 
-import { Braces, CaseUpper, ChevronDownIcon, Clock, Hash } from 'lucide-react';
-import { Button } from '../ui/button';
-import { ChartSchema } from '@/schemas';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { toast } from 'react-hot-toast';
+import { Braces, CaseUpper, ChevronDownIcon, Clock, Hash } from "lucide-react";
+import { Button } from "../ui/button";
+import { ChartSchema } from "@/schemas";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "react-hot-toast";
 import {
   Form,
   FormControl,
@@ -18,36 +18,36 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '../ui/input';
-import { Chart, Dataset, VisualizationTypes } from '@/types';
+} from "@/components/ui/form";
+import { Input } from "../ui/input";
+import { Chart, Dataset, VisualizationTypes } from "@/types";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion';
+} from "@/components/ui/accordion";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
-} from '@/components/ui/resizable';
+} from "@/components/ui/resizable";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { Separator } from '../ui/separator';
-import { ScrollArea } from '../ui/scroll-area';
-import MultipleSelector, { Option } from '@/components/ui/multiselect';
-import DataForm from '../ChartOptions/DataForm';
-import CustomizeChart from './CustomizeChart';
-import { Table, TableBody, TableCell, TableHead, TableRow } from '../ui/table';
-import type { TripsLogEntry, TripsLogResponse } from '@/types';
-import SampleTable from '../Data-Tables/SampleTable';
-import { motion } from 'motion/react';
-import EmtyChart from '../motion/EmtyChart';
-import CustomizeChartWrapper from './CustomizeChartWrapper';
+} from "@/components/ui/tooltip";
+import { Separator } from "../ui/separator";
+import { ScrollArea } from "../ui/scroll-area";
+import MultipleSelector, { Option } from "@/components/ui/multiselect";
+import DataForm from "../ChartOptions/DataForm";
+import CustomizeChart from "./CustomizeChart";
+import { Table, TableBody, TableCell, TableHead, TableRow } from "../ui/table";
+import type { TripsLogEntry, TripsLogResponse } from "@/types";
+import SampleTable from "../Data-Tables/SampleTable";
+import { motion } from "motion/react";
+import EmtyChart from "../motion/EmtyChart";
+import CustomizeChartWrapper from "./CustomizeChartWrapper";
 
 export default function ChartWithDSId({
   datasetId,
@@ -72,20 +72,20 @@ export default function ChartWithDSId({
   const [columnOptions, setColumnOptions] = useState<Option[]>([]);
   useEffect(() => {
     if (datasetId) {
-      form.setValue('datasetId', Number(datasetId));
+      form.setValue("datasetId", Number(datasetId));
     }
   }, [datasetId]);
   const form = useForm<z.infer<typeof ChartSchema>>({
     resolver: zodResolver(ChartSchema),
     defaultValues: {
-      name: '',
-      description: '',
+      name: "",
+      description: "",
       datasetId: datasetId,
       visualizationTypeId: 0,
-      queryContext: '',
+      queryContext: "",
       useExistingQuery: true,
       dimensions: [],
-    filters: [],
+      filters: [],
       metrics: [],
       sortBy: [],
       rowLimit: -1,
@@ -99,14 +99,14 @@ export default function ChartWithDSId({
   //   "";
 
   async function onSubmit(values: z.infer<typeof ChartSchema>) {
-    console.log('Form submitted with values:', values);
+    console.log("Form submitted with values:", values);
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/Charts`,
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(values),
         }
@@ -114,13 +114,13 @@ export default function ChartWithDSId({
 
       if (!response.ok) {
         const errorData = await response.json();
-        toast.error(errorData.message || 'An error occurred.');
+        toast.error(errorData.message || "An error occurred.");
         return;
       }
 
       const createdChart = await response.json();
       setCreatedChartId(createdChart.id);
-      toast.success('Chart has been successfully created.');
+      toast.success("Chart has been successfully created.");
       const connectionId = createdChart.dataset.dbConnectionId;
       const schemaName = createdChart.dataset.schemaName;
       const tableName = createdChart.dataset.tableName;
@@ -150,7 +150,7 @@ export default function ChartWithDSId({
       if (err instanceof Error) {
         toast.error(`Failed to create chart: ${err.message}`);
       } else {
-        toast.error('Failed to create chart due to an unknown error.');
+        toast.error("Failed to create chart due to an unknown error.");
       }
     }
   }
@@ -169,8 +169,8 @@ export default function ChartWithDSId({
           setChartData(data);
         })
         .catch((error) => {
-          console.error('Error fetching chart:', error);
-          toast.error('Failed to load chart data');
+          console.error("Error fetching chart:", error);
+          toast.error("Failed to load chart data");
         });
     }
   }, [createdChartId]);
@@ -198,7 +198,7 @@ export default function ChartWithDSId({
           setColumnOptions(options);
         })
         .catch((error) => {
-          console.error('Error fetching dataset details:', error);
+          console.error("Error fetching dataset details:", error);
           toast.error(error.message);
         });
     }
@@ -206,26 +206,26 @@ export default function ChartWithDSId({
 
   const getIconForType = (type: string) => {
     if (
-      type.includes('integer') ||
-      type.includes('real') ||
-      type.includes('id')
+      type.includes("integer") ||
+      type.includes("real") ||
+      type.includes("id")
     ) {
       return <Hash size={16} className="text-muted-foreground" />;
-    } else if (type.includes('character varying') || type.includes('string')) {
+    } else if (type.includes("character varying") || type.includes("string")) {
       return <CaseUpper size={16} className="text-muted-foreground" />;
-    } else if (type.includes('timestamp')) {
+    } else if (type.includes("timestamp")) {
       return <Clock size={16} className="text-muted-foreground" />;
-    } else if (type.includes('json')) {
+    } else if (type.includes("json")) {
       return <Braces size={16} className="text-muted-foreground" />;
     }
     return null;
   };
   const isBigNumber = chartData?.visualizationType?.type
     .toLowerCase()
-    .includes('bignumber');
+    .includes("bignumber");
   const isPieChart = chartData?.visualizationType?.type
     .toLowerCase()
-    .includes('pie');
+    .includes("pie");
   const pieChartData = chartData?.data?.map((item) => {
     const keys = Object.keys(item);
     return {
@@ -238,9 +238,9 @@ export default function ChartWithDSId({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit, (errors) => {
-          console.log('Form errors:', errors);
+          console.log("Form errors:", errors);
         })}
-        className="space-y-4"
+        className="space-y-4 "
       >
         <div className="flex gap-4 my-3">
           <FormField
@@ -334,7 +334,7 @@ export default function ChartWithDSId({
                                     </div>
                                   </div>
                                 )
-                              )}{' '}
+                              )}{" "}
                               {/* this is the missing closing paren */}
                             </div>
                           ) : (
@@ -396,7 +396,7 @@ export default function ChartWithDSId({
                   </span>
                 </div>
                 <div className="p-6">
-                  <Button type="submit" variant={'custom'} className="w-full">
+                  <Button type="submit" variant={"custom"} className="w-full">
                     Create Chart
                   </Button>
                 </div>
@@ -438,18 +438,18 @@ export default function ChartWithDSId({
                             <div
                               className={`font-bold ${
                                 chartData.customizeOptions?.BigNumberFontSize ||
-                                'text-8xl'
+                                "text-8xl"
                               }`}
                             >
                               {chartData.customizeOptions?.CurrencyFormat ===
-                              'Prefix'
-                                ? chartData.customizeOptions?.Currency || ''
-                                : ''}
+                              "Prefix"
+                                ? chartData.customizeOptions?.Currency || ""
+                                : ""}
                               {Object.values(chartData.data[0])[0]}
                               {chartData.customizeOptions?.CurrencyFormat ===
-                              'Suffix'
-                                ? chartData.customizeOptions?.Currency || ''
-                                : ''}
+                              "Suffix"
+                                ? chartData.customizeOptions?.Currency || ""
+                                : ""}
                             </div>
                             {chartData.customizeOptions?.Subtitle && (
                               <div className="text-muted-foreground text-sm">
@@ -461,30 +461,30 @@ export default function ChartWithDSId({
                           <ReactECharts
                             option={{
                               title: {
-                                text: chartData.name || 'Chart',
+                                text: chartData.name || "Chart",
                                 subtext:
-                                  chartData.visualizationType?.type || 'Pie',
-                                bottom: 'left',
+                                  chartData.visualizationType?.type || "Pie",
+                                bottom: "left",
                               },
-                              tooltip: { trigger: 'item' },
+                              tooltip: { trigger: "item" },
                               legend: {
                                 orient:
                                   chartData.customizeOptions?.Orientation ||
-                                  'horizontal',
-                                left: 'center',
+                                  "horizontal",
+                                left: "center",
                                 top:
-                                  chartData.customizeOptions?.Margin || 'top',
+                                  chartData.customizeOptions?.Margin || "top",
                                 selector: true,
-                                type: 'scroll',
-                                pageIconColor: '#333',
-                                pageIconInactiveColor: '#ccc',
+                                type: "scroll",
+                                pageIconColor: "#333",
+                                pageIconInactiveColor: "#ccc",
                                 pageIconSize: 16,
                                 pageButtonGap: 5,
-                                pageFormatter: '{current}/{total}',
+                                pageFormatter: "{current}/{total}",
                                 pageIcons: {
                                   horizontal: [
-                                    'path://M4,12 L12,4 L20,12',
-                                    'path://M4,4 L12,12 L20,4',
+                                    "path://M4,12 L12,4 L20,12",
+                                    "path://M4,4 L12,12 L20,4",
                                   ],
                                 },
                               },
@@ -493,11 +493,11 @@ export default function ChartWithDSId({
                                 {
                                   name:
                                     chartData.metrics?.[0]?.columnName ||
-                                    'Value',
-                                  type: 'pie',
+                                    "Value",
+                                  type: "pie",
                                   radius: chartData.customizeOptions?.Donut
-                                    ? ['40%', '70%']
-                                    : '50%',
+                                    ? ["40%", "70%"]
+                                    : "50%",
                                   roseType:
                                     chartData.customizeOptions?.RoseType ||
                                     false,
@@ -506,13 +506,13 @@ export default function ChartWithDSId({
                                     itemStyle: {
                                       shadowBlur: 10,
                                       shadowOffsetX: 0,
-                                      shadowColor: 'rgba(0, 0, 0, 0.5)',
+                                      shadowColor: "rgba(0, 0, 0, 0.5)",
                                     },
                                   },
                                 },
                               ],
                             }}
-                            style={{ height: 400, width: '100%' }}
+                            style={{ height: 400, width: "100%" }}
                           />
                         ) : (
                           <div className="text-muted-foreground text-sm italic">
@@ -574,8 +574,8 @@ export default function ChartWithDSId({
                                         className="border-b p-2 text-muted-foreground"
                                       >
                                         {value === null
-                                          ? '-'
-                                          : typeof value === 'number'
+                                          ? "-"
+                                          : typeof value === "number"
                                           ? value.toLocaleString()
                                           : String(value)}
                                       </td>
@@ -597,7 +597,7 @@ export default function ChartWithDSId({
                         value="tab-2"
                         className="h-[calc(100%-40px)] truncate max-w-[800px]"
                       >
-                        <SampleTable sampleData={sampleData ?? []} />{' '}
+                        <SampleTable sampleData={sampleData ?? []} />{" "}
                       </TabsContent>
                     </Tabs>
                   </ResizablePanel>

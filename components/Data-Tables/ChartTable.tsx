@@ -355,16 +355,16 @@ export default function ChartTable({
 
         {/* Pagination */}
         <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-4">
-          <div>
-            <p className="text-xs md:text-sm font-medium rtl:ml-2 ltr:mr-2">
+          <div className="hidden sm:flex sm:items-center">
+            <p className="text-xs md:text-sm  text-muted-foreground w-full font-semibold ">
               Total Records : {table.getFilteredRowModel().rows.length}
             </p>
           </div>
           {/* Combined: Rows per page and Pagination Controls */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 justify-between w-full sm:w-auto">
             {/* Rows per page */}
             <div className="flex items-center gap-3">
-              <Label htmlFor={`${id}-rows`} className="max-sm:sr-only">
+              <Label htmlFor={`${id}-rows`} className="sm:max-sm:sr-only">
                 Rows per page
               </Label>
               <Select

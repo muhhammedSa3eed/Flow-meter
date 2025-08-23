@@ -491,7 +491,7 @@ export default function DatabaseSelect({
             className="mx-4 h-auto bg-custom-green2"
           />
 
-          <div className="basis-2/3 pl-4">
+          <div className="basis-2/3 ">
             {tableColumns ? (
               <div className="[&>div]:max-h-96">
                 <Suspense fallback={<Loading />}>

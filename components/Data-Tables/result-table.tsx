@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import {
   Table,
   TableBody,
@@ -6,9 +6,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { transformChartDataToTable } from '@/lib/chart-assets';
-import { formatToDateAndTime } from '@/lib/formate-date';
+} from "@/components/ui/table";
+import { transformChartDataToTable } from "@/lib/chart-assets";
+import { formatToDateAndTime } from "@/lib/formate-date";
 
 interface ChartProps {
   chartDetails: any;
@@ -16,18 +16,18 @@ interface ChartProps {
 }
 
 const ResultTable = ({ chartDetails, chartData }: ChartProps) => {
-  const chartType = chartDetails?.visualizationType?.type?.toLowerCase() || '';
-  const isBigNumber = chartType.includes('bignumber');
-  const isPieChart = chartType.includes('pie');
-  const isLineChart = chartType.includes('line');
-  const isBarChart = chartType.includes('bar');
-  const isTableChart = chartType.includes('table');
+  const chartType = chartDetails?.visualizationType?.type?.toLowerCase() || "";
+  const isBigNumber = chartType.includes("bignumber");
+  const isPieChart = chartType.includes("pie");
+  const isLineChart = chartType.includes("line");
+  const isBarChart = chartType.includes("bar");
+  const isTableChart = chartType.includes("table");
   const tableData = transformChartDataToTable(chartData?.data?.[0]);
   const headers =
     tableData &&
     Array.from(new Set(tableData.flatMap((obj: {}) => Object.keys(obj))));
 
-  console.log('chartData.data', chartData?.data);
+  console.log("chartData.data", chartData?.data);
 
   const renderTableChart = () => {
     const { columns, rows } = chartData?.data?.[0] || {};
@@ -59,11 +59,11 @@ const ResultTable = ({ chartDetails, chartData }: ChartProps) => {
                       key={cellIndex}
                       className="whitespace-nowrap p-2 border-b text-muted-foreground"
                     >
-                      {cell !== null && cell !== undefined && cell !== ''
-                        ? typeof cell === 'number'
+                      {cell !== null && cell !== undefined && cell !== ""
+                        ? typeof cell === "number"
                           ? cell.toLocaleString()
                           : String(cell)
-                        : '-'}
+                        : "-"}
                     </TableCell>
                   ))}
                 </TableRow>
@@ -107,8 +107,8 @@ const ResultTable = ({ chartDetails, chartData }: ChartProps) => {
                     className="whitespace-nowrap p-2 border-b text-muted-foreground"
                   >
                     {val === null
-                      ? '-'
-                      : typeof val === 'number'
+                      ? "-"
+                      : typeof val === "number"
                       ? val.toLocaleString()
                       : String(val)}
                   </TableCell>
@@ -208,7 +208,7 @@ const ResultTable = ({ chartDetails, chartData }: ChartProps) => {
             <TableRow key={rowIndex}>
               {headers.map((key: any) => (
                 <TableCell key={key}>
-                  {row[key] !== undefined ? row[key] : '-'}
+                  {row[key] !== undefined ? row[key] : "-"}
                 </TableCell>
               ))}
             </TableRow>

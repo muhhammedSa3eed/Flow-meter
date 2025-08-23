@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-'use client';
-import { useState, useEffect, useId, useRef } from 'react';
+"use client";
+import { useState, useEffect, useId, useRef } from "react";
 import {
   ColumnFiltersState,
   SortingState,
@@ -12,7 +12,7 @@ import {
   getSortedRowModel,
   useReactTable,
   FilterFn,
-} from '@tanstack/react-table';
+} from "@tanstack/react-table";
 import {
   Table,
   TableBody,
@@ -20,22 +20,22 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from "@/components/ui/table";
 
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
   CircleXIcon,
   ListFilterIcon,
   Plus,
-} from 'lucide-react';
+} from "lucide-react";
 import {
   DoubleArrowLeftIcon,
   DoubleArrowRightIcon,
-} from '@radix-ui/react-icons';
+} from "@radix-ui/react-icons";
 
-import { RankingInfo, rankItem } from '@tanstack/match-sorter-utils';
+import { RankingInfo, rankItem } from "@tanstack/match-sorter-utils";
 
 import {
   Select,
@@ -43,10 +43,11 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 import {
   Sheet,
   SheetContent,
@@ -54,12 +55,12 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet';
-import AddConnections from '@/components/CRUD/Connections/AddConnections';
-import { SelectPolling, SelectType } from '@/types';
+} from "@/components/ui/sheet";
+import AddConnections from "@/components/CRUD/Connections/AddConnections";
+import { SelectPolling, SelectType } from "@/types";
 
-import { ScrollArea } from '@/components/ui/scroll-area';
-import AddConnectionsWrapper from '@/components/CRUD/Connections/add-connections-wrapper';
+import { ScrollArea } from "@/components/ui/scroll-area";
+import AddConnectionsWrapper from "@/components/CRUD/Connections/add-connections-wrapper";
 
 interface DataTableProps<TData, TValue> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -70,7 +71,7 @@ interface DataTableProps<TData, TValue> {
   ProjectId: number;
 }
 
-declare module '@tanstack/table-core' {
+declare module "@tanstack/table-core" {
   interface FilterFns {
     fuzzy: FilterFn<unknown>;
     // dateBetweenFilterFn: FilterFn<unknown>;
@@ -98,7 +99,6 @@ export default function ConnectDataTable<TData, TValue>({
   data,
   ProjectId,
 }: DataTableProps<TData, TValue>) {
-  // console.log({ data });
   const id = useId();
   const [globalFilter, setGlobalFilter] = useState<any>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -134,49 +134,35 @@ export default function ConnectDataTable<TData, TValue>({
     onColumnVisibilityChange: setColumnVisibility,
     onGlobalFilterChange: setGlobalFilter,
   });
-  // console.log("table.getColumn('name')", table.getColumn('name'));
-  // console.log(
-  //   "table.getColumn('name')?.getFilterValue()",
-  //   table.getColumn('name')?.getFilterValue()
-  // );
+
   return (
-    <div>
-      <div className="flex items-center py-4 justify-between">
-        <Input
-          placeholder="Search all columns..."
-          value={globalFilter}
-          onChange={(event) => setGlobalFilter(event.target.value)}
-          className="max-w-sm"
-        />
-        {/* <div className="flex items-center gap-3">
+    <div className="space-y-4">
+      {/* Search Filter and Actions Section */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+        <div className="w-full sm:w-auto">
           <div className="relative">
             <Input
-              id={`${id}-input`}
+              id={`${id}-search`}
               ref={inputRef}
               className={cn(
-                'peer min-w-60 ps-9',
-                Boolean(table.getColumn('name')?.getFilterValue()) && 'pe-9'
+                "w-full sm:min-w-[300px] md:min-w-[400px] ps-9",
+                globalFilter && "pe-9"
               )}
-              value={
-                (table.getColumn('name')?.getFilterValue() ?? '') as string
-              }
-              onChange={(e) => {
-                console.log('e.target.value', e.target.value);
-                table.getColumn('name')?.setFilterValue(e.target.value);
-              }}
-              placeholder="Search Devices "
+              placeholder="Search all columns..."
+              value={globalFilter}
+              onChange={(event) => setGlobalFilter(event.target.value)}
               type="text"
-              aria-label="Search Devices"
+              aria-label="Search all columns"
             />
             <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
               <ListFilterIcon size={16} aria-hidden="true" />
             </div>
-            {Boolean(table.getColumn('name')?.getFilterValue()) && (
+            {globalFilter && (
               <button
                 className="text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
                 aria-label="Clear filter"
                 onClick={() => {
-                  table.getColumn('name')?.setFilterValue('');
+                  setGlobalFilter("");
                   if (inputRef.current) inputRef.current.focus();
                 }}
               >
@@ -184,117 +170,167 @@ export default function ConnectDataTable<TData, TValue>({
               </button>
             )}
           </div>
-        </div> */}
+        </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 w-full sm:w-auto justify-start md:justify-end">
           <AddConnectionsWrapper ProjectId={ProjectId} />
-          {/* <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild>
-              <Button variant={"custom"}>
-                {" "}
-                <Plus style={{ height: 20, width: 20 }} /> Add New Connection
-              </Button>
-            </SheetTrigger>
-
-            <SheetContent>
-              <div className="h-full flex flex-col">
-                <SheetHeader>
-                  <SheetTitle> Connection Information</SheetTitle>
-                  <SheetDescription
-                    className={cn("mb-0 pb-0")}
-                  ></SheetDescription>
-                </SheetHeader>
-                <ScrollArea className="flex-1 mt-4 pr-2">
-                  <AddConnections
-                    ProjectId={ProjectId}
-                    selectType={dataType}
-                    selectPolling={dataPolling}
-                  />
-                </ScrollArea>
-              </div>
-            </SheetContent>
-          </Sheet>{" "} */}
         </div>
       </div>
-      <div className="">
-        <Table className="custom-border">
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      key={header.id}
-                      className={`whitespace-nowrap font-semibold text-black dark:text-white ${
-                        header.id === 'actions' ? 'sticky -right-[1px]' : ''
-                      }`}
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={`whitespace-nowrap ${
-                        cell.column.id === 'actions'
-                          ? 'sticky -right-[1px]  text-center'
-                          : ''
-                      }`}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+
+      {/* Table for Large Screens */}
+      <div className="hidden lg:block">
+        <div className="bg-background overflow-hidden rounded-md border">
+          <Table className="custom-border table-fixed">
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id} className="hover:bg-transparent">
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead
+                        key={header.id}
+                        style={{ width: `${header.getSize()}px` }}
+                        className={`whitespace-nowrap font-semibold text-black dark:text-white ${
+                          header.id === "actions" ? "sticky -right-[1px]" : ""
+                        }`}
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    );
+                  })}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell
+                        key={cell.id}
+                        className={`whitespace-nowrap ${
+                          cell.column.id === "actions"
+                            ? "sticky -right-[1px] text-center last:py-0"
+                            : ""
+                        }`}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
 
-      <div className="flex items-center justify-between  px-2 mt-5">
-        <div>
-          <p className="text-xs md:text-sm font-medium rtl:ml-2 ltr:mr-2">
-            Number of Rows : {table.getFilteredRowModel().rows.length}
+      {/* Cards Grid for Small & Medium Screens */}
+      <div className="lg:hidden">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-4">
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => {
+              const actionCell = row
+                .getVisibleCells()
+                .find((cell) => cell.column.id === "actions");
+
+              return (
+                <div
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                  className={`relative bg-background border rounded-lg p-3 pb-[10px] pt-0 duration-300 shadow-sm ${
+                    row.getIsSelected() ? "border-green-400" : ""
+                  } `}
+                >
+                  {actionCell && (
+                    <div className="absolute top-[5px] right-2">
+                      {flexRender(
+                        actionCell.column.columnDef.cell,
+                        actionCell.getContext()
+                      )}
+                    </div>
+                  )}
+
+                  <div className="space-y-2 mt-3">
+                    {row
+                      .getVisibleCells()
+                      .filter((cell) => cell.column.id !== "actions")
+                      .map((cell) => {
+                        const header = cell.column.columnDef.header;
+                        const headerText =
+                          typeof header === "string" ? header : cell.column.id;
+
+                        return (
+                          <div key={cell.id} className="flex gap-2">
+                            <div className="text-sm font-semibold text-muted-foreground min-w-fit">
+                              {headerText === "select" ? "" : `${headerText}:`}
+                            </div>
+                            <div className="text-sm font-normal truncate">
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <div className="bg-background border rounded-lg p-8 text-center col-span-full">
+              <p className="text-muted-foreground">No results found.</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Pagination Section */}
+      <div className="flex flex-row items-start sm:items-center justify-between gap-1  md:gap-4 pt-2 border-t ">
+        {/* Row count info */}
+        <div className="hidden sm:flex sm:items-center">
+          <p className="text-xs md:text-sm  text-muted-foreground w-full font-semibold ">
+            Total Records: {table.getFilteredRowModel().rows.length}
           </p>
         </div>
-        <div className="flex items-center  justify-center space-x-6 lg:space-x-8 flex-wrap md:flex-nowrap">
-          <div className="flex items-center space-x-2 flex-wrap">
-            <p className="text-xs md:text-sm font-medium">Rows per page</p>
+
+        {/* Pagination controls */}
+        <div className="flex flex-row justify-between sm:justify-normal items-start sm:items-center gap-2 md:gap-4 w-full sm:w-auto">
+          {/* Rows per page */}
+          <div className="flex items-center gap-2">
+            <Label
+              htmlFor={`${id}-rows`}
+              className="text-xs md:text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 sm:max-sm:sr-only"
+            >
+              Rows per page
+            </Label>
             <Select
               value={`${table.getState().pagination.pageSize}`}
               onValueChange={(value) => {
                 table.setPageSize(Number(value));
               }}
             >
-              <SelectTrigger className="h-8 w-[70px]">
+              <SelectTrigger id={`${id}-rows`} className="h-8 w-[70px]">
                 <SelectValue
                   placeholder={table.getState().pagination.pageSize}
                 />
@@ -308,47 +344,52 @@ export default function ConnectDataTable<TData, TValue>({
               </SelectContent>
             </Select>
           </div>
-          <div className="flex w-[100px] items-center justify-center text-xs md:text-sm font-medium my-2 md:my-0">
-            Page {table.getState().pagination.pageIndex + 1} of{' '}
-            {table.getPageCount()}
-          </div>
-          <div className="flex items-center space-x-2 my-2 justify-center text-xs">
-            <Button
-              variant="outline"
-              className="hidden h-8 w-8 p-0 lg:flex"
-              onClick={() => table.setPageIndex(0)}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <span className="sr-only">Go to first page</span>
-              <DoubleArrowLeftIcon className="h-3 w-3" />
-            </Button>
-            <Button
-              variant="outline"
-              className="h-8 w-8 p-0"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <span className="sr-only">Go to previous page</span>
-              <ChevronLeftIcon className="h-3 w-3" />
-            </Button>
-            <Button
-              variant="outline"
-              className="h-8 w-8 p-0"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              <span className="sr-only">Go to next page</span>
-              <ChevronRightIcon className="h-3 w-3" />
-            </Button>
-            <Button
-              variant="outline"
-              className="hidden h-8 w-8 p-0 lg:flex"
-              onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-              disabled={!table.getCanNextPage()}
-            >
-              <span className="sr-only">Go to last page</span>
-              <DoubleArrowRightIcon className="h-3 w-3" />
-            </Button>
+
+          {/* Page info and navigation */}
+          <div className="flex items-center gap-4">
+            <div className=" flex items-center justify-center text-sm font-medium whitespace-nowrap">
+              Page {table.getState().pagination.pageIndex + 1} of{" "}
+              {table.getPageCount()}
+            </div>
+
+            <div className="flex items-center gap-1">
+              <Button
+                variant="outline"
+                className="hidden sm:flex h-8 w-8 p-0"
+                onClick={() => table.setPageIndex(0)}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <span className="sr-only">Go to first page</span>
+                <DoubleArrowLeftIcon className="h-3 w-3" />
+              </Button>
+              <Button
+                variant="outline"
+                className="h-8 w-8 p-0"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <span className="sr-only">Go to previous page</span>
+                <ChevronLeftIcon className="h-3 w-3" />
+              </Button>
+              <Button
+                variant="outline"
+                className="h-8 w-8 p-0"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                <span className="sr-only">Go to next page</span>
+                <ChevronRightIcon className="h-3 w-3" />
+              </Button>
+              <Button
+                variant="outline"
+                className="hidden sm:flex h-8 w-8 p-0"
+                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                disabled={!table.getCanNextPage()}
+              >
+                <span className="sr-only">Go to last page</span>
+                <DoubleArrowRightIcon className="h-3 w-3" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>

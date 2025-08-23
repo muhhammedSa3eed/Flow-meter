@@ -10,14 +10,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Pencil, Save } from "lucide-react";
-import { redirect, useSearchParams } from "next/navigation";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { Chart, ChartItem, VisualizationTypes } from "@/types";
 import Loading from "@/app/loading";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 import Cookies from "js-cookie";
 import { useTheme } from "next-themes";
-import { useRouter } from "next/router";
 export interface DashboardItem {
   visualizationType: any;
   type: any;
@@ -233,6 +232,7 @@ export const DashboardWrapper = ({
         }
         const result = await response.json();
         toast.success("The dashboard has been updated successfully.");
+        window.location.reload();
         console.log({ result });
       } catch (error) {
         console.error(error);
@@ -264,10 +264,10 @@ export const DashboardWrapper = ({
   if (loading) return <Loading />;
   // if (error) return <p>{error}</p>;
   return (
-    <section className="p-4 bg-slate-100 dark:bg-slate-800 min-h-screen">
+    <section className="p-4 bg-slate-100  dark:bg-slate-800 min-h-screen">
       <div className="max-w-7xl mx-auto">
         <header className="mb-8 flex justify-between items-center flex-wrap md:flex-nowrap">
-          <h1 className="text-lg py-2 font-bold text-slate-800 w-screen md:text-xl lg:text-2xl md:py-0 ">
+          <h1 className="text-lg py-2 font-bold text-slate-800 dark:text-slate-100 w-screen md:text-xl lg:text-2xl md:py-0  ">
             Analytics Dashboard
           </h1>
           <div className="flex gap-2">
@@ -306,7 +306,7 @@ export const DashboardWrapper = ({
           <DialogContent>
             <DialogTitle className="">Select a Chart</DialogTitle>
             <DialogDescription className={cn("mb-0 pb-0")}></DialogDescription>
-            <div className="space-y-2.5 h-[550px] overflow-y-auto">
+            <div className="space-y-2.5 h-[450px] overflow-y-auto ">
               {availableCharts && availableCharts.length > 0 ? (
                 availableCharts.map((chart) => (
                   <Button
