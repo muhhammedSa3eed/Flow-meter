@@ -64,7 +64,7 @@ const ChartDataTable = ({ dataTable, options }: ChartDataTableProps) => {
         </div>
       )}
 
-      <div className="rounded-md border">
+      <div className="rounded-md border text-gray-800">
         <Table>
           <TableHeader>
             <TableRow>

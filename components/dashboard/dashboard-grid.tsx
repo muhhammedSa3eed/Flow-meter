@@ -201,7 +201,7 @@ const SortableCard = ({
     backgroundColor ?? (theme === 'dark' ? '#000000' : '#ffffff');
 
   const defaultTextColor =
-    textColor ?? (theme === 'dark' ? '#000000' : '#000000');
+    textColor ?? (theme === 'dark' ? '#ffffff' : '#000000');
   const style = {
     transform: CSS.Transform.toString(transform),
     transition: isDragging ? 'none' : transition,
@@ -231,7 +231,7 @@ const SortableCard = ({
       {isEditMode && (
         <button
           onClick={() => onDelete(card.chartId.toString())}
-          className="absolute bottom-1.5 right-1.5 p-1 hover:bg-slate-100 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity"
+          className="absolute bottom-1.5 right-1.5 p-1 hover:bg-slate-100 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity text-destructive"
         >
           <Trash2 className="w-4 h-4" />
         </button>

@@ -48,10 +48,10 @@ const ChartDisplay = ({
     };
   });
   const tableData = chartData?.data;
-  console.log(JSON.stringify(tableData));
-  console.log({ pieChartData });
-  console.log({ isPieChart });
-  const dataKeys = chartData?.data?.[0] ? Object.keys(chartData.data[0]) : [];
+  // console.log(JSON.stringify(tableData));
+  // console.log({ pieChartData });
+  // console.log({ isPieChart });
+  const dataKeys = chartData?.data[0]? Object.keys(chartData.data[0]) : [];
 
   const xKey =
     chartData?.dimensions?.[0] && dataKeys.includes(chartData.dimensions[0])

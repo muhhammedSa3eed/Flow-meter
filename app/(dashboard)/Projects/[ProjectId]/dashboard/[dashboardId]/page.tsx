@@ -39,13 +39,18 @@ const EditScreenPage = async ({
 }) => {
   const { ProjectId, dashboardId } = await params;
   const dashboard = await getDashboardsById(ProjectId, dashboardId);
-  const chartData = await getChartsByProjectId(ProjectId);
+  const chartData = await getAllCharts();
+  const filteredChartData = chartData.filter(
+    (item: any) => item.projectId == ProjectId
+  );
+  // const chartData = await getChartsByProjectId(ProjectId);
+  console.log({ filteredChartData });
   // console.log({ dashboard });
   return (
     <div>
       <DashboardWrapper
         ProjectId={ProjectId}
-        charts={chartData}
+        charts={filteredChartData}
         dashboardId={dashboardId}
         dashboardName={dashboard.name}
       />

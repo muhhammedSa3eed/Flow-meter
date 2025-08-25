@@ -799,13 +799,13 @@ export default function ChooseChart({
                       setSelectedDataset={setSelectedDataset}
                       fieldsAndTypes={fieldsAndTypes}
                       control={form.control}
-                      className="text-sm sm:text-base rounded-md border border-input bg-background shadow-sm focus-within:ring-2 focus-within:ring-ring"
-                      maxMenuHeight={200}
-                      hidePlaceholderWhenSelected
-                      badgeClassName="bg-primary/10 text-primary font-medium text-xs sm:text-sm px-2 py-1 rounded-full flex items-center gap-1 hover:bg-primary/20"
-                      menuClassName="w-full max-w-[calc(100vw-2rem)] sm:max-w-[calc(100vw-3rem)] bg-background border border-input rounded-md shadow-lg"
-                      inputClassName="text-sm sm:text-base placeholder:text-muted-foreground"
-                      clearIndicatorClassName="text-muted-foreground hover:text-primary cursor-pointer"
+                      // className="text-sm sm:text-base rounded-md border border-input bg-background shadow-sm focus-within:ring-2 focus-within:ring-ring"
+                      // maxMenuHeight={200}
+                      // hidePlaceholderWhenSelected
+                      // badgeClassName="bg-primary/10 text-primary font-medium text-xs sm:text-sm px-2 py-1 rounded-full flex items-center gap-1 hover:bg-primary/20"
+                      // menuClassName="w-full max-w-[calc(100vw-2rem)] sm:max-w-[calc(100vw-3rem)] bg-background border border-input rounded-md shadow-lg"
+                      // inputClassName="text-sm sm:text-base placeholder:text-muted-foreground"
+                      // clearIndicatorClassName="text-muted-foreground hover:text-primary cursor-pointer"
                     />
                   </ScrollArea>
                 </ResizablePanel>
@@ -936,13 +936,13 @@ export default function ChooseChart({
                         setSelectedDataset={setSelectedDataset}
                         fieldsAndTypes={fieldsAndTypes}
                         control={form.control}
-                        className="text-sm sm:text-base rounded-md border border-input bg-background shadow-sm focus-within:ring-2 focus-within:ring-ring"
-                        maxMenuHeight={200}
-                        hidePlaceholderWhenSelected
-                        badgeClassName="bg-primary/10 text-primary font-medium text-xs sm:text-sm px-2 py-1 rounded-full flex items-center gap-1 hover:bg-primary/20"
-                        menuClassName="w-full max-w-[calc(100vw-2rem)] sm:max-w-[calc(100vw-3rem)] bg-background border border-input rounded-md shadow-lg"
-                        inputClassName="text-sm sm:text-base placeholder:text-muted-foreground"
-                        clearIndicatorClassName="text-muted-foreground hover:text-primary cursor-pointer"
+                        // className="text-sm sm:text-base rounded-md border border-input bg-background shadow-sm focus-within:ring-2 focus-within:ring-ring"
+                        // maxMenuHeight={200}
+                        // hidePlaceholderWhenSelected
+                        // badgeClassName="bg-primary/10 text-primary font-medium text-xs sm:text-sm px-2 py-1 rounded-full flex items-center gap-1 hover:bg-primary/20"
+                        // menuClassName="w-full max-w-[calc(100vw-2rem)] sm:max-w-[calc(100vw-3rem)] bg-background border border-input rounded-md shadow-lg"
+                        // inputClassName="text-sm sm:text-base placeholder:text-muted-foreground"
+                        // clearIndicatorClassName="text-muted-foreground hover:text-primary cursor-pointer"
                       />
                       <div className="mt-4">
                         <span className="font-semibold text-sm sm:text-base">
