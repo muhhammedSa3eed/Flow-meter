@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 // AssignUsersTable.tsx
-"use client";
+'use client';
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from 'react';
 import {
   useReactTable,
   getCoreRowModel,
@@ -13,7 +13,7 @@ import {
   flexRender,
   ColumnFiltersState,
   FilterFn,
-} from "@tanstack/react-table";
+} from '@tanstack/react-table';
 import {
   Table,
   TableBody,
@@ -21,39 +21,39 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/table';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import {
   Pagination,
   PaginationContent,
   PaginationEllipsis,
   PaginationItem,
   PaginationLink,
-} from "@/components/ui/pagination";
+} from '@/components/ui/pagination';
 import {
   ChevronDownIcon,
   ChevronLeft,
   ChevronRight,
   ChevronUpIcon,
   ListFilterIcon,
-} from "lucide-react";
-import { CircleXIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Label } from "@/components/ui/label";
-import { usePagination } from "@/hooks/use-pagination";
-import { User } from "@/types";
-import { RankingInfo, rankItem } from "@tanstack/match-sorter-utils";
-import { getColumns } from "@/app/(dashboard)/Projects/[ProjectId]/assignUser/columns";
-import { UserDialog } from "@/app/(dashboard)/Projects/[ProjectId]/assignUser/UserDialog";
+} from 'lucide-react';
+import { CircleXIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Label } from '@/components/ui/label';
+import { usePagination } from '@/hooks/use-pagination';
+import { User } from '@/types';
+import { RankingInfo, rankItem } from '@tanstack/match-sorter-utils';
+import { getColumns } from '@/app/(dashboard)/Projects/[ProjectId]/assignUser/columns';
+import { UserDialog } from '@/app/(dashboard)/Projects/[ProjectId]/assignUser/UserDialog';
 
-declare module "@tanstack/table-core" {
+declare module '@tanstack/table-core' {
   interface FilterFns {
     fuzzy: FilterFn<unknown>;
   }
@@ -87,7 +87,7 @@ export default function AssignUsersTable({
   });
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [sorting, setSorting] = useState([{ id: "name", desc: false }]);
+  const [sorting, setSorting] = useState([{ id: 'name', desc: false }]);
 
   const data = users;
   const columns = getColumns(ProjectId, projectName);
@@ -138,10 +138,10 @@ export default function AssignUsersTable({
                 id={`${id}-input`}
                 ref={inputRef}
                 className={cn(
-                  "peer min-w-60 ps-9",
-                  Boolean(table.getState().globalFilter) && "pe-9"
+                  'peer min-w-60 ps-9',
+                  Boolean(table.getState().globalFilter) && 'pe-9'
                 )}
-                value={(table.getState().globalFilter as string) ?? ""}
+                value={(table.getState().globalFilter as string) ?? ''}
                 onChange={(e) => table.setGlobalFilter(e.target.value)}
                 placeholder="Search Users"
                 type="text"
@@ -155,7 +155,7 @@ export default function AssignUsersTable({
                   className="text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
                   aria-label="Clear filter"
                   onClick={() => {
-                    table.setGlobalFilter("");
+                    table.setGlobalFilter('');
                     if (inputRef.current) inputRef.current.focus();
                   }}
                 >
@@ -184,20 +184,20 @@ export default function AssignUsersTable({
                         key={header.id}
                         style={{ width: `${header.getSize()}px` }}
                         className={`whitespace-nowrap font-semibold text-black dark:text-white ${
-                          header.id === "actions" ? "sticky -right-[1px]" : ""
+                          header.id === 'actions' ? 'sticky -right-[1px]' : ''
                         }`}
                       >
                         {header.isPlaceholder ? null : header.column.getCanSort() ? (
                           <div
                             className={cn(
                               header.column.getCanSort() &&
-                                "flex h-full cursor-pointer items-center justify-between gap-2 select-none"
+                                'flex h-full cursor-pointer items-center  gap-2 select-none'
                             )}
                             onClick={header.column.getToggleSortingHandler()}
                             onKeyDown={(e) => {
                               if (
                                 header.column.getCanSort() &&
-                                (e.key === "Enter" || e.key === " ")
+                                (e.key === 'Enter' || e.key === ' ')
                               ) {
                                 e.preventDefault();
                                 header.column.getToggleSortingHandler()?.(e);
@@ -244,7 +244,7 @@ export default function AssignUsersTable({
                   table.getRowModel().rows.map((row) => (
                     <TableRow
                       key={row.id}
-                      data-state={row.getIsSelected() && "selected"}
+                      data-state={row.getIsSelected() && 'selected'}
                     >
                       {row.getVisibleCells().map((cell) => (
                         <TableCell key={cell.id} className="last:py-0">
@@ -278,14 +278,14 @@ export default function AssignUsersTable({
               table.getRowModel().rows.map((row) => {
                 const actionCell = row
                   .getVisibleCells()
-                  .find((cell) => cell.column.id === "actions");
+                  .find((cell) => cell.column.id === 'actions');
 
                 return (
                   <div
                     key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
+                    data-state={row.getIsSelected() && 'selected'}
                     className={`relative bg-background border rounded-lg px-3 pb-[10px] duration-300 ${
-                      row.getIsSelected() ? "border-green-400" : "shadow-sm"
+                      row.getIsSelected() ? 'border-green-400' : 'shadow-sm'
                     } `}
                   >
                     {actionCell && (
@@ -300,19 +300,19 @@ export default function AssignUsersTable({
                     <div className="space-y-2 mt-3">
                       {row
                         .getVisibleCells()
-                        .filter((cell) => cell.column.id !== "actions")
+                        .filter((cell) => cell.column.id !== 'actions')
                         .map((cell) => {
                           const header = cell.column.columnDef.header;
                           const headerText =
-                            typeof header === "string"
+                            typeof header === 'string'
                               ? header
                               : cell.column.id;
 
                           return (
                             <div key={cell.id} className="flex gap-1">
                               <div className="text-sm font-semibold text-muted-foreground">
-                                {headerText === "select"
-                                  ? ""
+                                {headerText === 'select'
+                                  ? ''
                                   : `${headerText}:`}
                               </div>
                               <div className="text-sm font-normal truncate">

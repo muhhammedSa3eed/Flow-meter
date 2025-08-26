@@ -396,14 +396,16 @@ export default function AddUser() {
                 Cancel
               </Button>
             </DialogClose>
-            <Button
-              type="submit"
-              size="custom"
-              variant={'Accepted'}
-              className="ml-auto"
-            >
-              Add
-            </Button>
+            <DialogClose asChild>
+              <Button
+                type="submit"
+                size="custom"
+                variant={'Accepted'}
+                className="ml-auto"
+              >
+                Add
+              </Button>
+            </DialogClose>
           </DialogFooter>
         </form>
       </Form>

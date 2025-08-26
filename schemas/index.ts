@@ -208,7 +208,20 @@ export const UserSchema = z.object({
       message: 'Must contain at least one special character',
     }),
   emailConfirmed: z.boolean().default(true),
-  role: z.string().min(1, { message: 'Role is required' }),
+  // role: z.string().min(1, { message: 'Role is required' }),
+  role: z.any().optional(),
+});
+
+export const UserEditSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  email: z.string().email({ message: 'Invalid email address' }),
+  phoneNumber: z
+    .string()
+    .min(10, { message: 'Phone number must be at least 10 digits' })
+    .max(15, { message: 'Phone number too long' }),
+  emailConfirmed: z.boolean().default(true),
+  // role: z.string().min(1, { message: 'Role is required' }),
+  role: z.any().optional(),
 });
 
 export const AssignUserSchema = z.object({
@@ -270,10 +283,10 @@ export const InviteSchema = z.object({
 });
 
 export const DatasetSchema = z.object({
-  datasetName: z.string().min(1, { message: "dataset name is required" }),
-  table:z.string().min(1, { message: "table is required" }),
-  schema: z.string().min(1, { message: "schema is required" }),
-  database: z.string().min(1, { message: "database is required" }),
+  datasetName: z.string().min(1, { message: 'dataset name is required' }),
+  table: z.string().min(1, { message: 'table is required' }),
+  schema: z.string().min(1, { message: 'schema is required' }),
+  database: z.string().min(1, { message: 'database is required' }),
 });
 
 export const ChartSchema = z.object({
@@ -325,17 +338,16 @@ export const VisualizationTypesSchema = z.object({
     .min(1, 'At least one options field is required'),
 });
 
-
 export const LabQuerySchema = z.object({
-  query: z.string().min(1, "Query is required"),
-  dbConnectionId: z.number().int().positive("dbConnectionId must be positive"),
+  query: z.string().min(1, 'Query is required'),
+  dbConnectionId: z.number().int().positive('dbConnectionId must be positive'),
   limit: z.number().optional(),
 });
 
 export const LabQuerySaveSchema = z.object({
-  datasetName: z.string().min(1, "datasetName is required"),
-  schemaName: z.string().min(1, "schemaName is required"),
-  tableName: z.string().min(1, "schemaName is required"),
+  datasetName: z.string().min(1, 'datasetName is required'),
+  schemaName: z.string().min(1, 'schemaName is required'),
+  tableName: z.string().min(1, 'schemaName is required'),
   projectId: z.number().int().nonnegative(),
-  fieldsAndTypes: z.record(z.string()), 
+  fieldsAndTypes: z.record(z.string()),
 });

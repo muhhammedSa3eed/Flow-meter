@@ -21,7 +21,7 @@ import { Button } from '@/components/ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { UserSchema } from '@/schemas';
+import { UserEditSchema } from '@/schemas';
 import { toast } from 'react-hot-toast';
 import { User } from '@/types';
 import { Label } from '@/components/ui/label';
@@ -44,17 +44,19 @@ const Role = [
 export default function EditUser({ users }: EditUserProps) {
   const id = useId();
   const router = useRouter();
-  const form = useForm<z.infer<typeof UserSchema>>({
-    resolver: zodResolver(UserSchema),
+  console.log({ users });
+  const form = useForm<z.infer<typeof UserEditSchema>>({
+    resolver: zodResolver(UserEditSchema),
     defaultValues: {
       name: users.name,
       email: users.email,
       phoneNumber: users.phoneNumber,
+      emailConfirmed:users.emailConfirmed
       // role:users.role
     },
   });
 
-  async function onSubmit(values: z.infer<typeof UserSchema>) {
+  async function onSubmit(values: z.infer<typeof UserEditSchema>) {
     try {
       const requestBody = {
         ...values,
@@ -120,40 +122,6 @@ export default function EditUser({ users }: EditUserProps) {
               </FormItem>
             )}
           />
-          <div className="group relative flex-1">
-            {/* Overlapping Label */}
-            <FormLabel
-              htmlFor={id}
-              className="absolute start-1 top-0 z-10 block -translate-y-1/2 bg-background px-2 text-xs font-medium text-foreground group-has-[select:disabled]:opacity-50"
-            >
-              Role
-            </FormLabel>
-
-            {/* Select Field */}
-            <FormField
-              control={form.control}
-              name="role"
-              render={({ field }) => (
-                <FormItem className="flex-1">
-                  <FormControl>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a group" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {Role.map((item) => (
-                          <SelectItem key={item.Id} value={item.Value}>
-                            {item.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
 
           {/* Email Field */}
           <FormField
@@ -215,6 +183,69 @@ export default function EditUser({ users }: EditUserProps) {
               );
             }}
           />
+
+          {/* phoneNumber Field */}
+          <FormField
+            control={form.control}
+            name="phoneNumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <div className="group relative">
+                    <FormLabel
+                      htmlFor={id}
+                      className="origin-start absolute top-1/2 block -translate-y-1/2 cursor-text px-1 text-sm text-muted-foreground/70 transition-all group-focus-within:pointer-events-none group-focus-within:top-0 group-focus-within:cursor-default group-focus-within:text-xs group-focus-within:font-medium group-focus-within:text-foreground has-[+input:not(:placeholder-shown)]:pointer-events-none has-[+input:not(:placeholder-shown)]:top-0 has-[+input:not(:placeholder-shown)]:cursor-default has-[+input:not(:placeholder-shown)]:text-xs has-[+input:not(:placeholder-shown)]:font-medium has-[+input:not(:placeholder-shown)]:text-foreground"
+                    >
+                      <span className="inline-flex bg-background px-2">
+                        Phone number
+                      </span>
+                    </FormLabel>
+                    <Input
+                      id={id}
+                      type="phoneNumber"
+                      placeholder=""
+                      {...field}
+                    />
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="group relative flex-1">
+            {/* Overlapping Label */}
+            <FormLabel
+              htmlFor={id}
+              className="absolute start-1 top-0 z-10 block -translate-y-1/2 bg-background px-2 text-xs font-medium text-foreground group-has-[select:disabled]:opacity-50"
+            >
+              Role
+            </FormLabel>
+
+            {/* Select Field */}
+            <FormField
+              control={form.control}
+              name="role"
+              render={({ field }) => (
+                <FormItem className="flex-1">
+                  <FormControl>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a group" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Role.map((item) => (
+                          <SelectItem key={item.Id} value={item.Value}>
+                            {item.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
           <SheetFooter>
             <SheetClose asChild>

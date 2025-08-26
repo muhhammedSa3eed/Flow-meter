@@ -28,8 +28,8 @@ const ProjectsWrapper = ({ projects }: ProjectsProps) => {
         <div className="grid auto-rows-min gap-4 md:grid-cols-2 p-3 lg:grid-cols-3">
           {projects.map((project) => (
             <div key={project.id}>
-              <Card className="relative rounded-xl border-custom-green shadow-lg">
-                <CardHeader className="relative">
+              <Card className="relative rounded-xl border-custom-green shadow-lg ">
+                <CardHeader className="relative pt-4">
                   <CardTitle className="ml-1">{project.name}</CardTitle>
                   <div className="absolute top-0 right-0 p-2 mr-0">
                     <ProjectActionsDropdown projects={project} />

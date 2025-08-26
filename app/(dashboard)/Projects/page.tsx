@@ -24,8 +24,5 @@ export default async function PageProject() {
       </div>
       <ProjectsWrapper projects={projects} />
     </>
-    // <Suspense fallback={<Loading />}>
-
-    // </Suspense>
   );
 }
