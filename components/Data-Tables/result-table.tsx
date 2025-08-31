@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import {
   Table,
   TableBody,
@@ -6,9 +6,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { transformChartDataToTable } from "@/lib/chart-assets";
-import { formatToDateAndTime } from "@/lib/formate-date";
+} from '@/components/ui/table';
+import { transformChartDataToTable } from '@/lib/chart-assets';
+import { formatToDateAndTime } from '@/lib/formate-date';
 
 interface ChartProps {
   chartDetails: any;
@@ -16,19 +16,131 @@ interface ChartProps {
 }
 
 const ResultTable = ({ chartDetails, chartData }: ChartProps) => {
-  const chartType = chartDetails?.visualizationType?.type?.toLowerCase() || "";
-  const isBigNumber = chartType.includes("bignumber");
-  const isPieChart = chartType.includes("pie");
-  const isLineChart = chartType.includes("line");
-  const isBarChart = chartType.includes("bar");
-  const isTableChart = chartType.includes("table");
+  const chartType = chartDetails?.visualizationType?.type?.toLowerCase() || '';
+  const isBigNumber = chartType.includes('bignumber');
+  const isPieChart = chartType.includes('pie');
+  const isLineChart = chartType.includes('line');
+  const isBarChart = chartType.includes('bar');
+  const isTableChart = chartType.includes('table');
   const tableData = transformChartDataToTable(chartData?.data?.[0]);
-  const headers =
-    tableData &&
-    Array.from(new Set(tableData.flatMap((obj: {}) => Object.keys(obj))));
+  // const headers =
+  //   tableData &&
+  //   Array.from(new Set(tableData.flatMap((obj: {}) => Object.keys(obj))));
+  const firstColumn = chartData?.data?.[0]?.xAxis?.name;
+  // console.log({ firstColumn });
+  let headers: string[] = [];
+  if (tableData && tableData.length > 0) {
+    headers = Array.from(
+      new Set(tableData.flatMap((obj: {}) => Object.keys(obj)))
+    );
 
-  console.log("chartData.data", chartData?.data);
-
+    headers = [firstColumn, ...headers.filter((h) => h !== firstColumn)];
+  }
+  console.log('chartData.data', JSON.stringify(chartData?.data?.[0]));
+  console.log('Json', JSON.stringify(tableData));
+  const y = [
+    {
+      series: [
+        {
+          name: '0',
+          type: 'bar',
+          data: [3, 2, 2, 1.6666666666666667, 3, 12.5, 3, 11.5],
+        },
+        { name: '7', type: 'bar', data: [0, 2, 0, 0, 0, 0, 0, 0] },
+        { name: '7.2', type: 'bar', data: [0, 0, 0, 0, 0, 0, 0, 0] },
+        { name: '9.211694', type: 'bar', data: [0, 0, 48, 0, 0, 0, 0, 0] },
+        { name: '10.2', type: 'bar', data: [0, 0, 0, 0, 3, 22, 44, 12.5] },
+        { name: '20.2', type: 'bar', data: [0, 0, 0, 0, 0, 3, 0, 0] },
+        { name: '100.2', type: 'bar', data: [0, 0, 0, 4, 0, 0, 0, 0] },
+      ],
+      xAxis: {
+        name: 'StationBayId',
+        categories: ['1', '2', '3', '4', '5', '6', '7', '8'],
+      },
+    },
+  ];
+  const x = [
+    {
+      '0': 3,
+      '7': 0,
+      StationBayId: '1',
+      '7.2': 0,
+      '9.211694': 0,
+      '10.2': 0,
+      '20.2': 0,
+      '100.2': 0,
+    },
+    {
+      '0': 2,
+      '7': 2,
+      StationBayId: '2',
+      '7.2': 0,
+      '9.211694': 0,
+      '10.2': 0,
+      '20.2': 0,
+      '100.2': 0,
+    },
+    {
+      '0': 2,
+      '7': 0,
+      StationBayId: '3',
+      '7.2': 0,
+      '9.211694': 48,
+      '10.2': 0,
+      '20.2': 0,
+      '100.2': 0,
+    },
+    {
+      '0': 1.6666666666666667,
+      '7': 0,
+      StationBayId: '4',
+      '7.2': 0,
+      '9.211694': 0,
+      '10.2': 0,
+      '20.2': 0,
+      '100.2': 4,
+    },
+    {
+      '0': 3,
+      '7': 0,
+      StationBayId: '5',
+      '7.2': 0,
+      '9.211694': 0,
+      '10.2': 3,
+      '20.2': 0,
+      '100.2': 0,
+    },
+    {
+      '0': 12.5,
+      '7': 0,
+      StationBayId: '6',
+      '7.2': 0,
+      '9.211694': 0,
+      '10.2': 22,
+      '20.2': 3,
+      '100.2': 0,
+    },
+    {
+      '0': 3,
+      '7': 0,
+      StationBayId: '7',
+      '7.2': 0,
+      '9.211694': 0,
+      '10.2': 44,
+      '20.2': 0,
+      '100.2': 0,
+    },
+    {
+      '0': 11.5,
+      '7': 0,
+      StationBayId: '8',
+      '7.2': 0,
+      '9.211694': 0,
+      '10.2': 12.5,
+      '20.2': 0,
+      '100.2': 0,
+    },
+  ];
   const renderTableChart = () => {
     const { columns, rows } = chartData?.data?.[0] || {};
 
@@ -59,11 +171,11 @@ const ResultTable = ({ chartDetails, chartData }: ChartProps) => {
                       key={cellIndex}
                       className="whitespace-nowrap p-2 border-b text-muted-foreground"
                     >
-                      {cell !== null && cell !== undefined && cell !== ""
-                        ? typeof cell === "number"
+                      {cell !== null && cell !== undefined && cell !== ''
+                        ? typeof cell === 'number'
                           ? cell.toLocaleString()
                           : String(cell)
-                        : "-"}
+                        : '-'}
                     </TableCell>
                   ))}
                 </TableRow>
@@ -107,8 +219,8 @@ const ResultTable = ({ chartDetails, chartData }: ChartProps) => {
                     className="whitespace-nowrap p-2 border-b text-muted-foreground"
                   >
                     {val === null
-                      ? "-"
-                      : typeof val === "number"
+                      ? '-'
+                      : typeof val === 'number'
                       ? val.toLocaleString()
                       : String(val)}
                   </TableCell>
@@ -208,7 +320,7 @@ const ResultTable = ({ chartDetails, chartData }: ChartProps) => {
             <TableRow key={rowIndex}>
               {headers.map((key: any) => (
                 <TableCell key={key}>
-                  {row[key] !== undefined ? row[key] : "-"}
+                  {row[key] !== undefined ? row[key] : '-'}
                 </TableCell>
               ))}
             </TableRow>

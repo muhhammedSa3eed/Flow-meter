@@ -53,6 +53,7 @@ import {
 } from '@/components/ui/command';
 import {
   aggregate,
+  Dimension_Options,
   IconOptions,
   operators,
   RowLimit,
@@ -233,6 +234,7 @@ export default function DataForm({
     }
     setIsPopoverDimensionsOpen(false);
   };
+  console.log({ xAxis });
   // const handleSaveXaxis = () => {
   //   if (selectedDimensionColumn) {
   //     form.setValue("xAxis", [...xAxis, selectedXaxisColumn.value]);
@@ -342,14 +344,58 @@ export default function DataForm({
 
     return () => controller.abort();
   }, [selectedFilterColumn]);
-  const arrayToOptions = (values: string[], optionsList: Option[]) =>
-    values.map(
-      (key) =>
-        optionsList.find((opt) => opt.value === key) || {
-          value: key,
-          label: key,
-        }
-    );
+  const sortedByOptions =
+    dimensions.length > 0
+      ? Dimension_Options
+      : xAxis.column !== ''
+      ? metrics.length > 0
+        ? [
+            {
+              value: xAxis.column,
+              label:
+                columnOptions.find(
+                  (o: { value: any }) => o.value === xAxis.column
+                )?.label || xAxis.column,
+            },
+
+            {
+              value: JSON.stringify(metrics),
+              label: metrics
+                .map((m) => {
+                  const aggLabel =
+                    aggregate.find((o) => o.key === m.aggregationFunction)
+                      ?.label || m.aggregationFunction;
+
+                  return `${aggLabel}(${m.columnName})`;
+                })
+                .join(', '),
+            },
+          ]
+        : [
+            {
+              value: xAxis.column,
+              label:
+                columnOptions.find(
+                  (o: { label: any }) => o.label === xAxis.column
+                )?.label || xAxis.column,
+            },
+          ]
+      : [];
+  console.log({ sortedByOptions });
+  useEffect(() => {
+    if (dimensions.length > 0 && form.getValues('xAxisSortBy') !== '') {
+      form.setValue('xAxisSortBy', '');
+    }
+  }, [dimensions, form.getValues('xAxisSortBy')]);
+
+  // const arrayToOptions = (values: string[], optionsList: Option[]) =>
+  //   values.map(
+  //     (key) =>
+  //       optionsList.find((opt) => opt.value === key) || {
+  //         value: key,
+  //         label: key,
+  //       }
+  //   );
 
   return (
     <>
@@ -494,38 +540,69 @@ export default function DataForm({
                   </FormItem>
                 )}
               />
-
-              <FormField
-                control={form.control}
-                name="xAxis.forceCategorical"
-                render={({ field }) => (
-                  <FormItem className="mt-2 w-full flex-1">
-                    <FormControl>
-                      <div className="flex items-start gap-2">
-                        <Checkbox
-                          id={id}
-                          aria-describedby={`${id}-description`}
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                        <div className="grid grow gap-2">
-                          <FormLabel>Force Categorical</FormLabel>
-                          <p
-                            id={`${id}-description`}
-                            className="text-muted-foreground text-xs"
-                          >
-                            You can use this checkbox with a label and a
-                            description.
-                          </p>
+              {xAxis.column && (
+                <FormField
+                  control={form.control}
+                  name="xAxis.forceCategorical"
+                  render={({ field }) => (
+                    <FormItem className="mt-2 w-full flex-1">
+                      <FormControl>
+                        <div className="flex items-start gap-2">
+                          <Checkbox
+                            id={id}
+                            aria-describedby={`${id}-description`}
+                            checked={field.value}
+                            onCheckedChange={(checked) => {
+                              field.onChange(checked);
+                              if (!checked) {
+                                form.setValue('xAxisSortBy', '');
+                              }
+                            }}
+                          />
+                          <div className="grid grow gap-2">
+                            <FormLabel>Force Categorical</FormLabel>
+                            <p
+                              id={`${id}-description`}
+                              className="text-muted-foreground text-xs"
+                            >
+                              You can use this checkbox with a label and a
+                              description.
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
             </>
           )}
+          {/* {showXAxis && xAxis && xAxis.forceCategorical && (
+            <FormField
+              control={form.control}
+              name="xAxisSortBy"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>X-Axis Sort By</FormLabel>
+                  <FormControl>
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {sortedByOptions.map((opt: any) => (
+                          <SelectItem key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          )} */}
 
           {/* Dimensions Section */}
           {showDimensionsSection && (
@@ -552,6 +629,10 @@ export default function DataForm({
                               (val) => val.value
                             );
                             field.onChange(newDimensions);
+                            console.log(
+                              'form45666',
+                              form.getValues('xAxisSortBy')
+                            );
                           }}
                           placeholder="Select Dimensions..."
                           hideClearAllButton
@@ -653,7 +734,6 @@ export default function DataForm({
             />
           )}
           {/* Metrics Section */}
-
           <FormField
             control={form.control}
             name="metrics"

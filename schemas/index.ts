@@ -212,6 +212,17 @@ export const UserSchema = z.object({
   role: z.any().optional(),
 });
 
+// export const UserEditSchema = z.object({
+//   name: z.string().min(1, 'Name is required'),
+//   email: z.string().email({ message: 'Invalid email address' }),
+//   phoneNumber: z
+//     .string()
+//     .min(10, { message: 'Phone number must be at least 10 digits' })
+//     .max(15, { message: 'Phone number too long' }),
+//   emailConfirmed: z.boolean().default(true),
+//   // role: z.string().min(1, { message: 'Role is required' }),
+//   role: z.any().optional(),
+// });
 export const UserEditSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.string().email({ message: 'Invalid email address' }),
@@ -220,10 +231,10 @@ export const UserEditSchema = z.object({
     .min(10, { message: 'Phone number must be at least 10 digits' })
     .max(15, { message: 'Phone number too long' }),
   emailConfirmed: z.boolean().default(true),
-  // role: z.string().min(1, { message: 'Role is required' }),
-  role: z.any().optional(),
+  role: z.string().min(1, { message: 'Role is required' }),
+  // password: z.string().min(8, { message: 'Short Password' }),
+  // role: z.any().optional(),
 });
-
 export const AssignUserSchema = z.object({
   name: z.string().min(1, 'Name is required'),
 

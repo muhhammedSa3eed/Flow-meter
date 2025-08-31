@@ -51,7 +51,7 @@ const ChartDisplay = ({
   // console.log(JSON.stringify(tableData));
   // console.log({ pieChartData });
   // console.log({ isPieChart });
-  const dataKeys = chartData?.data[0]? Object.keys(chartData.data[0]) : [];
+  const dataKeys = chartData?.data[0] ? Object.keys(chartData.data[0]) : [];
 
   const xKey =
     chartData?.dimensions?.[0] && dataKeys.includes(chartData.dimensions[0])
@@ -82,6 +82,7 @@ const ChartDisplay = ({
   // console.log({ barSeriesData });
   console.log('!chartData?.data?.[0]', chartData?.data?.[0]);
   console.log({ isLineChart });
+  
   // if (!chartData?.data?.[0]) {
   //   return (
   //     <div className="flex flex-col items-center justify-center h-full">
@@ -195,11 +196,12 @@ const ChartDisplay = ({
       palettes[0].colors;
     const isHorizontal =
       chartData.customizeOptions?.BarOrientation == 'horizontal' || false;
-    console.log({ isHorizontal });
-    console.log(
-      "parseInt(chartData.customizeOptions?.['X-AxisTitleMargin'])",
-      parseInt(chartData.customizeOptions?.['X-AxisTitleMargin'])
-    );
+    console.log('from bar', { xAxisData });
+    // console.log({ isHorizontal });
+    // console.log(
+    //   "parseInt(chartData.customizeOptions?.['X-AxisTitleMargin'])",
+    //   parseInt(chartData.customizeOptions?.['X-AxisTitleMargin'])
+    // );
     return (
       <ReactECharts
         option={{
@@ -213,7 +215,6 @@ const ChartDisplay = ({
             data: legandTitle,
             orient: 'horizontal',
           },
-
           // 👇 orientation toggle logic
           xAxis: isHorizontal
             ? {
@@ -228,6 +229,7 @@ const ChartDisplay = ({
                 nameGap:
                   parseInt(chartData.customizeOptions?.['X-AxisTitleMargin']) ??
                   15,
+                data: xAxisData,
               }
             : {
                 type: 'category',
@@ -271,7 +273,6 @@ const ChartDisplay = ({
                   parseInt(chartData.customizeOptions?.['Y-AxisTitleMargin']) ??
                   15,
               },
-
           toolbox: {
             feature: {
               saveAsImage: {
@@ -279,21 +280,7 @@ const ChartDisplay = ({
               },
             },
           },
-
-          series: [
-            {
-              data: barSeriesData,
-              type: 'bar',
-              itemStyle: {
-                borderRadius: 4,
-                color: function (params: any) {
-                  return selectedPalette[
-                    params.dataIndex % selectedPalette.length
-                  ];
-                },
-              },
-            },
-          ],
+          series: seriesData,
         }}
         style={{ height: 400, width: '100%' }}
       />
@@ -431,3 +418,18 @@ const ChartDisplay = ({
 };
 
 export default ChartDisplay;
+
+// series: [
+//   {
+//     data: xSeriesData,
+//     type: 'bar',
+//     itemStyle: {
+//       borderRadius: 4,
+//       color: function (params: any) {
+//         return selectedPalette[
+//           params.dataIndex % selectedPalette.length
+//         ];
+//       },
+//     },
+//   },
+// ],

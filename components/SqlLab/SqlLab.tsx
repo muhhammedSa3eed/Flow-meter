@@ -315,26 +315,26 @@
 //   );
 // }
 
-"use client";
-import React, { useEffect, useState, useId } from "react";
+'use client';
+import React, { useEffect, useState, useId } from 'react';
 import {
   ResizablePanel,
   ResizablePanelGroup,
   ResizableHandle,
-} from "@/components/ui/resizable";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from '@/components/ui/resizable';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Label } from "@/components/ui/label";
+} from '@/components/ui/accordion';
+import { Label } from '@/components/ui/label';
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-} from "@/components/ui/popover";
+} from '@/components/ui/popover';
 import {
   Command,
   CommandEmpty,
@@ -342,21 +342,21 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
-import { ChevronDownIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import MultipleSelector from "@/components/ui/multiselect";
+} from '@/components/ui/command';
+import { ChevronDownIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import MultipleSelector from '@/components/ui/multiselect';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from '@/components/ui/tooltip';
 
-import SqlEditor from "./SqlEditor";
-import type { Database, TableDataResponse } from "@/types";
+import SqlEditor from './SqlEditor';
+import type { Database, TableDataResponse } from '@/types';
 
 export default function SqlLab({ ProjectId }: { ProjectId: number }) {
-  const [sqlText, setSqlText] = useState<string>("");
+  const [sqlText, setSqlText] = useState<string>('');
   const [queryResult, setQueryResult] = useState<TableDataResponse | null>(
     null
   );
@@ -384,8 +384,8 @@ export default function SqlLab({ ProjectId }: { ProjectId: number }) {
       setIsLargeScreen(window.innerWidth >= 1024); // lg breakpoint
     };
     handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   // Fetch databases
@@ -422,21 +422,21 @@ export default function SqlLab({ ProjectId }: { ProjectId: number }) {
 
   const getIconForType = (dataType: string) => {
     if (
-      dataType.includes("integer") ||
-      dataType.includes("real") ||
-      dataType.includes("id") ||
-      dataType.includes("name") ||
-      dataType.includes("text")
+      dataType.includes('integer') ||
+      dataType.includes('real') ||
+      dataType.includes('id') ||
+      dataType.includes('name') ||
+      dataType.includes('text')
     ) {
       return <span className="text-xs text-muted-foreground">#</span>;
     } else if (
-      dataType.includes("character varying") ||
-      dataType.includes("string")
+      dataType.includes('character varying') ||
+      dataType.includes('string')
     ) {
       return <span className="text-xs text-muted-foreground">Abc</span>;
-    } else if (dataType.includes("timestamp")) {
+    } else if (dataType.includes('timestamp')) {
       return <span className="text-xs text-muted-foreground">🕒</span>;
-    } else if (dataType.includes("json")) {
+    } else if (dataType.includes('json')) {
       return <span className="text-xs text-muted-foreground">{`{}`}</span>;
     }
     return null;
@@ -460,7 +460,7 @@ export default function SqlLab({ ProjectId }: { ProjectId: number }) {
             setFieldsByTable((prev) => ({ ...prev, [table]: data }));
           })
           .catch((err) => {
-            console.error("Error loading fields for", table, err);
+            console.error('Error loading fields for', table, err);
           });
       }
     });
@@ -496,7 +496,7 @@ export default function SqlLab({ ProjectId }: { ProjectId: number }) {
                           ? databases.find(
                               (d) => Number(d.id) === selectedDatabase
                             )?.name
-                          : "Select database"}
+                          : 'Select database'}
                         <ChevronDownIcon size={16} />
                       </Button>
                     </PopoverTrigger>
@@ -537,7 +537,7 @@ export default function SqlLab({ ProjectId }: { ProjectId: number }) {
                         aria-expanded={openSchema}
                         className="w-full justify-between text-sm sm:text-base"
                       >
-                        {selectedSchema || "Select schema"}
+                        {selectedSchema || 'Select schema'}
                         <ChevronDownIcon size={16} />
                       </Button>
                     </PopoverTrigger>
@@ -580,16 +580,13 @@ export default function SqlLab({ ProjectId }: { ProjectId: number }) {
                     options={tables.map((t) => ({ value: t, label: t }))}
                     placeholder={
                       tables.length === 0
-                        ? "Select schema first"
-                        : "Select table"
+                        ? 'Select schema first'
+                        : 'Select table'
                     }
                     className="text-sm sm:text-base rounded-md border border-input bg-background shadow-sm focus-within:ring-2 focus-within:ring-ring"
-                    maxMenuHeight={200}
+                    // maxMenuHeight="200"
                     hidePlaceholderWhenSelected
                     badgeClassName="bg-primary/10 text-primary font-medium text-xs sm:text-sm px-2 py-1 rounded-full flex items-center gap-1 hover:bg-primary/20"
-                    menuClassName="w-full max-w-[calc(100vw-2rem)] sm:max-w-[calc(100vw-3rem)] bg-background border border-input rounded-md shadow-lg"
-                    inputClassName="text-sm sm:text-base placeholder:text-muted-foreground"
-                    clearIndicatorClassName="text-muted-foreground hover:text-primary cursor-pointer"
                   />
                 </div>
 
@@ -680,7 +677,7 @@ export default function SqlLab({ ProjectId }: { ProjectId: number }) {
                           ? databases.find(
                               (d) => Number(d.id) === selectedDatabase
                             )?.name
-                          : "Select database"}
+                          : 'Select database'}
                         <ChevronDownIcon size={16} />
                       </Button>
                     </PopoverTrigger>
@@ -721,7 +718,7 @@ export default function SqlLab({ ProjectId }: { ProjectId: number }) {
                         aria-expanded={openSchema}
                         className="w-full justify-between text-sm sm:text-base"
                       >
-                        {selectedSchema || "Select schema"}
+                        {selectedSchema || 'Select schema'}
                         <ChevronDownIcon size={16} />
                       </Button>
                     </PopoverTrigger>
@@ -764,16 +761,12 @@ export default function SqlLab({ ProjectId }: { ProjectId: number }) {
                     options={tables.map((t) => ({ value: t, label: t }))}
                     placeholder={
                       tables.length === 0
-                        ? "Select schema first"
-                        : "Select table"
+                        ? 'Select schema first'
+                        : 'Select table'
                     }
                     className="text-sm sm:text-base rounded-md border border-input bg-background shadow-sm focus-within:ring-2 focus-within:ring-ring"
-                    maxMenuHeight={200}
                     hidePlaceholderWhenSelected
                     badgeClassName="bg-primary/10 text-primary font-medium text-xs sm:text-sm px-2 py-1 rounded-full flex items-center gap-1 hover:bg-primary/20"
-                    menuClassName="w-full max-w-[calc(100vw-2rem)] sm:max-w-[calc(100vw-3rem)] bg-background border border-input rounded-md shadow-lg"
-                    inputClassName="text-sm sm:text-base placeholder:text-muted-foreground"
-                    clearIndicatorClassName="text-muted-foreground hover:text-primary cursor-pointer"
                   />
                 </div>
 

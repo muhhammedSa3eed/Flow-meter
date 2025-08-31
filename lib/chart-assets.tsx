@@ -154,6 +154,15 @@ export const aggregate: Option[] = [
   { value: 'MIN', label: 'MIN' },
   { value: 'SUM', label: 'SUM' },
 ];
+export const Dimension_Options = [
+  { value: 'categoryname', label: 'Category Name' },
+  { value: 'totalvalue', label: 'Total Value' },
+  { value: 'minvalue', label: 'Minimum Value' },
+  { value: 'maxvalue', label: 'Maximum Value' },
+  { value: 'avgvalue', label: 'Average Value' },
+];
+
+// export const Metrices_Options = [{ key: 'Count', label: 'Count' }];
 
 export const RowLimit = [
   { value: 'none', label: 'none' },
@@ -367,20 +376,47 @@ export const AxisMarginOptions = [
 ];
 export const yAxisPositionOptions = ['start', 'center', 'end'];
 
+// export const transformChartDataToTable = (chartData: any) => {
+//   if (!chartData?.xAxis || !Array.isArray(chartData.xAxis.categories)) {
+//     return []; // أو ممكن ترجع null لو حابب تتحقق من null في المكان اللي بتستخدم فيه
+//   }
+//   const { xAxis, series } = chartData;
+// console.log("chartData.xAxis.name",chartData.xAxis.name)
+//   const categories = xAxis?.categories;
+//   const tableRows = categories?.map((stationId: any, index: number) => {
+//     const row: Record<string, string | number> = {
+//       [chartData.xAxis.name]: stationId,
+//     };
+
+//     series.forEach((s: { name: string | number; data: number[] }) => {
+//       row[s.name] = s.data[index] ?? 0;
+//     });
+
+//     return row;
+//   });
+
+//   return tableRows;
+// };
 export const transformChartDataToTable = (chartData: any) => {
   if (!chartData?.xAxis || !Array.isArray(chartData.xAxis.categories)) {
-    return []; // أو ممكن ترجع null لو حابب تتحقق من null في المكان اللي بتستخدم فيه
+    return [];
   }
-  const { xAxis, series } = chartData;
 
+  const { xAxis, series } = chartData;
   const categories = xAxis?.categories;
+
   const tableRows = categories?.map((stationId: any, index: number) => {
-    const row: Record<string, string | number> = {
-      StationBayId: stationId,
+    // ابدأ بالـ StationBayId الأول
+    let row: Record<string, string | number> = {
+      [chartData.xAxis.name]: stationId,
     };
 
+    // ضيف باقي الأعمدة
     series.forEach((s: { name: string | number; data: number[] }) => {
-      row[s.name] = s.data[index] ?? 0;
+      row = {
+        ...row,
+        [s.name]: s.data[index] ?? 0,
+      };
     });
 
     return row;
@@ -388,6 +424,7 @@ export const transformChartDataToTable = (chartData: any) => {
 
   return tableRows;
 };
+
 
 export const timeStampForamtOption = [
   'Adaptive formatting',
